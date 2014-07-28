@@ -7,7 +7,12 @@ var Task = Backbone.Model.extend({
 			exDuration:null,
 			pobjectId:null,
 			lastDate:null,
+			checked:false
 		};
 	},
+
+	toggle: function() {
+		this.save({checked:!this.get(checked)});
+	}
 
 });

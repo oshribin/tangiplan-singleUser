@@ -1,16 +1,48 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-     <link rel="stylesheet" href="bower_components/dist/css/bootstrap.css">
+     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+     <link rel="stylesheet" href="index.css" />
+
+     
+
      <meta http-equiv="X-UA-Compatible" content="IE=edge">
      <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
      <meta charset="UTF-8">
      <title>Title</title>
     </head>
     <body>
-        <script src="bower_components/handlebars.js"></script>
-        <script src="bower_components/jquery.js"></script>
-        <script src="bower_components/backbone.js"></script>
-        <script src="bower_components/dist/js/bootstrap.js"></script>
+        <script src="bower_components/handlebars/handlebars.js"></script>
+        <script src="bower_components/jquery/jquery.js"></script>
+        <script src="bower_components/backbone/backbone.js"></script>
+        <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+        
+       
+        <!-- Handlebar tamplates -->
+        <script id = "titleBar" type="text/x-handlebars-template">
+         <div class = "row">
+          <div class = "col-md-12">
+           <div class = "title-bar panel panel-default">
+            <div class = "panel-body">
+             {{title}}
+            </div>
+           </div>
+          </div>   
+         </div> 
+        </script>
+
+
+        <script id = "singleTask" type="text/x-handlebars-template">
+         <div class = "row">
+          <div class="col-md-6">
+           <input class="checker" type="checkbox" />
+           <label class = "text">{{name}}</div>
+          </div> 
+         </div> 
+        </script>
+
+
+
+
     </body>
 </html>
