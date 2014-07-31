@@ -1,8 +1,8 @@
 Tasks = Backbone.Collection.extend({
 	
-	localStorage: new Backbone.localStorage("Tasks"),
+	//localStorage: new Backbone.localStorage("Tasks"),
 
-	model: task,
+	model: Task,
 
 
 });
