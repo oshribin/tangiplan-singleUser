@@ -2,7 +2,7 @@
 var ChooseTaskView_page = Backbone.View.extend({
 
 
-	//template: Handlebars.compile($("#chooseTasks").html()),
+	template: Handlebars.compile($("#chooseTasks").html()),
 
 	events:{
 		"click .btn":"create_new_task"
@@ -60,9 +60,6 @@ var ChooseTaskView_page = Backbone.View.extend({
 
 
 	render: function(){
-		//debug
-		console.log("lkjh");
-
 		this.checked = taskList.where({checked:true});
 		this.unchecked = taskList.where({checked:false});
 		if (this.checked.length == 6){
@@ -95,4 +92,4 @@ taskList.add(model4);
 taskList.add(model5);
 taskList.add(model6);
 taskList.add(model7);
-var view = new ChooseTaskView_page({el:$("body")});
+//var view = new ChooseTaskView_page({el:$("body")});

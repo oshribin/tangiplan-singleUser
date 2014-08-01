@@ -5,7 +5,7 @@ var Task = Backbone.Model.extend({
 			name: "",
 			givDuration: null,
 			exDuration:null,
-			pobjectId:null,
+			objectId:null,
 			lastDate:null,
 			checked:false,
 			disable:false

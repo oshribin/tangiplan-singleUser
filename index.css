@@ -12,9 +12,29 @@
 .disable{
 	color: red;
 }
+.simpleListBlock{
+								
+}
 
 .simpleList{
 	list-style-type: none;
 	font-size: 30px;
+	font-family: 
 
+}
+
+.numbers{
+	list-style-type: none;
+
+}
+.numbers li{
+	display: inline;
+}
+.numbers li img{
+	height: 70px;
+	width:70px;
+}
+.thumb{
+	height: 50px;
+	width: 50px;
 }

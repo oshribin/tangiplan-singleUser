@@ -19,22 +19,9 @@
         <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
 
 
+                          <!-- Handlebar tamplates -->
 
-                        
-                        <!-- Handlebar tamplates -->
 
-                <!--title template -->
-        <script id = "titleBar" type="text/x-handlebars-template">
-         <div class = "row">
-          <div class = "col-md-12">
-           <div class = "title-bar panel panel-default">
-            <div class = "panel-body">
-             {{title}}
-            </div>
-           </div>
-          </div>   
-         </div> 
-        </script>
 
                 <!--single task for chossing task page-->
         <script id = "singleTask" type="text/x-handlebars-template">
@@ -50,6 +37,51 @@
              </div> 
         </script>  
 
+
+
+                <!--single task for matche_object view -->
+        <script id="matchTask" type="text/x-handlebars-template">
+            <div class="col-md-6">
+              <div class="panel panel-default">
+                <div class="panel-heading" data-toggle="collapse" href="#collapseOne">
+                  <h4 class="panel-title">
+                    {{name}}
+                  </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse">
+                  <div class="panel-body"> 
+                   <ul class = "numbers">
+                    <li id="1" class="number"><img src="Task/photos/num1.ico"/></li>
+                    <li id="2" class="number"><img src="Task/photos/num2.ico"/></li>
+                    <li id="3" class="number"><img src="Task/photos/num3.ico"/></li>
+                    <li id="4" class="number"><img src="Task/photos/num4.ico"/></li>
+                    <li id="5" class="number"><img src="Task/photos/num5.ico"/></li>
+                    <li id="6" class="number"><img src="Task/photos/num6.ico"/></li>
+                   </ul>       
+                  </div>
+                </div>
+              </div>
+            </div>
+        </script>  
+
+
+
+
+                <!--title template -->
+        <script id = "titleBar" type="text/x-handlebars-template">
+         <div class = "row">
+          <div class = "col-md-12">
+           <div class = "title-bar panel panel-default">
+            <div class = "panel-body">
+             {{title}}
+            </div>
+           </div>
+          </div>   
+         </div>     
+        </script>
+
+
+
             <!-- choosinge task view template -->
         <script id="chooseTasks" type="text/x-handlebars-template">
             <div class = "simpleListBlock col-md-6">
@@ -64,7 +96,8 @@
              <button class = next>next</button>
              <button class = back>back</button>
         </script>
-
+        
+        
         <script src="Task/model.js"></script>
         <script src="Task/collection.js"></script>
         <script src="Task/views.js"></script> 
