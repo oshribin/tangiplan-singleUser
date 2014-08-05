@@ -41,7 +41,7 @@ var ChooseTaskView_single = Backbone.View.extend({
 	},
 
 	unsetObject: function(){
-		this.model.set({"objectId":null});
+		this.model.save({"objectId":null});
 		console.log("jg");
 	},	
 
@@ -56,7 +56,7 @@ var ChooseTaskView_single = Backbone.View.extend({
 	},
 
 	matchObject: function(id){
-		this.model.set({"objectId":id});
+		this.model.save({"objectId":id});
 	},
 
 	render:function(){

@@ -1,119 +1,106 @@
-// server.js
-
-// BASE SETUP
-// =============================================================================
-
-// call the packages we need
-var express    = require('express'); 		// call express
-var app        = express(); 				// define our app using express
-var bodyParser = require('body-parser');
-
-// configure app to use bodyParser()
-// this will let us get the data from a POST
+var express = require("express");
+var app = express();
+var bodyParser = require("body-parser");
+var mongoose = require("mongoose");
+var Task = require("./models/task");
+mongoose.connect("mongodb://localhost:27017/test");
 app.use(bodyParser());
 
-var port = process.env.PORT || 8080; 		// set our port
-
-// ROUTES FOR OUR API
-// =============================================================================
-var router = express.Router(); 				// get an instance of the express Router
-
-// test route to make sure everything is working (accessed at GET http://localhost:8080/api)
-router.route('/tasks')
-
-	// create a bear (accessed at POST http://localhost:8080/api/bears)
-	.post(function(req, res) {
-
-		var bear = new Bear(); 		// create a new instance of the Bear model
-		bear.name = req.body.name;  // set the bears name (comes from the request)
-
-		// save the bear and check for errors
-		bear.save(function(err) {
-			if (err)
-				res.send(err);
-
-			res.json({ message: 'Bear created!' });
-		});
-
-	})
-
-    .get(function(req, res) {
-        res.json([
-            {
-                name: "Do something",
-                id: 1
-            },
-            {
-                name: "Do something else",
-                id: 2
-            }
-        ]);
-//		Bear.find(function(err, bears) {
-//			if (err)
-//				res.send(err);
-//
-//			res.json(bears);
-//		});
-	});
 
 
-router.route('/tasks/:bear_id')
+var router = express.Router();
 
-	// get the bear with that id (accessed at GET http://localhost:8080/api/bears/:bear_id)
-	.get(function(req, res) {
-		Bear.findById(req.params.bear_id, function(err, bear) {
-			if (err)
-				res.send(err);
-			res.json(bear);
-		});
-	})
-
-    // update the bear with this id (accessed at PUT http://localhost:8080/api/bears/:bear_id)
-	.put(function(req, res) {
-
-		// use our bear model to find the bear we want
-		Bear.findById(req.params.bear_id, function(err, bear) {
-
-			if (err)
-				res.send(err);
-
-			bear.name = req.body.name; 	// update the bears info
-
-			// save the bear
-			bear.save(function(err) {
-				if (err)
-					res.send(err);
-
-				res.json({ message: 'Bear updated!' });
-			});
-
-		});
-	})
-
-    // delete the bear with this id (accessed at DELETE http://localhost:8080/api/bears/:bear_id)
-	.delete(function(req, res) {
-		Bear.remove({
-			_id: req.params.bear_id
-		}, function(err, bear) {
-			if (err)
-				res.send(err);
-
-			res.json({ message: 'Successfully deleted' });
-		});
-	});
-
-// more routes for our API will happen here
-app.get('/', function(req, res) {
-    res.sendfile('index.html');
+router.get("/", function(req, res) {
+	res.sendfile("index.html");
+	
 });
 
 
-// REGISTER OUR ROUTES -------------------------------
-// all of our routes will be prefixed with /api
-app.use('/api', router);
-app.use(express.static(__dirname + '/public'));
+router.use("/public", express.static("public"));
 
-// START THE SERVER
-// =============================================================================
-app.listen(port);
-console.log('Magic happens on port ' + port);
+router.route("/tasks")
+
+	.post(function(req,res){
+		var task = new Task({
+			name:req.body.name
+		});
+
+		task.save(function(err){
+			if(err)
+				res.send(err);
+		
+			 res.json(task);
+		});	 
+	})
+
+	.get(function(req, res){
+		Task.find(function(err, tasks){
+			if(err)
+				res.send(err);
+			res.json(tasks);
+		});
+	});	
+
+
+router.route("/object/:object_id")
+
+	.get(function(req, res){
+		Task.findOne({objectId:1}, function(err, task){
+			if(err)
+				res.send(err);
+			res.send(task.objectId+":"+task.givDuration);
+
+		});
+	});	
+	
+
+router.route("/tasks/:task_id")
+
+	.get(function(req, res){
+		Task.findById(req.params.task_id, function(err, task){
+			if(err)
+				res.send(err);
+			res.json(task);
+		});
+
+	})
+	
+	.put(function(req, res){
+		Task.findById(req.params.task_id, function(err, task){
+			if(err)
+				res.send(err)
+			
+			task.name = req.body.name;
+			task.givDuration = req.body.givDuration;
+			task.exDuration = req.body.exDuration;
+			task.objectId = req.body.objectId;
+			task.lastDate = req.body.lastDate;
+			task.checked = req.body.checked;
+			task.disable = req.body.disable;
+			
+			task.save(function(err,bear){
+				if(err)
+					res.send(err)
+	 			res.json(task)
+			});
+		});
+	})
+
+	.delete(function(req, res){
+		Task.remove({
+			_id: req.params.task_id
+		}, function(err, task){
+			if(err)
+				res.send(err)
+			res.json({message:task+"removed successfully"});
+		});
+		
+	});
+
+
+
+
+
+app.use("/TangiPlan", router);
+app.listen("8080");
+console.log("vwalla");

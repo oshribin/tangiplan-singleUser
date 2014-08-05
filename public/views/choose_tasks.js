@@ -11,13 +11,12 @@ var ChooseTaskView_page = Backbone.View.extend({
 	create_new_task: function(){
 		var name = this.$(".newTask").val();
 		if(this.checked.length == 6){
-			var new_model = new Task({"name":name, "disable":true});
-			console.log("fi");
+			task = taskList.create({"name":name, "disable":true});
 		}
-		else{
-			var new_model = new Task({"name":name});
-		}
-		taskList.add(new_model);
+		else
+			task = taskList.create({"name":name});
+		
+		
 
 	},
 
@@ -38,6 +37,7 @@ var ChooseTaskView_page = Backbone.View.extend({
 		this.$el.html(title);
 		this.input = this.$(".newTask");
 		this.$el.append(this.template);
+		taskList.fetch();
 		this.add_all();
 		this.listenTo(taskList, "add", this.add_one);
 		this.listenTo(taskList, "reset", this.add_all);
@@ -48,13 +48,13 @@ var ChooseTaskView_page = Backbone.View.extend({
 
 	disable_unchecked: function(){
 		_.chain(this.unchecked).each(function(model){
-			model.set({"disable":true});
+			model.save({"disable":true});
 		});
 	},
 
 	realese: function(){
 		taskList.each(function(model){
-			model.set({"disable":false});
+			model.save({"disable":false});
 		});
 	},
 
@@ -75,21 +75,3 @@ var ChooseTaskView_page = Backbone.View.extend({
 
 
 
-//debugging
-var model0 = new Task({name:"לצחצח שיניים"}); 
-var model1 = new Task({name:"להכין תיק"}); 
-var model2 = new Task({name:"לאכול ארוחת בוקר"}); 
-var model3 = new Task({name:"להוציא את הכלב לטיול"}); 
-var model4 = new Task({name:"להחליף בגדים"}); 
-var model5 = new Task({name:"לזרוק את הזבל"}); 
-var model6 = new Task({name:"להתקלח"}); 
-var model7 = new Task({name:"להכין סנדוויץ"});
-taskList.add(model0);
-taskList.add(model1);
-taskList.add(model2);
-taskList.add(model3);
-taskList.add(model4);
-taskList.add(model5);
-taskList.add(model6);
-taskList.add(model7);
-//var view = new ChooseTaskView_page({el:$("body")});
