@@ -41,39 +41,44 @@ var ChooseTaskView_single = Backbone.View.extend({
 	},
 
 	unsetObject: function(){
+		var curObjectId = this.model.get("objectId");
+		this.$(".thumb").remove();
+		this.$(".clear").remove();
+		$("[id ="+curObjectId+"]").removeClass("disabled");
 		this.model.save({"objectId":null});
-		console.log("jg");
 	},	
 
 
 	initialize: function(){
-		this.listenTo(this.model, "change", this.render)
+
 	},
 
 	clickHandler: function(event){
+		var curObjectId = this.model.get("objectId");
+		if(curObjectId){
+			this.unsetObject();
+		}
 		var id = $(event.currentTarget).attr("id");
-		this.matchObject(id);
+		this.model.save({"objectId":id});
+		this.updateView(id);
 	},
 
-	matchObject: function(id){
-		this.model.save({"objectId":id});
+
+	updateView: function(curObjectId){
+		var str = "public/photos/num"+curObjectId+".ico";
+		this.$(".panel-heading").append("<img class='thumb' src="+str+">");
+		this.$(".panel-heading").append("<a class ='clear'>'נקה בחירה'</a>");
+		$("[id ="+curObjectId+"]").addClass("disabled");
+
 	},
+
+
 
 	render:function(){
+		this.model.save({"objectId":null});
 		var html = this.template(this.model.attributes);
 		this.$el.html(html);
-		var curObjectId = this.model.get("objectId");
-		if (curObjectId){
-			var str = "Task/photos/num"+curObjectId+".ico";
-			this.$(".panel-heading").append("<img class='thumb' src="+str+">");
-			this.$(".panel-heading").append("<a class ='clear'>'נקה בחירה'</a>");
-		}
-		else{
-			this.$(".thumb").remove();
-
-		}
-
 		return this;
+	
 	}
-
 });	

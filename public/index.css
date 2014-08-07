@@ -12,6 +12,13 @@
 .disable{
 	color: red;
 }
+
+.disabled{
+	 pointer-events: none;
+	background-color: red;
+
+}
+
 .simpleListBlock{
 								
 }
@@ -22,6 +29,17 @@
 	font-family: 
 
 }
+
+.matchListBlock{
+	float: none;
+
+}
+
+.matchList{
+	list-style-type: none;
+
+}
+
 
 .numbers{
 	list-style-type: none;

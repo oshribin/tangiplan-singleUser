@@ -42,16 +42,35 @@ router.route("/tasks")
 	});	
 
 
-router.route("/object/:object_id")
+router.route("/getDuration/:object_id")
 
 	.get(function(req, res){
-		Task.findOne({objectId:1}, function(err, task){
+		Task.findOne({objectId:req.params.object_id}, function(err, task){
 			if(err)
 				res.send(err);
 			res.send(task.objectId+":"+task.givDuration);
-
 		});
-	});	
+	})
+
+	.put(function(req, res){
+		task.findOne({objectId:req.params.object_id}, fun)
+	});
+
+router.route("/setDuration/:object_id/:ex_duration")
+
+	.get(function(req, res){
+		Task.findOne({objectId:req.params.object_id}, function(err, task){
+			if(err)
+				res.send(err)
+			task.exDuration = req.params.ex_duration
+			task.save(function(err, task){
+				if(err)
+					res.send(err)
+				res.send("deleted")
+			});
+		});
+	});
+
 	
 
 router.route("/tasks/:task_id")
@@ -78,7 +97,7 @@ router.route("/tasks/:task_id")
 			task.checked = req.body.checked;
 			task.disable = req.body.disable;
 			
-			task.save(function(err,bear){
+			task.save(function(err,task){
 				if(err)
 					res.send(err)
 	 			res.json(task)

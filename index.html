@@ -1,8 +1,8 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-     <link rel="stylesheet" href="public/bower_components/bootstrap/dist/css/bootstrap.css" />
      <link rel="stylesheet" href="public/index.css" />
+     <link rel="stylesheet" href="public/bower_components/bootstrap/dist/css/bootstrap.css" />
      <meta http-equiv="X-UA-Compatible" content="IE=edge">
      <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
      <meta charset="UTF-8">
@@ -16,6 +16,11 @@
         <script src="public/bower_components/underscore/underscore.js"></script>
         <script src="public/bower_components/backbone/backbone.js"></script>
         <script src="public/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="public/bower_components/jquery-ui/jquery-ui.js"></script>
+
+          <input value="19:00" />
+
+
 
 
                           <!-- Handlebar tamplates -->
@@ -42,20 +47,20 @@
         <script id="matchTask" type="text/x-handlebars-template">
             <div class="col-md-6">
               <div class="panel panel-default">
-                <div class="panel-heading" data-toggle="collapse" href="#collapseOne">
+                <div class="panel-heading" data-toggle="collapse" href=#{{_id}}>
                   <h4 class="panel-title">
                     {{name}}
                   </h4>
                 </div>
-                <div id="collapseOne" class="panel-collapse collapse">
+                <div id={{_id}} class="panel-collapse collapse">
                   <div class="panel-body"> 
                    <ul class = "numbers">
-                    <li id="1" class="number"><img src="Task/photos/num1.ico"/></li>
-                    <li id="2" class="number"><img src="Task/photos/num2.ico"/></li>
-                    <li id="3" class="number"><img src="Task/photos/num3.ico"/></li>
-                    <li id="4" class="number"><img src="Task/photos/num4.ico"/></li>
-                    <li id="5" class="number"><img src="Task/photos/num5.ico"/></li>
-                    <li id="6" class="number"><img src="Task/photos/num6.ico"/></li>
+                    <li id="1" class="number"><img src="public/photos/num1.ico"/></li>
+                    <li id="2" class="number"><img src="public/photos/num2.ico"/></li>
+                    <li id="3" class="number"><img src="public/photos/num3.ico"/></li>
+                    <li id="4" class="number"><img src="public/photos/num4.ico"/></li>
+                    <li id="5" class="number"><img src="public/photos/num5.ico"/></li>
+                    <li id="6" class="number"><img src="public/photos/num6.ico"/></li>
                    </ul>       
                   </div>
                 </div>
@@ -95,9 +100,24 @@
              <button class = next>next</button>
              <button class = back>back</button>
         </script>
+
+
+            <!-- matching object view template -->
+        <script id="matchTasks" type="text/x-handlebars-template">
+            <div class = "matchListBlock col-md-8">
+             <ul class = "matchList"></ul>
+             <button class = next>next</button>
+             <button class = back>back</button>
+        </script>
+
+
+
+
+
         <script src="public/Task/model.js"></script>
         <script src="public/Task/collection.js"></script>
         <script src="public/Task/views.js"></script>
         <script src="public/views/choose_tasks.js"></script>
+        <script src="public/views/matche_object.js"></script>
     </body>
 </html>
