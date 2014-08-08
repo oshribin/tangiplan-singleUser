@@ -1,7 +1,6 @@
 Tasks = Backbone.Collection.extend({
 	
-	//localStorage: new Backbone.localStorage("Tasks"),
-    url: "tasks",
+    url: "TangiPlan/tasks",
 	model: Task
 
 
