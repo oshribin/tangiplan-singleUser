@@ -1,6 +1,6 @@
 var Task = Backbone.Model.extend({
 
-	urlRoot:"/tasks",
+	urlRoot:"/TangiPlan/tasks",
 
 	defaults: function() {
 		return {
