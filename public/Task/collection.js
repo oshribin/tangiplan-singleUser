@@ -1,6 +1,6 @@
 Tasks = Backbone.Collection.extend({
 	
-    url: "TangiPlan/tasks",
+    url: "/tasks",
 	model: Task
 
 
