@@ -22,7 +22,7 @@ router.route("/tasks")
 
 	.post(function(req,res){
 		var task = new Task({
-			name:req.body.name
+			name:req.body.name,
 			givDuration:req.body.givDuration,
 			objectId:req.body.objectId
 		});
