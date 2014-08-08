@@ -11,12 +11,12 @@
     
 
     <body>
-        <script src="TangiPlan/public/bower_components/jquery/jquery.js"></script>
-        <script src="TangiPlan/public/bower_components/handlebars/handlebars.js"></script>
-        <script src="TangiPlan/public/bower_components/underscore/underscore.js"></script>
-        <script src="TangiPlan/public/bower_components/backbone/backbone.js"></script>
-        <script src="TangiPlan/public/bower_components/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="TangiPlan/public/bower_components/jquery-ui/jquery-ui.js"></script>
+        <script src="public/bower_components/jquery/jquery.js"></script>
+        <script src="public/bower_components/handlebars/handlebars.js"></script>
+        <script src="public/bower_components/underscore/underscore.js"></script>
+        <script src="public/bower_components/backbone/backbone.js"></script>
+        <script src="public/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="public/bower_components/jquery-ui/jquery-ui.js"></script>
 
           
 
@@ -97,8 +97,8 @@
               <input type="text" class="newTask form-control" value placeholder="הכנס משימה חדשה">
              </div>
              <div class = "message"></div>
-             <button class = next>next</button>
-             <button class = back>back</button>
+             <button class = "next">next</button>
+             <button class = "back">back</button>
         </script>
 
 
@@ -106,18 +106,36 @@
         <script id="matchTasks" type="text/x-handlebars-template">
             <div class = "matchListBlock col-md-8">
              <ul class = "matchList"></ul>
-             <button class = next>next</button>
-             <button class = back>back</button>
+             <button class = "next">next</button>
+             <button class = "back">back</button>
+        </script>
+
+
+
+                <!--debug template -->
+        <script id="debug" type="text/x-handlebars-template">
+  
+             <input type="text" class="name" placeholder="הכנס שם">
+             <input type="number" class="object" placeholder="הכנס מספר אובייקט">
+             <input type="number" class="duration" placeholder="הכנס זמן">
+
+             <button class = "ok">צור</button>
+             <button class = "status">סטטוס</button>
+             <button class="clear">מחק משימות</button>
+             <ul class = "cont"></ul>
         </script>
 
 
 
 
 
-        <script src="TangiPlan/public/Task/model.js"></script>
-        <script src="TangiPlan/public/Task/collection.js"></script>
-        <script src="TangiPlan/public/Task/views.js"></script>
-        <script src="TangiPlan/public/views/choose_tasks.js"></script>
-        <script src="TangiPlan/public/views/matche_object.js"></script>
+
+        <script src="public/Task/model.js"></script>
+        <script src="public/Task/collection.js"></script>
+        <script src="public/Task/views.js"></script>
+        <script src="public/views/choose_tasks.js"></script>
+        <script src="public/views/matche_object.js"></script>
+        <script src="public/views/debug.js"></script>
+
     </body>
 </html>
