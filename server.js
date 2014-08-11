@@ -50,12 +50,10 @@ router.route("/getDuration/:object_id")
 		Task.findOne({objectId:req.params.object_id}, function(err, task){
 			if(err)
 				res.send(err);
-			res.send(task.objectId+":"+task.givDuration);
+			if(task)
+				res.send(task.objectId+":"+parsMill(task.givDuration));
+			res.send("there is not such task");
 		});
-	})
-
-	.put(function(req, res){
-		task.findOne({objectId:req.params.object_id}, fun)
 	});
 
 router.route("/setDuration/:object_id/:ex_duration")
@@ -64,12 +62,16 @@ router.route("/setDuration/:object_id/:ex_duration")
 		Task.findOne({objectId:req.params.object_id}, function(err, task){
 			if(err)
 				res.send(err)
-			task.exDuration = req.params.ex_duration
-			task.save(function(err, task){
-				if(err)
-					res.send(err)
-				res.send("deleted")
-			});
+			if(task){
+				task.exDuration = parseVal(req.params.ex_duration);
+				task.exception = parseVal(parsMill(task.givDuration)-req.params.ex_duration);
+				task.save(function(err, task){
+					if(err)
+						res.send(err)
+					res.send("Task ended")
+				});
+			}
+			res.send("there is not task that match this id");	
 		});
 	});
 
@@ -98,6 +100,7 @@ router.route("/tasks/:task_id")
 			task.lastDate = req.body.lastDate;
 			task.checked = req.body.checked;
 			task.disable = req.body.disable;
+			task.exception = req.body.exception;
 			
 			task.save(function(err,task){
 				if(err)
@@ -117,6 +120,23 @@ router.route("/tasks/:task_id")
 		});
 		
 	});
+
+		parsMill = function(duration){
+		var m = duration.charAt(1)==":" ? 0 : parseInt(duration.substring(0,2));
+		var s = m==0 ? parseInt(duration.substring(2,4)) : parseInt(duration.substring(3,5));
+		return((m*60000)+(s*1000));
+	}
+
+		parseVal = function(duration){
+			var absDuration = Math.abs(duration);
+			var m = Math.floor(absDuration/60000);
+			var s = Math.floor((absDuration%60000)/1000);
+			var str = duration < 0 ?  "-"+m+":"+s : m+":"+s;
+			if(s==0)
+				str+="0";
+			return str;
+		
+	}
 
 
 

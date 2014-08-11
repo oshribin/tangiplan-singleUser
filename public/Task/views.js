@@ -82,3 +82,54 @@ var ChooseTaskView_single = Backbone.View.extend({
 	
 	}
 });	
+
+var SetDuration_single = Backbone.View.extend({
+	template: Handlebars.compile($("#setDuration").html()),
+
+	tagName:"li",
+
+	set_clock:function(){
+		$.widget( "ui.timespinner", $.ui.spinner, {
+    		options: {
+      		// seconds
+     		step: 600 * 1000,
+    	    // minuits
+      		page: 60
+    		},
+
+            _parse: function( value ) {  
+     	   		if ( typeof value === "string" ) {
+        			// already a timestamp
+      		  		if ( Number( value ) == value ) {
+        		    	return Number( value );
+       				}
+        			return +Globalize.parseDate( value );
+     			}	
+     			return value;
+   			},
+ 
+    		_format: function( value ) {
+      
+     			return Globalize.format( new Date(value), "t" );
+   			}
+ 		});
+
+		var x=this.$('input').timespinner();
+		Globalize.culture('de-DE');
+		this.$('input').timespinner('option','value', '02:00');
+		if(this.model.get("givDuration")!=null)
+			this.$('input').val(this.model.get("givDuration"));
+		
+		
+
+	},
+
+	render:function(){
+
+		var html = this.template(this.model.attributes);
+		this.$el.html(html);
+		this.set_clock();
+		return this;
+	}
+
+});

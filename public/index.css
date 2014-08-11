@@ -53,6 +53,22 @@
 	width:70px;
 }
 .thumb{
-	height: 50px;
-	width: 50px;
+	height:28px;
+	width:28px;
+}
+.setList{
+	list-style-type: none;
+}
+.exception{
+	float: right;
+}
+.next{
+	position: absolute;
+	top:600px;
+	left:55px;
+}
+.back{
+	position: absolute;
+		top:600px;
+		left:100px;
 }

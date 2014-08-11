@@ -3,6 +3,7 @@
     <head>
      <link rel="stylesheet" href="public/index.css" />
      <link rel="stylesheet" href="public/bower_components/bootstrap/dist/css/bootstrap.css" />
+     <link rel="stylesheet" href="public/bower_components/jquery-ui/themes/smoothness/jquery-ui.css">
      <meta http-equiv="X-UA-Compatible" content="IE=edge">
      <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
      <meta charset="UTF-8">
@@ -17,6 +18,7 @@
         <script src="public/bower_components/backbone/backbone.js"></script>
         <script src="public/bower_components/bootstrap/dist/js/bootstrap.js"></script>
         <script src="public/bower_components/jquery-ui/jquery-ui.js"></script>
+        <script src="http://tjvantoll.com/images/posts/2012-07-15/dependencies.js"></script>
 
           
 
@@ -108,13 +110,13 @@
              <ul class = "matchList"></ul>
              <button class = "next">next</button>
              <button class = "back">back</button>
+             </div>
         </script>
 
 
 
                 <!--debug template -->
         <script id="debug" type="text/x-handlebars-template">
-  
              <input type="text" class="name" placeholder="הכנס שם">
              <input type="number" class="object" placeholder="הכנס מספר אובייקט">
              <input type="number" class="duration" placeholder="הכנס זמן">
@@ -124,6 +126,36 @@
              <button class="clear">מחק משימות</button>
              <ul class = "cont"></ul>
         </script>
+
+
+              <!--give duration single task-->
+        <script id="setDuration" type="text/x-handlebars-template">
+             <div class="panel panel-default col-md-4">
+              <div class="panel-body">
+               <input value="02:00" />
+              </div>
+            </div>
+             <div class="panel panel-default col-md-8">
+              <div class="panel-body">
+                <img class="thumb" src="public/photos/num{{objectId}}.ico">{{name}}
+                <span class = "exception">
+                {{#if exception}}{{exception}}{{/if}}
+                </div> 
+              </div>
+             </div>
+            </div>
+        </script>
+
+
+                        <!--set Duration to tasks, page of-->
+        <script id="setDurations" type="text/x-handlebars-template">
+            <div class = "ListBlock col-md-8">
+             <ul class = "setList"></ul>
+             <button class = "next">next</button>
+             <button class = "back">back</button>
+             </div>
+        </script>
+
 
 
 
@@ -136,6 +168,7 @@
         <script src="public/views/choose_tasks.js"></script>
         <script src="public/views/matche_object.js"></script>
         <script src="public/views/debug.js"></script>
+        <script src="public/views/set_duration.js"></script>
 
     </body>
 </html>
