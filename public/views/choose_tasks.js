@@ -15,6 +15,9 @@ var ChooseTaskView_page = Backbone.View.extend({
 		}
 		else
 			task = taskList.create({"name":name});
+		this.$(".newTask").val("");
+
+			
 		
 		
 
@@ -27,22 +30,17 @@ var ChooseTaskView_page = Backbone.View.extend({
 
 	},
 
-	add_all: function(){
-		taskList.each(this.add_one);
-	},
-
 	initialize: function(){
 		var compiled = Handlebars.compile($("#titleBar").html());
 		var title = compiled({title:"בחר משימות"});
 		this.$el.html(title);
-		this.input = this.$(".newTask");
 		this.$el.append(this.template);
 		taskList.fetch();
-		this.add_all();
 		this.listenTo(taskList, "add", this.add_one);
-		this.listenTo(taskList, "reset", this.add_all);
 		this.listenTo(taskList, "change", this.render);
+		
 		this.render();
+
 
 	},
 
