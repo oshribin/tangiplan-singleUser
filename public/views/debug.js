@@ -51,4 +51,3 @@ var Debug = Backbone.View.extend({
 
 });
 
-new Debug({el:$("body")});
