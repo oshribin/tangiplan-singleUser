@@ -59,7 +59,7 @@ router.route("/getDuration/:object_id")
 
 router.route("/setDuration/:object_id/:ex_duration/:flag")
 	.get(function(req, res){
-		console.log(req.body);
+		console.log(req.url);
 		Task.findOne({objectId:req.params.object_id}, function(err, task){
 			if(err)
 				res.send(err)
