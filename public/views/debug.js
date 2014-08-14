@@ -47,8 +47,8 @@ var Debug = Backbone.View.extend({
 		this.$el.append(this.template());
 
 	},
-
+		
 
 });
 
-new Debug({el:$("body")});
+//new Debug({el:$("body")});
