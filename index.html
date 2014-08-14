@@ -20,6 +20,8 @@
         <script src="public/bower_components/jquery-ui/jquery-ui.js"></script>
         <script src="http://tjvantoll.com/images/posts/2012-07-15/dependencies.js"></script>
 
+       <div class = "container"></div>
+
           
 
 
@@ -138,7 +140,7 @@
              <div class="panel panel-default col-md-8">
               <div class="panel-body">
                 <img class="thumb" src="public/photos/num{{objectId}}.ico">{{name}}
-                <span class = "exception">
+                <span class = "exception"> 
                 {{#if exception}}{{exception}}{{/if}}
                 </div> 
               </div>
@@ -156,6 +158,20 @@
              </div>
         </script>
 
+        
+
+                        <!--wake up page-->
+        <script id="wakeUp" type="text/x-handlebars-template">
+             <input value="02:00" />
+             <button class = "next">next</button>
+             <button class = "back">back</button>
+             </div>
+        </script>
+
+
+
+
+
 
 
 
@@ -169,6 +185,8 @@
         <script src="public/views/matche_object.js"></script>
         <script src="public/views/debug.js"></script>
         <script src="public/views/set_duration.js"></script>
+        <script src="public/views/wake_up.js"></script>
+        <script src="public/views/goOut.js"></script>
 
     </body>
 </html>
