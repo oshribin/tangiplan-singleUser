@@ -124,6 +124,11 @@ var SetDuration_single = Backbone.View.extend({
 
 	},
 
+	save: function(){
+		var curDuration = this.$("input").val();
+		this.model.save({givDuration:curDuration});
+	},
+
 	render:function(){
 
 		var html = this.template(this.model.attributes);
