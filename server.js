@@ -66,6 +66,7 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 				task.exDuration = parseVal(req.params.ex_duration);
 				task.exception = parseVal(parsMill(task.givDuration)-req.params.ex_duration);
 				task.endedByUser = req.params.flag ? true : false;
+				task.objectId = null;
 				task.save(function(err, task){
 					if(err)
 						res.send(err)
