@@ -126,23 +126,23 @@ router.route("/tasks/:task_id")
 		
 	});
 
-		parsMill = function(duration){
-		var m = duration.charAt(1)==":" ? 0 : parseInt(duration.substring(0,2));
-		var s = m==0 ? parseInt(duration.substring(2,4)) : parseInt(duration.substring(3,5));
+	parsMill = function(duration){
+		var m = /*duration.charAt(1)==":" ? 0 :*/ parseInt(duration.substring(0,2));
+		var s = /*m==0 ? parseInt(duration.substring(2,4)) :*/ parseInt(duration.substring(3,5));
 		return((m*60000)+(s*1000));
 	}
 
-		parseVal = function(duration){
-			var absDuration = Math.abs(duration);
-			var m = Math.floor(absDuration/60000);
-			var s = Math.floor((absDuration%60000)/1000);
-			var str = duration < 0 ?  "-"+m+":"+s : m+":"+s;
-			if(s==0)
-				str+="0";
-			return str;
-		
+	parseVal = function(duration){
+		var absDuration = Math.abs(duration);
+		var m = Math.floor(absDuration/60000);
+		var s = Math.floor((absDuration%60000)/1000);
+		if(s<10)
+			s="0"+s;
+		if (m<10)
+			m="0"+m;
+		var str = duration < 0 ?  "-"+m+":"+s : m+":"+s;		
+			return str;	
 	}
-
 
 
 
