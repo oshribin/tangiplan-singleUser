@@ -11,7 +11,8 @@ var Task = Backbone.Model.extend({
 			lastDate:null,
 			checked:false,
 			disable:false,
-			exception:null
+			exception:null,
+			endedByUser:null,
 			
 		};	
 	},

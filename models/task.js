@@ -10,6 +10,7 @@ var taskSchema = new Schema({
 			checked:Boolean,
 			disable:Boolean,
 			exception:String,
+			endedByUser:Boolean,
 });
 
 module.exports = mongoose.model("task",taskSchema);
