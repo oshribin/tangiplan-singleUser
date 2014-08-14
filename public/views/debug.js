@@ -22,7 +22,8 @@ var Debug = Backbone.View.extend({
 					"name:"+task.get("name")+"---"+
 					"object number:"+task.get("objectId")+"---"+
 					"givDuration:"+task.get("givDuration")+"---"+
-					"exDuration:"+task.get("exDuration")+"</li>");
+					"exDuration:"+task.get("exDuration")+"----"+
+					"flag:"+task.get("endedByUser")+"</li>");
 		});
 	},
 
