@@ -127,8 +127,8 @@ router.route("/tasks/:task_id")
 	});
 
 		parsMill = function(duration){
-		var m = duration.charAt(1)==":" ? 0 : parseInt(duration.substring(0,2));
-		var s = m==0 ? parseInt(duration.substring(2,4)) : parseInt(duration.substring(3,5));
+		var m = /*duration.charAt(1)==":" ? 0 :*/ parseInt(duration.substring(0,2));
+		var s = /*m==0 ? parseInt(duration.substring(2,4)) :*/ parseInt(duration.substring(3,5));
 		return((m*60000)+(s*1000));
 	}
 
