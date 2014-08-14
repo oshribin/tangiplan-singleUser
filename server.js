@@ -57,8 +57,7 @@ router.route("/getDuration/:object_id")
 		});
 	});
 
-router.route("/setDuration/:object_id/:ex_duration")
-
+router.route("/setDuration/:object_id/:ex_duration/:flag")
 	.get(function(req, res){
 		Task.findOne({objectId:req.params.object_id}, function(err, task){
 			if(err)
@@ -66,6 +65,7 @@ router.route("/setDuration/:object_id/:ex_duration")
 			if(task){
 				task.exDuration = parseVal(req.params.ex_duration);
 				task.exception = parseVal(parsMill(task.givDuration)-req.params.ex_duration);
+				task.endedByUser = flag ? true : false;
 				task.save(function(err, task){
 					if(err)
 						res.send(err)
@@ -103,6 +103,7 @@ router.route("/tasks/:task_id")
 			task.checked = req.body.checked;
 			task.disable = req.body.disable;
 			task.exception = req.body.exception;
+			task.endedByUser = req.body.endedByUser;
 			
 			task.save(function(err,task){
 				if(err)
