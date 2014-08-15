@@ -14,8 +14,8 @@ var SetDuration_page = Backbone.View.extend({
 		var title = compiled({title:"הגדר זמנים למשימה"});
 		this.$el.html(title);
 		this.$el.append(this.template);
-		this.listenToOnce(taskList, "add", this.build);
-		taskList.fetch();
+		this.build = _.bind(this.build, this);
+		taskList.fetch({success:this.build});
 
 	},
 
@@ -36,7 +36,6 @@ var SetDuration_page = Backbone.View.extend({
 	save:function(){
 		this.singleViews.forEach(function(view){
 			view.save();
-
 		});
 
 	}

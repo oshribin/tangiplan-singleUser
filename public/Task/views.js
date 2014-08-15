@@ -49,10 +49,6 @@ var ChooseTaskView_single = Backbone.View.extend({
 	},	
 
 
-	initialize: function(){
-
-	},
-
 	clickHandler: function(event){
 		var curObjectId = this.model.get("objectId");
 		if(curObjectId){
@@ -75,6 +71,7 @@ var ChooseTaskView_single = Backbone.View.extend({
 
 
 	render:function(){
+		console.log("1");
 		this.model.save({"objectId":null});
 		var html = this.template(this.model.attributes);
 		this.$el.html(html);
@@ -88,7 +85,7 @@ var SetDuration_single = Backbone.View.extend({
 
 	tagName:"li",
 
-	set_clock:function(){
+		set_clock:function(){
 		$.widget( "ui.timespinner", $.ui.spinner, {
     		options: {
       		// seconds
