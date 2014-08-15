@@ -5,8 +5,16 @@ var ChooseTaskView_page = Backbone.View.extend({
 	template: Handlebars.compile($("#chooseTasks").html()),
 
 	events:{
+		"click .next":"next",
 		"click .btn":"create_new_task"
 	},
+
+	next: function(){
+		
+		router.navigate("match_objects", true);
+
+	},
+
 
 	create_new_task: function(){
 		var name = this.$(".newTask").val();
@@ -18,16 +26,20 @@ var ChooseTaskView_page = Backbone.View.extend({
 		this.$(".newTask").val("");
 
 			
-		
-		
-
 	},
 
-
 	add_one: function(task){
+		console.log(task);
 		var oneView = new ChooseTaskView_single({model:task});
 		this.$(".simpleList").append(oneView.render().el);
 
+	},
+	
+	add_all: function(){
+		taskList.each(function(task){
+			var oneView = new ChooseTaskView_single({model:task});
+			this.$(".simpleList").append(oneView.render().el);
+		});
 	},
 
 	initialize: function(){
@@ -35,10 +47,10 @@ var ChooseTaskView_page = Backbone.View.extend({
 		var title = compiled({title:"בחר משימות"});
 		this.$el.html(title);
 		this.$el.append(this.template);
-		taskList.fetch();
+		taskList.fetch({success:this.add_all});
+		
 		this.listenTo(taskList, "add", this.add_one);
 		this.listenTo(taskList, "change", this.render);
-		
 		this.render();
 
 
