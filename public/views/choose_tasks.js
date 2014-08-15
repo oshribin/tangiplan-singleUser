@@ -47,7 +47,7 @@ var ChooseTaskView_page = Backbone.View.extend({
 		var title = compiled({title:"בחר משימות"});
 		this.$el.html(title);
 		this.$el.append(this.template);
-		taskList.fetch({success:this.add_all});
+		taskList.fetch({success:this.add_all, silent:true});
 		
 		this.listenTo(taskList, "add", this.add_one);
 		this.listenTo(taskList, "change", this.render);
