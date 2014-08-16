@@ -10,9 +10,22 @@ var ChooseTaskView_page = Backbone.View.extend({
 	},
 
 	next: function(){
-		
-		router.navigate("match_objects", true);
+		var flag = this.validate();
+		if(flag)
+			router.navigate("match_objects", true);
+		else
+			alert("אתה חייב לבחור לפחות משימה אחת");
 
+	},
+
+	validate: function(){
+		var flag = false;
+		taskList.each(function(task){
+			if(task.get("checked")){
+				flag = true;
+			}
+		});
+		return flag;
 	},
 
 

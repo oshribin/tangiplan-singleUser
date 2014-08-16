@@ -71,7 +71,6 @@ var ChooseTaskView_single = Backbone.View.extend({
 
 
 	render:function(){
-		console.log("1");
 		this.model.save({"objectId":null});
 		var html = this.template(this.model.attributes);
 		this.$el.html(html);
@@ -130,6 +129,9 @@ var SetDuration_single = Backbone.View.extend({
 
 		var html = this.template(this.model.attributes);
 		this.$el.html(html);
+		this.$(".panel").toggleClass("warning", this.model.get("overexcep")==true);
+				this.$(".panel").toggleClass("success", this.model.get("overexcep")==false);
+
 		this.set_clock();
 		return this;
 	}
