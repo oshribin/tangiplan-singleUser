@@ -63,19 +63,21 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 			if(err)
 				res.send(err)
 			if(task){
-				console.log(req.params);
+				var _parsDuration = parsMill(task.givDuration);
+				var _millexception = _parsDuration - req.params.ex_duration;
+
 				task.exDuration = parseVal(req.params.ex_duration);
-				task.exception = parseVal(parsMill(task.givDuration)-req.params.ex_duration);
-				task.endedByUser = req.params.flag==true ? true : false;
-				task.objectId = null;
+				task.exception = parseVal(_millexception);
+				task.endedByUser = req.params.flag ? true : false;
+				task.overexcep = Math.abs(_millexception) > (0.2*_parsDuration);
 				task.save(function(err, task){
 					if(err)
-						res.send(err)
-					res.send("Task ended")
+						res.send(err);
+					res.send("task ended");
 				});
 			}
 			else
-			 res.send("there is not task that match this id");	
+				res.send("there is not task that match this id");	
 		});
 	});
 
@@ -106,6 +108,7 @@ router.route("/tasks/:task_id")
 			task.disable = req.body.disable;
 			task.exception = req.body.exception;
 			task.endedByUser = req.body.endedByUser;
+			task.exception = req.body.exception;
 			
 			task.save(function(err,task){
 				if(err)
