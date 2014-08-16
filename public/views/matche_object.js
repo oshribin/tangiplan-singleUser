@@ -7,8 +7,21 @@ var MatchObjectView_page = Backbone.View.extend({
 	},
 
 	next: function(){
-		
-		router.navigate("set_durations", true);
+
+		var flag = this.validate();
+		if(flag)
+			router.navigate("set_durations", true);
+		else
+			alert("יש מסימות שעדיין לא משויכות לאוביקט");
+	},
+
+	validate: function(){
+		var flag = true;
+		taskList.each(function(task){
+			if(task.get("objectId") == null)
+				flag = false
+		});
+		return flag;
 
 	},
 

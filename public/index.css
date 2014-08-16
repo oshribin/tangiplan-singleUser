@@ -72,3 +72,9 @@
 		top:600px;
 		left:100px;
 }
+.warning{
+	background-color: rgba(256,0,0,0.5);
+}
+.success{
+	background-color: rgba(0,256,0,0.5);
+}

@@ -13,6 +13,7 @@ var Task = Backbone.Model.extend({
 			disable:false,
 			exception:null,
 			endedByUser:null,
+			overexcep:null,
 			
 		};	
 	},
