@@ -74,13 +74,13 @@ var ChooseTaskView_page = Backbone.View.extend({
 
 	disable_unchecked: function(){
 		_.chain(this.unchecked).each(function(model){
-			model.save({"disable":true});
+			model.set({"disable":true});
 		});
 	},
 
 	realese: function(){
 		taskList.each(function(model){
-			model.save({"disable":false});
+			model.set({"disable":false});
 		});
 	},
 
