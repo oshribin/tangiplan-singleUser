@@ -28,8 +28,8 @@ var SetDuration_page = Backbone.View.extend({
 			_.chain(lastTask).each(function(task){
 				var oneView = new checkDuration({model:task});
 				this.$(".checkList").append(oneView.render().el);
-			}
-		});
+			});
+		}
 		
 
 	},
