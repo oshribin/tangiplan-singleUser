@@ -4,10 +4,8 @@ var SetDuration_page = Backbone.View.extend({
 
 	events:{
 		"click .next":"save",
+		"click .btn" : "modal"
 	},
-
-
-
 
 	initialize: function(){
 		var compiled = Handlebars.compile($("#titleBar").html());
@@ -16,6 +14,20 @@ var SetDuration_page = Backbone.View.extend({
 		this.$el.append(this.template);
 		this.build = _.bind(this.build, this);
 		taskList.fetch({success:this.build});
+
+	},
+
+	modal: function(){
+		this.$(".checkList").html("");
+		var lastTask = taskList.filter(function(task){
+			return ((Date.parse(task.get("lastDate"))+86400000) > Date.now());
+		});
+		console.log(lastTask);
+		_.chain(lastTask).each(function(task){
+			var oneView = new checkDuration({model:task});
+			this.$(".checkList").append(oneView.render().el);
+		});
+		
 
 	},
 

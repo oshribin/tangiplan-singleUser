@@ -6,7 +6,9 @@ var GoOut_page = Backbone.View.extend({
   },
 
   next: function(){
-  
+    
+    var curgoOut = this.$(".input").val();
+    this.model.set({goOut:curgoOut});
     router.navigate("choose_tasks", true);
 
 

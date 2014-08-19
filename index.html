@@ -137,25 +137,51 @@
                <input value="02:00" />
               </div>
             </div>
-             <div class="panel panel-default col-md-8 main">
+             <div class="panel panel-default col-md-8">
               <div class="panel-body">
                 <img class="thumb" src="public/photos/num{{objectId}}.ico">{{name}}
                 <span class = "exception"> 
                 {{#if exception}}{{exception}}{{/if}}
                 </div> 
               </div>
-             </div>
-            </div>
         </script>
+
+                  <!-- check duration -->
+        <script id="checkDuration" type="text/x-handlebars-template">
+             <div class="panel panel-default col-md-4">
+              <div class="panel-body">
+               <input value={{exDuration}} />
+              </div>
+             </div>
+             <div class="panel panel-default col-md-8">
+              <div class="panel-body">
+                {{name}}
+                <span class = "exception"> 
+                {{#if exception}}{{exception}}{{/if}}
+              </div> 
+             </div>
+        </script>
+
 
 
                         <!--set Duration to tasks, page of-->
         <script id="setDurations" type="text/x-handlebars-template">
+            <button class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">ביצועי היום הקודם</button>
+
+            <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                 <ul class = "checkList">
+                 </ul>
+                </div>
+              </div>
+            </div>
+
             <div class = "ListBlock col-md-8">
              <ul class = "setList"></ul>
              <button class = "next">next</button>
              <button class = "back">back</button>
-             </div>
+            </div>
         </script>
 
         

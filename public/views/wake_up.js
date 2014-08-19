@@ -1,13 +1,15 @@
 var WakeUp_page = Backbone.View.extend({
 	template: Handlebars.compile($("#wakeUp").html()),
 
+
 	events:{
 		"click .next":"next",
 	},
 
 	next: function(){
+		var curwakeUp = this.$(".input").val();
+		this.model.set({wakeUp:curwakeUp});
 		router.navigate("go_out", true);
-		this.remove();
 	},
 
 	initialize: function(){
@@ -24,7 +26,8 @@ var WakeUp_page = Backbone.View.extend({
       		// seconds
      		step: 60 * 1000,
     	    // minuits
-      		page: 60
+      		page: 60,
+
     		},
 
             _parse: function( value ) {  

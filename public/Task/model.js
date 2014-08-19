@@ -25,3 +25,18 @@ var Task = Backbone.Model.extend({
 	}
 
 });
+
+var User = Backbone.Model.extend({
+
+	urlRoot: "/TangiPlan/users",
+
+	defaults: function(){
+		return{
+			name:"",
+			pass:"",
+			wakeUp:null,
+			goOut:null,
+		};
+	},
+});
+
