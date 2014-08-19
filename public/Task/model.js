@@ -21,7 +21,7 @@ var Task = Backbone.Model.extend({
 	idAttribute:"_id",	
 
 	toggle: function() {
-		this.save({checked:!this.get("checked")});
+		this.set({checked:!this.get("checked")});
 	}
 
 });
