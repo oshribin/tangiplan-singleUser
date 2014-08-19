@@ -10,7 +10,7 @@ var ChooseTaskView_page = Backbone.View.extend({
 	},
 
 	next: function(){
-		_.eact(taskList.models, function(model){
+		_.each(taskList.models, function(model){
 			model.save();
 		});
 		var flag = this.validate();
