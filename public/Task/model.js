@@ -40,3 +40,6 @@ var User = Backbone.Model.extend({
 	},
 });
 
+var user = new User();
+
+
