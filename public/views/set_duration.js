@@ -22,10 +22,13 @@ var SetDuration_page = Backbone.View.extend({
 		var lastTask = taskList.filter(function(task){
 			return ((Date.parse(task.get("lastDate"))+86400000) > Date.now());
 		});
-		console.log(lastTask);
-		_.chain(lastTask).each(function(task){
-			var oneView = new checkDuration({model:task});
-			this.$(".checkList").append(oneView.render().el);
+		if(lastTask == [])
+			this.$(".checkList").append("לא קיימות משימות שהסתיימו ב-24 שכות האחרונות");
+		else{
+			_.chain(lastTask).each(function(task){
+				var oneView = new checkDuration({model:task});
+				this.$(".checkList").append(oneView.render().el);
+			}
 		});
 		
 

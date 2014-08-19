@@ -10,6 +10,9 @@ var ChooseTaskView_page = Backbone.View.extend({
 	},
 
 	next: function(){
+		_.eact(taskList.models, function(model){
+			model.save();
+		});
 		var flag = this.validate();
 		if(flag)
 			router.navigate("match_objects", true);
