@@ -8,7 +8,8 @@ var Router = Backbone.Router.extend({
 		"set_durations":"setDurations",	},
 
 		Debug: function(){
-			var Debug = new Debug({el:$("body")});
+			var view = new Debug({el:$("body")});
+			app.render(view);
 		},
 
 		wakeUp: function () {
