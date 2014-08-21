@@ -9,7 +9,7 @@ var Router = Backbone.Router.extend({
 
 		Debug: function(){
 			var Debug = new Debug({el:$("body")});
-		}
+		},
 
 		wakeUp: function () {
 			var view = new WakeUp_page({model:user});
