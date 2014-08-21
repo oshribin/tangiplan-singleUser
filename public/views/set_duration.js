@@ -8,22 +8,34 @@ var SetDuration_page = Backbone.View.extend({
 	},
 
 	initialize: function(){
+
 		var compiled = Handlebars.compile($("#titleBar").html());
 		var title = compiled({title:"הגדר זמנים למשימה"});
 		this.$el.html(title);
 		this.$el.append(this.template);
 		this.build = _.bind(this.build, this);
 		taskList.fetch({success:this.build});
+		this.listenTo(this.model, "change", this.updateSpan);
+		this.model.set({timeLeft:this.model.timeLeft()});
+		console.log(this.model.get("timeLeft"));
+		this.model.updateLeft();
+		this.updateSpan();
+	},
+
+	updateSpan: function(){
+		this.$(".timer").html(this.model.get("timeLeft"));
 
 	},
+
 
 	modal: function(){
 		this.$(".checkList").html("");
 		var lastTask = taskList.filter(function(task){
 			return ((Date.parse(task.get("lastDate"))+86400000) > Date.now());
 		});
-		if(lastTask == [])
-			this.$(".checkList").append("לא קיימות משימות שהסתיימו ב-24 שכות האחרונות");
+		if(lastTask.length == 0)
+			this.$(".checkList").html("<li>לא קיימות משימות שהסתיימו ב-24 שכות האחרונות</li>");
+		
 		else{
 			_.chain(lastTask).each(function(task){
 				var oneView = new checkDuration({model:task});
@@ -53,5 +65,10 @@ var SetDuration_page = Backbone.View.extend({
 			view.save();
 		});
 
+	},
+
+	render: function(){
+		//this.model.updateLeft();
+		this.$(".timer").html(this.model.get("timeLeft"));
 	}
 });

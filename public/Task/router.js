@@ -1,11 +1,15 @@
 var Router = Backbone.Router.extend({
 	routes: {
-		"":"wakeUp",
+		"":"Debug",
 		"wake_up":"wakeUp",
 		"go_out":"goOut",
 		"choose_tasks":"chooseTask",
 		"match_objects":"matchObjects",
 		"set_durations":"setDurations",	},
+
+		Debug: function(){
+			var Debug = new Debug({el:$("body")});
+		}
 
 		wakeUp: function () {
 			var view = new WakeUp_page({model:user});
@@ -31,7 +35,7 @@ var Router = Backbone.Router.extend({
 		},
 
 		setDurations:function(){
-			var view = new SetDuration_page();
+			var view = new SetDuration_page({model:user});
 			app.render(view);
 			
 		}
