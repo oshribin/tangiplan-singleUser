@@ -12,6 +12,7 @@ var taskSchema = new Schema({
 			exception:String,
 			endedByUser:Boolean,
 			overexcep: Boolean,
+			user:Object,
 });
 
 module.exports = mongoose.model("task",taskSchema);

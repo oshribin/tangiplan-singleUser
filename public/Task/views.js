@@ -9,6 +9,7 @@ var ChooseTaskView_single = Backbone.View.extend({
 	
 	},
 
+
 	check: function () {
 		this.model.toggle();
 
@@ -109,8 +110,14 @@ var SetDuration_single = Backbone.View.extend({
      			return Globalize.format( new Date(value), "t" );
    			}
  		});
-
-		var x=this.$('input').timespinner();
+		var changefunction = function(){
+			this.model.set({givDuration:this.$('input').val()});
+			user.updateLeft();
+		};
+		var changefunction = _.bind(changefunction,this);
+		var x=this.$('input').timespinner({
+			change: function( event, ui ) {changefunction()}
+		});
 		Globalize.culture('de-DE');
 		this.$('input').timespinner('option','value', '02:00');
 		if(this.model.get("givDuration")!=null)
@@ -126,7 +133,6 @@ var SetDuration_single = Backbone.View.extend({
 	},
 
 	render:function(){
-
 		var html = this.template(this.model.attributes);
 		this.$el.html(html);
 		this.$(".panel").toggleClass("warning", this.model.get("overexcep")==true);
@@ -151,7 +157,9 @@ var SetDuration_single = Backbone.View.extend({
 	    	    // minuits
 	      		page: 60,
 
-	      		disabled: true
+	      		disabled: true,
+
+	      		
 	    		},
 
 	            _parse: function( value ) {  
@@ -175,6 +183,9 @@ var SetDuration_single = Backbone.View.extend({
 		Globalize.culture('de-DE');
 		this.$('input').timespinner('option','value', '02:00');
 			this.$('input').val(this.model.get("exDuration"));
+		
+		
+
 		
 		
 

@@ -24,7 +24,7 @@ var WakeUp_page = Backbone.View.extend({
 		$.widget( "ui.timespinner", $.ui.spinner, {
     		options: {
       		// seconds
-     		step: 60 * 1000,
+     		step: 600 * 1000,
     	    // minuits
       		page: 60,
 

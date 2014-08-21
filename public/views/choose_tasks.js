@@ -33,12 +33,13 @@ var ChooseTaskView_page = Backbone.View.extend({
 
 
 	create_new_task: function(){
+		console.log(user);
 		var name = this.$(".newTask").val();
 		if(this.checked.length == 6){
-			task = taskList.create({"name":name, "disable":true});
+			task = taskList.create({"name":name, "disable":true, "user":user});
 		}
 		else
-			task = taskList.create({"name":name});
+			task = taskList.create({"name":name, "user":user});
 		this.$(".newTask").val("");
 
 			
