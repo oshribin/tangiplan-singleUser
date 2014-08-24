@@ -14,7 +14,7 @@ var Task = Backbone.Model.extend({
 			exception:null,
 			endedByUser:null,
 			overexcep:null,
-			user:null,
+			username:null,
 			
 		};	
 	},
@@ -64,7 +64,7 @@ var User = Backbone.Model.extend({
 	},
 
 	updateLeft: function(){
-		var current = this.parsMill(this.timeLeft);
+		var current = this.parsMill(this.timeLeft());
 		console.log(this.get("timeLeft"));
 		console.log(current);
 		var update = this.parseVal(current - this.sumDurations());
@@ -89,7 +89,9 @@ var User = Backbone.Model.extend({
 
 	parsMill: function(duration){
 		if (duration == null)
-			duration = ("02:00");	
+			duration = "02:00";
+		console.log(duration);
+		console.log(duration.substring(0,2));
 		var m = parseInt(duration.substring(0,2));
 		var s = parseInt(duration.substring(3,5));
 		return((m*60000)+(s*1000));
