@@ -3,10 +3,9 @@ var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
 			name: String,
-			wakeUp: Number,
-			goOut: Number,
-			salt: String,
-			hash: String,
+			wakeUp: String,
+			goOut: String,
+
 });
 
 module.exports = mongoose.model("user",userSchema);

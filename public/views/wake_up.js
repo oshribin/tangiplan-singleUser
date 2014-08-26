@@ -8,7 +8,7 @@ var WakeUp_page = Backbone.View.extend({
 
 	next: function(){
 		var curwakeUp = this.$("input").val();
-		this.model.set({wakeUp:curwakeUp});
+		this.model.save({wakeUp:curwakeUp});
 		router.navigate("go_out", true);
 	},
 

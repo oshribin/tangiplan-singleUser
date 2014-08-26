@@ -41,6 +41,8 @@ var User = Backbone.Model.extend({
 		};
 	},
 
+	idAttribute:"_id",
+
 	timeLeft: function(){
 		var start = this.get("wakeUp");
 		var end = this.get("goOut");
@@ -111,6 +113,5 @@ var User = Backbone.Model.extend({
 
 });
 
-var user = new User();
 
 
