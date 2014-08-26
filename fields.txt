@@ -1,0 +1,12 @@
+date
+wakeUp
+goOut
+objectId
+name
+givDuration
+exDuration
+startTime
+endTime
+overexcep
+exception
+endedByUser
