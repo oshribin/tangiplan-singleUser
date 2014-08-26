@@ -1,19 +1,20 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
-var taskSchema = new Schema({
+var logSchema = new Schema({
 			name: String,
 			givDuration: String,
 			exDuration:String,
 			objectId:Number,
 			lastDate:Date,
-			checked:Boolean,
-			disable:Boolean,
 			exception:String,
 			endedByUser:Boolean,
 			overexcep: Boolean,
-			userid:String,
+			wakeUp: String,
+			goOut: String,
+			date: String,
+			endTime: String,
+			startTime:String,
 });
 
-module.exports = mongoose.model("task",taskSchema);
-
+module.exports = mongoose.model("log",logSchema);
