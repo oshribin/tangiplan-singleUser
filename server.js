@@ -123,7 +123,7 @@ router.route("/tasks")
 			name:req.body.name,
 			givDuration:req.body.givDuration,
 			objectId:req.body.objectId,
-			username:req.body.username,
+			userid:req.body.userid,
 
 		});
 
@@ -182,18 +182,22 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 					User.findOne({_id:task.userid}, function(err, user){
 						if(err)
 							res.send(err)
-						log.objectId = objectId;
-						log.wakeUp = user.wakeUp;
-						log.goOut = user.goOut;
-						log.date = getYMD(task.lastDate);
-						log.endTime = getHMS(task.lastDate);
-						log.startTime = calcTime(task.lastDate, task.exDuration);
-						log.save(function(err,log){
-							if(err)
-								res.send(err);
-							console.log(log);
-							res.send("deleted");
+						if(user){
+							log.objectId = objectId;
+							log.wakeUp = user.wakeUp;
+							log.goOut = user.goOut;
+							log.date = getYMD(task.lastDate);
+							log.endTime = getHMS(task.lastDate);
+							log.startTime = calcTime(task.lastDate, task.exDuration);
+							log.save(function(err,log){
+								if(err)
+									res.send(err);
+								console.log(log);
+								res.send("task end");
 						});
+						}
+						else
+							res.send("task end no user detected");
 					});		
 				});
 			}

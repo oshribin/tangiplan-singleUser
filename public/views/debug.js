@@ -28,13 +28,15 @@ var Debug = Backbone.View.extend({
 	},
 
 	create: function() {
+		var userid = user.get("_id");
 		var name = this.$(".name").val();
 		var objectId = this.$(".object").val();
 		var givDuration = this.$(".duration").val();
 		taskList.create({
 			"name":name,
 			"objectId":objectId,
-			"givDuration":givDuration
+			"givDuration":givDuration,
+			"userid":userid
 		});
 
 		this.$(".name").val("");
