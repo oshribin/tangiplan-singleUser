@@ -64,7 +64,6 @@ router.use("/public", express.static("public"));
 router.route("/users")
 
 	.post(function(req,res){
-		console.log(req.body.name);
 		var user = new User({
 			name: req.body.name,
 		});
@@ -72,7 +71,6 @@ router.route("/users")
 		user.save(function(err){
 			if(err)
 				res.send(err);
-			console.log(user);
 			res.json(user);
 		});
 	})
@@ -82,7 +80,6 @@ router.route("/users")
 			User.find(function(err, users){
 				if(err)
 					res.send(err);
-				console.log(users);
 				res.json(users);
 			});
 		});
@@ -150,7 +147,7 @@ router.route("/getDuration/:object_id")
 		Task.findOne({objectId:req.params.object_id}, function(err, task){
 			if(err)
 				res.send(err);
-			if(task)
+			else if(task)
 				res.send(task.objectId+":"+parsMill(task.givDuration));
 			res.send("there is not task that match this id");
 		});
@@ -162,7 +159,7 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 		Task.findOne({objectId:req.params.object_id}, function(err, task){
 			if(err)
 				res.send(err)
-			if(task){
+			else if(task){
 				var _parsDuration = parsMill(task.givDuration);
 				var _millexception = _parsDuration - req.params.ex_duration;
 				var objectId = task.objectId;
@@ -177,28 +174,30 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 					
 					if(err)
 						res.send(err);
-					var log = new Log(task);
-					console.log(log);	
-					User.findOne({_id:task.userid}, function(err, user){
-						if(err)
-							res.send(err)
-						if(user){
-							log.objectId = objectId;
-							log.wakeUp = user.wakeUp;
-							log.goOut = user.goOut;
-							log.date = getYMD(task.lastDate);
-							log.endTime = getHMS(task.lastDate);
-							log.startTime = calcTime(task.lastDate, task.exDuration);
-							log.save(function(err,log){
-								if(err)
-									res.send(err);
-								console.log(log);
-								res.send("task end");
-						});
-						}
-						else
-							res.send("task end no user detected");
-					});		
+					else if(task){
+						var log = new Log(task);
+						console.log(log);	
+						User.findOne({_id:task.userid}, function(err, user){
+							
+							if(err)
+								res.send(err)
+							else if(user){
+								log.objectId = objectId;
+								log.wakeUp = user.wakeUp;
+								log.goOut = user.goOut;
+								log.date = getYMD(task.lastDate);
+								log.endTime = getHMS(task.lastDate);
+								log.startTime = calcTime(task.lastDate, task.exDuration);
+								log.save(function(err,log){
+									if(err)
+										res.send(err);
+									res.send("task end");
+								});
+							}
+							else
+								res.send("task end no user detected");
+						});	
+					}	
 				});
 			}
 			else
