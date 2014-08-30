@@ -112,7 +112,7 @@ var SetDuration_single = Backbone.View.extend({
  		});
 		var changefunction = function(){
 			this.model.set({givDuration:this.$('input').val()});
-			user.updateLeft();
+			app.user.updateLeft();
 		};
 		var changefunction = _.bind(changefunction,this);
 		var x=this.$('input').timespinner({
