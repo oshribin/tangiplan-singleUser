@@ -34,7 +34,7 @@
                 <!--single task for chossing task page-->
         <script id = "singleTask" type="text/x-handlebars-template">
              <div class = "row">
-              <div class="col-md-6">
+              <div class="col-md-12 ">
               {{#if checked}}
                <input class="checker" type="checkbox" checked /> 
               {{else}} 
@@ -102,16 +102,14 @@
              </div>
              <div class = "message"></div>
              <button class = "next">next</button>
-             <button class = "back">back</button>
         </script>
 
 
             <!-- matching object view template -->
         <script id="matchTasks" type="text/x-handlebars-template">
-            <div class = "matchListBlock col-md-8">
-             <ul class = "matchList"></ul>
+            <div class = "matchListBlock col-xs-12 col-md-12">
+             <ul class = "matchList col-xs-12 col-md-12"></ul>
              <button class = "next">next</button>
-             <button class = "back">back</button>
              </div>
         </script>
 
@@ -132,18 +130,21 @@
 
               <!--give duration single task-->
         <script id="setDuration" type="text/x-handlebars-template">
-             <div class="panel panel-default col-md-4">
+            <div class = "row">
+             <div class="panel panel-default col-md-2 col-xs-2 exDuration">
               <div class="panel-body">
+                {{#if exDuration}}{{exDuration}}{{/if}}
+              </div>
+            </div>            
+              <div class="panel-body tsContainer col-md-4 col-xs-4">
                <input value="02:00" />
               </div>
-            </div>
-             <div class="panel panel-default col-md-8">
+             <div class="panel panel-default col-md-6 col-xs-6">
               <div class="panel-body">
                 <img class="thumb" src="public/photos/num{{objectId}}.ico">{{name}}
-                <span class = "exception"> 
-                {{#if exception}}{{exception}}{{/if}}
                 </div> 
               </div>
+             </div>
         </script>
 
                   <!-- check duration -->
@@ -166,8 +167,14 @@
 
                         <!--set Duration to tasks, page of-->
         <script id="setDurations" type="text/x-handlebars-template">
-            <div class = "row col-md-8">דנותרו עוד<span class = "timer"></span>דקות</div>
-            <button class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">ביצועי היום הקודם</button>
+            <div class = "row col-md-12">
+             <div class = "col-md-6 col-xs-6">
+              דנותרו עוד<span class = "timer"></span>דקות
+             </div>
+             <div class = "col-md-6 col-xs-6">
+              <button class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">ביצועי היום הקודם</button>
+             </div>
+
 
             <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
               <div class="modal-dialog modal-lg">
@@ -178,21 +185,30 @@
               </div>
             </div>
 
-            <div class = "ListBlock col-md-8">
-             <ul class = "setList"></ul>
-             <button class = "next">next</button>
-             <button class = "back">back</button>
+            <div class = "ListBlock col-md-12 col-xs-12">
+             <ul class = "setList col-md-12 col-xs-12"></ul>
             </div>
+            <button class = "next">next</button>
         </script>
 
         
 
                         <!--wake up page-->
         <script id="wakeUp" type="text/x-handlebars-template">
+         <div class="col-md-6 col-md-offset-3 clock">
              <input value="02:00" />
              <button class = "next">next</button>
-             <button class = "back">back</button>
              </div>
+            </div>
+        </script>
+
+        <script id = "signIn" type="text/x-handlebars-template">
+          <div class = "message"></div>
+          <div class="input-group input-group-lg">
+            <span class="connect input-group-addon">התחבר</span>
+            <input type="text" class="username form-control" placeholder="שם משתמש">
+          </div>
+          <button class = "next">next</button>
         </script>
 
 
@@ -214,6 +230,7 @@
         <script src="public/views/set_duration.js"></script>
         <script src="public/views/wake_up.js"></script>
         <script src="public/views/goOut.js"></script>
+        <script src="public/views/sign_in.js"></script>
         <script src="public/Task/router.js"></script>
 
     </body>

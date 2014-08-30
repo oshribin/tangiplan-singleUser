@@ -14,5 +14,5 @@ Users = Backbone.Collection.extend({
 var userList = new Users;
 var taskList = new Tasks;
 //creating dumy user
-var user = userList.create({name:"moosh"});
+//var user = userList.create({name:"moosh"});
 

@@ -16,8 +16,7 @@ var SetDuration_page = Backbone.View.extend({
 		this.build = _.bind(this.build, this);
 		taskList.fetch({success:this.build});
 		this.listenTo(this.model, "change", this.updateSpan);
-		this.model.set({timeLeft:this.model.timeLeft()});
-		console.log(this.model.get("timeLeft"));
+		this.model.set({timeLeft:this.model.timeLeft()})
 		this.model.updateLeft();
 		this.updateSpan();
 	},
@@ -31,7 +30,7 @@ var SetDuration_page = Backbone.View.extend({
 	modal: function(){
 		this.$(".checkList").html("");
 		var lastTask = taskList.filter(function(task){
-			return ((Date.parse(task.get("lastDate"))+86400000) > Date.now());
+			return ((task.get("userid")==app.user.get("_id") && Date.parse(task.get("lastDate"))+86400000) > Date.now());
 		});
 		if(lastTask.length == 0)
 			this.$(".checkList").html("<li>לא קיימות משימות שהסתיימו ב-24 שכות האחרונות</li>");
@@ -48,13 +47,13 @@ var SetDuration_page = Backbone.View.extend({
 
 	build: function(){
 		var singleViews = [];
-		var checked = taskList.where({checked:true});
+		var checked = taskList.where({userid:app.user.get("_id"),checked:true});
 		_.chain(checked).each(function(task){
 			var oneView = new SetDuration_single({model:task});
 			singleViews.push(oneView);
 			this.$(".setList").append(oneView.render().el);
 			if (task != checked[checked.length -1])
-				this.$(".setList").append("<li><span class='label label-default col-md-12'>01:00</span></li>");
+				this.$(".setList").append("<li class='row'><span class='label label-default col-xs-12'>01:00</spanv></li>");
 
 		});
 		this.singleViews = singleViews;

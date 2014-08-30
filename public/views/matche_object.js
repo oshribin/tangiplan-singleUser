@@ -17,7 +17,7 @@ var MatchObjectView_page = Backbone.View.extend({
 
 	validate: function(){
 		var flag = true;
-		var checked = taskList.where({checked:true});
+		var checked = taskList.where({userid:app.user.get("_id"),checked:true});
 		_.chain(checked).each(function(task){
 			if(task.get("objectId") == null)
 				flag = false
@@ -27,7 +27,12 @@ var MatchObjectView_page = Backbone.View.extend({
 	},
 
 	build: function(){
-		var checked = taskList.where({checked:true});
+		_.chain(taskList.where({userid:app.user.get("_id")}))
+		.each(function(task){
+			task.save({objectId:null});
+
+		});
+		var checked = taskList.where({userid:app.user.get("_id"),checked:true});
 		_.chain(checked).each(function(task){
 		var oneView = new MatcheObjectView_single({model:task});
 		this.$(".matchList").append(oneView.render().el);	

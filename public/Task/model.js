@@ -14,7 +14,7 @@ var Task = Backbone.Model.extend({
 			exception:null,
 			endedByUser:null,
 			overexcep:null,
-			username:null,
+			userid:null,
 			
 		};	
 	},
@@ -54,26 +54,20 @@ var User = Backbone.Model.extend({
 	},
 
 	sumDurations: function(){
-		var taskTosum = taskList.where({checked:true});
+		var taskTosum = taskList.where({userid:this.get("_id"),checked:true});
 		var iterator = function(memo, task){
 			return memo + this.parsMill(task.get("givDuration"));
 		};
 		var iterator = _.bind(iterator, this);
 		var sum = _.chain(taskTosum).reduce(function(memo, task){
 			return iterator(memo, task);}, 0);
-		console.log(sum._wrapped);
 		return (sum._wrapped);
 	},
 
 	updateLeft: function(){
 		var current = this.parsMill(this.timeLeft());
-		console.log(this.get("timeLeft"));
-		console.log(current);
 		var update = this.parseVal(current - this.sumDurations());
-		console.log(update);
 		this.set({timeLeft:update});
-		console.log(this.get("timeLeft"));
-
 	},
 
 	decreasLeft: function(){
@@ -92,8 +86,6 @@ var User = Backbone.Model.extend({
 	parsMill: function(duration){
 		if (duration == null)
 			duration = "02:00";
-		console.log(duration);
-		console.log(duration.substring(0,2));
 		var m = parseInt(duration.substring(0,2));
 		var s = parseInt(duration.substring(3,5));
 		return((m*60000)+(s*1000));

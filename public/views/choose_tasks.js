@@ -34,9 +34,7 @@ var ChooseTaskView_page = Backbone.View.extend({
 
 	create_new_task: function(){
 		var name = this.$(".newTask").val();
-		var userid = user.get("_id");
-		console.log(userid);
-		console.log(user.attributes);
+		var userid = app.user.get("_id");
 		if(this.checked.length == 6){
 			task = taskList.create({"name":name, "disable":true, "userid":userid});
 		}
@@ -55,7 +53,7 @@ var ChooseTaskView_page = Backbone.View.extend({
 	},
 	
 	add_all: function(){
-		taskList.each(function(task){
+		_.chain(taskList.where({userid:app.user.get("_id")})).each(function(task){
 			var oneView = new ChooseTaskView_single({model:task});
 			this.$(".simpleList").append(oneView.render().el);
 		});
@@ -89,8 +87,8 @@ var ChooseTaskView_page = Backbone.View.extend({
 
 
 	render: function(){
-		this.checked = taskList.where({checked:true});
-		this.unchecked = taskList.where({checked:false});
+		this.checked = taskList.where({userid:app.user.get("_id"),checked:true});
+		this.unchecked = taskList.where({userid:app.user.get("_id"),checked:false});
 		if (this.checked.length == 6){
 			this.disable_unchecked();
 			this.$(".message").html("הגעת למקסימום משימו אפשריות")
