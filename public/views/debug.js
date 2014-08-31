@@ -28,7 +28,7 @@ var Debug = Backbone.View.extend({
 	},
 
 	create: function() {
-		var userid = user.get("_id");
+		var userid = app.user.get("_id");
 		var name = this.$(".name").val();
 		var objectId = this.$(".object").val();
 		var givDuration = this.$(".duration").val();
