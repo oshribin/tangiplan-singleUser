@@ -147,7 +147,7 @@ router.route("/getDuration/:object_id")
 		Task.findOne({objectId:req.params.object_id}, function(err, task){
 			if(err)
 				res.send(err);
-			else if(task && task.givDuration)
+			else if((task != null) && (task.givDuration != null))
 				res.send(task.objectId+":"+parsMill(task.givDuration));
 			else
 			  res.send("there is not task that match this id");
