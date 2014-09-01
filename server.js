@@ -149,7 +149,8 @@ router.route("/getDuration/:object_id")
 				res.send(err);
 			else if(task)
 				res.send(task.objectId+":"+parsMill(task.givDuration));
-			res.send("there is not task that match this id");
+			else
+			  res.send("there is not task that match this id");
 		});
 	});
 

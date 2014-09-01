@@ -103,6 +103,8 @@ var SetDuration_single = Backbone.View.extend({
             hourText : "שעות",
             minuteText : "דקות",
         	theme : "ios",
+        	timeWheels:"HHii",
+        	timeFormat: "HH:ii",
         	onClose: _func,
         });   
 

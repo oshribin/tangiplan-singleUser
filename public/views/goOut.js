@@ -29,7 +29,9 @@ var GoOut_page = Backbone.View.extend({
       hourText : "שעות",
       minuteText: "דקות",
       theme:"ios",
-      height:"100"});   
+      height:"100",
+      timeWheels:"HHii",
+      timeFormat: "HH:ii"});   
     this.$('input').val("02:00");	
 
 	},

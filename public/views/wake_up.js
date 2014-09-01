@@ -27,7 +27,8 @@ var WakeUp_page = Backbone.View.extend({
             minuteText: "דקות",
             theme: "ios",
         	height:"100",
-        	showLabel:false});
+        	timeWheels:"HHii",
+        	timeFormat: "HH:ii"});
 
 		this.$('input').val("02:00");	
 
