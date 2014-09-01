@@ -100,16 +100,17 @@ var SetDuration_single = Backbone.View.extend({
 
 		this.$('input').mobiscroll().time({
 			display : "modal",
-            hourText : "שעות",
-            minuteText : "דקות",
+            hourText : "דקות",
+            minuteText : "שניות",
         	theme : "ios",
         	timeWheels:"HHii",
         	timeFormat: "HH:ii",
+        	stepMinutes: 30,
         	onClose: _func,
         });   
 
 		var cur = this.model.get("givDuration");
-		var cur = cur != null ? cur : "00:00"
+		var cur = cur != null ? cur : "02:00"
 		this.$('input').val(cur);
 	
 		
