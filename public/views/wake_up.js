@@ -17,7 +17,7 @@ var WakeUp_page = Backbone.View.extend({
 		var title = compiled({title:"מתי אתה מתעורר ?"});
 		this.$el.html(title);
 		this.$el.append(this.template);
-		$(document).on("pageinit", "#wakeUp", this.set_clock());
+		this.set_clock();
 	},
 
 	set_clock:function(){
@@ -28,7 +28,7 @@ var WakeUp_page = Backbone.View.extend({
             theme: "ios",
         	height:"100",
         	timeWheels:"HHii",
-        	timeFormat: "HH:ii"}).focus();
+        	timeFormat: "HH:ii"});
 
 		this.$('input').val("02:00");	
 
