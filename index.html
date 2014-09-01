@@ -3,6 +3,8 @@
     <head>
      <link rel="stylesheet" href="public/bower_components/bootstrap/dist/css/bootstrap.css" />
      <link rel="stylesheet" href="public/bower_components/jquery-ui/themes/smoothness/jquery-ui.css">
+     <link rel="stylesheet" href="public/bower_components/mobiscroll/css/mobiscroll.scroller.css">
+     <link rel="stylesheet" href="public/bower_components/mobiscroll/css/mobiscroll.scroller.ios.css">
      <link rel="stylesheet" href="public/index.css" />
      <meta http-equiv="X-UA-Compatible" content="IE=edge">
      <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
@@ -19,10 +21,12 @@
         <script src="public/bower_components/bootstrap/dist/js/bootstrap.js"></script>
         <script src="public/bower_components/jquery-ui/jquery-ui.js"></script>
         <script src="http://tjvantoll.com/images/posts/2012-07-15/dependencies.js"></script>
+        <script src="public/bower_components/mobiscroll/js/mobiscroll.core.js"></script>
+        <script src="public/bower_components/mobiscroll/js/mobiscroll.scroller.js"></script>
+        <script src="public/bower_components/mobiscroll/js/mobiscroll.datetime.js"></script>
+        
 
        <div class = "container"></div>
-
-          
 
 
 
@@ -136,12 +140,15 @@
                 {{#if exDuration}}{{exDuration}}{{/if}}
               </div>
             </div>            
-              <div class="panel-body tsContainer col-md-4 col-xs-4">
-               <input value="02:00" />
-              </div>
+
+                <div class="input-group col-md-4 col-xs-4">
+                 <input type="text" class="form-control" placeholder="Username">
+                 <span class="input-group-addon glyphicon glyphicon-time"></span>
+                </div>
+
              <div class="panel panel-default col-md-6 col-xs-6">
               <div class="panel-body">
-                <img class="thumb" src="public/photos/num{{objectId}}.ico">{{name}}
+                {{name}}<img class="thumb" src="public/photos/num{{objectId}}.ico">
                 </div> 
               </div>
              </div>
@@ -196,7 +203,7 @@
                         <!--wake up page-->
         <script id="wakeUp" type="text/x-handlebars-template">
          <div class="col-md-6 col-md-offset-3 clock">
-             <input value="02:00" />
+             <input value="02:00" type = "hidden"/>
              <button class = "next">next</button>
              </div>
             </div>
@@ -223,7 +230,7 @@
 
         <script src="public/Task/model.js"></script>
         <script src="public/Task/collection.js"></script>
-        <script src="public/Task/views.js"></script>
+        <script src="public/Task/views2.js"></script>
         <script src="public/views/choose_tasks.js"></script>
         <script src="public/views/matche_object.js"></script>
         <script src="public/views/debug.js"></script>

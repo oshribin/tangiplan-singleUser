@@ -85,47 +85,42 @@ var SetDuration_single = Backbone.View.extend({
 
 	tagName:"li",
 
-		set_clock:function(){
-		$.widget( "ui.timespinner", $.ui.spinner, {
-    		options: {
-      		// seconds
-     		step: 600 * 1000,
-    	    // minuits
-      		page: 60
-    		},
+	events:{
+		"click .dwb-s" : "set",
+	},
 
-            _parse: function( value ) {  
-     	   		if ( typeof value === "string" ) {
-        			// already a timestamp
-      		  		if ( Number( value ) == value ) {
-        		    	return Number( value );
-       				}
-        			return +Globalize.parseDate( value );
-     			}	
-     			return value;
-   			},
- 
-    		_format: function( value ) {
-      
-     			return Globalize.format( new Date(value), "t" );
-   			}
- 		});
-		var changefunction = function(){
-			this.model.set({givDuration:this.$('input').val()});
-			app.user.updateLeft();
+	set_clock: function(){
+		var _func = function(valueText, btn, inst){
+			if (btn == "set"){
+				this.model.set({givDuration:valueText});
+				app.user.updateLeft();
+        	}
 		};
-		var changefunction = _.bind(changefunction,this);
-		var x=this.$('input').timespinner({
-			change: function( event, ui ) {changefunction()}
-		});
-		Globalize.culture('de-DE');
-		this.$('input').timespinner('option','value', '02:00');
-		if(this.model.get("givDuration")!=null)
-			this.$('input').val(this.model.get("givDuration"));
+		_func = _.bind(_func, this);
+
+		this.$('input').mobiscroll().time({
+			display : "modal",
+            hourText : "שעות",
+            minuteText : "דקות",
+        	theme : "ios",
+        	onClose: _func,
+        });   
+
+		var cur = this.model.get("givDuration");
+		var cur = cur != null ? cur : "00:00"
+		this.$('input').val(cur);
+	
 		
 		
 
 	},
+
+	set: function(){
+		console.log(this.$('input').val());
+		this.model.set({givDuration:this.$('input').val()});
+		app.user.updateLeft();
+	},
+
 
 	save: function(){
 		var curDuration = this.$("input").val();
@@ -135,8 +130,8 @@ var SetDuration_single = Backbone.View.extend({
 	render:function(){
 		var html = this.template(this.model.attributes);
 		this.$el.html(html);
-		this.$(".panel-body").toggleClass("warning", this.model.get("overexcep")==true);
-				this.$(".panel-body").toggleClass("success", this.model.get("overexcep")==false);
+		this.$(".exDuration").toggleClass("warning", this.model.get("overexcep")==true);
+				this.$(".exDuration").toggleClass("success", this.model.get("overexcep")==false);
 
 		this.set_clock();
 		return this;

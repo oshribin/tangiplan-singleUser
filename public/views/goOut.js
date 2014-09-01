@@ -24,34 +24,13 @@ var GoOut_page = Backbone.View.extend({
 	},
 
 	set_clock:function(){
-		$.widget( "ui.timespinner", $.ui.spinner, {
-    		options: {
-      		// seconds
-     		step: 60 * 1000,
-    	    // minuits
-      		page: 60
-    		},
-
-            _parse: function( value ) {  
-     	   		if ( typeof value === "string" ) {
-        			// already a timestamp
-      		  		if ( Number( value ) == value ) {
-        		    	return Number( value );
-       				}
-        			return +Globalize.parseDate( value );
-     			}	
-     			return value;
-   			},
- 
-    		_format: function( value ) {
-      
-     			return Globalize.format( new Date(value), "t" );
-   			}
- 		});
-
-		var x=this.$('input').timespinner();
-		Globalize.culture('de-DE');
-		this.$('input').timespinner('option','value', '02:00');		
+    this.$('input').mobiscroll().time({
+      display : "inline",
+      hourText : "שעות",
+      minuteText: "דקות",
+      theme:"ios",
+      height:"100"});   
+    this.$('input').val("02:00");	
 
 	},
 
