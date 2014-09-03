@@ -21,10 +21,6 @@ var WakeUp_page = Backbone.View.extend({
 	},
 
 	set_clock:function(){
-		var hideinput = function(){
-			this.$("input").hide();
-		}
-		hideinput = _.bind(hideinput, this);
 		this.$('input').mobiscroll().time({
 			display : "inline",
             hourText : "שעות",
@@ -32,8 +28,7 @@ var WakeUp_page = Backbone.View.extend({
             theme: "ios",
         	height:"100",
         	timeWheels:"HHii",
-        	timeFormat: "HH:ii",
-        	onShow:hideinput});
+        	timeFormat: "HH:ii"});
 
 		this.$('input').val("02:00");	
 

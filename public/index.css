@@ -146,3 +146,32 @@ font-size: 30px;
 	padding: 15px 15px 15px 4px;
 }
 
+.accordion .panel-heading{
+	height: 60px;
+}
+
+.accordion .thumb{
+	margin: 7px 0px 7px 0px;
+}
+
+.accordion .taskTitle{
+	margin: 7px 0px 7px 0px;
+	font-size: 20px;
+	text-align: center;
+}
+
+.accordion ul{
+	list-style-type: none;
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
+}
+
+.accordion .panel-collapse .panel-body{
+	padding: 0 0 0 0;
+}
+.accordion .task{
+	height: 40px;
+	text-align: center;
+	font-size: 15px;
+	padding: 10px 43px 10px 15px !important;
+}

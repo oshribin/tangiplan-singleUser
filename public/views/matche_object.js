@@ -9,16 +9,19 @@ var MatchObjectView_page = Backbone.View.extend({
 	next: function(){
 
 		var flag = this.validate();
-		if(flag)
+		if(flag){
+			taskList.each(function(task){
+				task.save();
+			})
 			router.navigate("set_durations", true);
+		}
 		else
 			alert("יש מסימות שעדיין לא משויכות לאוביקט");
 	},
 
 	validate: function(){
 		var flag = true;
-		var checked = taskList.where({userid:app.user.get("_id"),checked:true});
-		_.chain(checked).each(function(task){
+		_.chain(this.checked).each(function(task){
 			if(task.get("objectId") == null)
 				flag = false
 		});
@@ -32,16 +35,16 @@ var MatchObjectView_page = Backbone.View.extend({
 			task.save({objectId:null});
 
 		});
-		var checked = taskList.where({userid:app.user.get("_id"),checked:true});
-		_.chain(checked).each(function(task){
-		var oneView = new MatcheObjectView_single({model:task});
-		this.$(".matchList").append(oneView.render().el);	
+		for (var i = 1 ; i <= 6; i++) {
+			var oneView = new MatcheObjectViewV2_single({attributes:{number:i}});
+			this.$(".accordion").append(oneView.render().el);
+		}	
 
-		});
 
 	},
 
 	initialize: function (){
+		this.checked = taskList.where({userid:app.user.get("_id"),checked:true});
 		var compiled = Handlebars.compile($("#titleBar").html());
 		var title = compiled({title:"התאם אובייקט למשימה"});
 		this.$el.html(title);

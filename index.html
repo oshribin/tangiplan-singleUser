@@ -78,6 +78,40 @@
 
 
 
+          <!--single object for match_object view v2 -->
+
+        <script id="matchTaskV2" type="text/x-handlebars-template">
+            <div class="panel panel-default">
+              <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href=#{{number}}>
+               <img class="thumb" src="public/photos/num{{number}}.ico"/>
+               <div class = "taskTitle">ללא משימה</div> 
+              </div>
+              <div id={{number}} class="panel-collapse collapse">
+                <div class="panel-body">
+                  <ul class = "taskList">
+                    <li>
+                      <div class="panel panel-default">
+                        <div class="panel-body task">ללא משימה</div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>  
+              </div>
+            </div>
+        </script>
+
+              <!--single task view for match_object v2 view-->
+              <script id="tfoV2" type="text/x-handlebars-template">
+                <li>
+                  <div class='panel panel-default'>
+                    <div class='panel-body task'>{{name}}</div>
+                  </div>
+                </li>
+              </script>
+
+
+
+
 
                 <!--title template -->
         <script id = "titleBar" type="text/x-handlebars-template">
@@ -111,10 +145,8 @@
 
             <!-- matching object view template -->
         <script id="matchTasks" type="text/x-handlebars-template">
-            <div class = "matchListBlock col-xs-12 col-md-12">
-             <ul class = "matchList col-xs-12 col-md-12"></ul>
-             <button class = "next">next</button>
-             </div>
+            <div class="accordion panel-group" id="accordion"></div>
+              <button class = "next">next</button>
         </script>
 
 
@@ -203,7 +235,7 @@
                         <!--wake up page-->
         <script id="wakeUp" type="text/x-handlebars-template">
          <div class="col-md-6 col-md-offset-3 clock">
-             <input value="02:00" autofocus/>
+             <input value="02:00" type = "hidden"/>
              <button class = "next">next</button>
              </div>
             </div>

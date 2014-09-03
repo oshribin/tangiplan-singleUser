@@ -80,6 +80,58 @@ var ChooseTaskView_single = Backbone.View.extend({
 	}
 });	
 
+var MatcheObjectViewV2_single = Backbone.View.extend({
+
+	template: Handlebars.compile($("#matchTaskV2").html()),
+
+	events: {
+		"click .task" : "clickHandler",
+	},
+
+
+	update: function(){
+		current = taskList.findWhere({"objectId" : this.attributes.number});
+		var title = current ? current.get("name") : "ללא משימה";
+		console.log(title);
+			this.$(".taskTitle").html(title);
+
+	},
+	
+	initialize: function(){
+		this.listenTo(taskList, "change" , this.update)
+	},
+
+
+	clickHandler: function(event){
+		this.$(".collapse").collapse("hide");
+		var current = taskList.findWhere({"objectId":this.attributes.number});
+		if(current)
+			current.set({"objectId":null});
+		var taskName =  $(event.currentTarget).html();
+		var task = taskList.findWhere({name:taskName});
+		if(task)
+			task.set({"objectId":this.attributes.number});
+	},
+
+
+
+	render: function () {
+		var html = this.template({number:this.attributes.number});
+		this.$el.html(html);
+		this.checked = taskList.where({userid:app.user.get("_id"),checked:true});
+		var iterator = function(task){
+			var li = Handlebars.compile($("#tfoV2").html());
+			li = li(task.attributes);
+			this.$(".taskList").append(li);
+
+		};
+
+		iterator = _.bind(iterator, this);
+		_.chain(this.checked).each(iterator);
+		return this;
+	},
+});
+
 var SetDuration_single = Backbone.View.extend({
 	template: Handlebars.compile($("#setDuration").html()),
 
