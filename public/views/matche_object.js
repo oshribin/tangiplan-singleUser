@@ -50,6 +50,7 @@ var MatchObjectView_page = Backbone.View.extend({
 		this.$el.html(title);
 		this.$el.append(this.template);
 		taskList.fetch({success: this.build});
+		this.$(".next").remove();
 
 	}, 
 
