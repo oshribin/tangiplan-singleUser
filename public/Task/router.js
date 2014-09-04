@@ -7,17 +7,8 @@ var Router = Backbone.Router.extend({
 		"choose_tasks":"chooseTask",
 		"match_objects":"matchObjects",
 		"set_durations":"setDurations",
-		"Match" : "match"	},
-
-		match: function(){
-			userList.fetch({success: function(){
-				app.user = userList.findWhere({name:"oshribin"});
-				var view = new MatchObjectView_page();
-				app.render(view);
-
-			}});
-
 		},
+
 
 		signIn: function(){
 			var view = new SignIn_page();
