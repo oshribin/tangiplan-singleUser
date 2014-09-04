@@ -11,10 +11,10 @@ var MatchObjectView_page = Backbone.View.extend({
 		var flag = this.validate();
 		if(flag){
 			taskList.each(function(task){
-				console.log(task.get("objectId"));
 				task.save();
 			});
 			router.navigate("set_durations", true);
+			
 			
 		}
 		else
