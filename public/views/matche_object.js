@@ -10,10 +10,13 @@ var MatchObjectView_page = Backbone.View.extend({
 
 		var flag = this.validate();
 		if(flag){
-			taskList.each(function(task){
-				task.save();
+			var nav = _.after(taskList.length, function(){
+				router.navigate("set_durations", true);
 			});
-			router.navigate("set_durations", true);
+			taskList.each(function(task){
+				task.save({success:nav});
+			});
+			
 		}
 		else
 			alert("יש מסימות שעדיין לא משויכות לאוביקט");
