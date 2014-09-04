@@ -168,7 +168,7 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 				task.exDuration = parseVal(req.params.ex_duration);
 				task.exception = parseVal(_millexception);
 				task.endedByUser = req.params.flag == true ? true : false;
-				task.overexcep = Math.abs(_millexception) > (0.2*_parsDuration);
+				task.overexcep = -(_millexception) > (0.25*_parsDuration);
 				task.lastDate = Date.now() + 10800000//timestamp;
 				task.objectId = null;
 				task.save(function(err, task){
