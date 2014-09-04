@@ -12,7 +12,7 @@ var MatchObjectView_page = Backbone.View.extend({
 		if(flag){
 			taskList.each(function(task){
 				task.save();
-			})
+			});
 			router.navigate("set_durations", true);
 		}
 		else

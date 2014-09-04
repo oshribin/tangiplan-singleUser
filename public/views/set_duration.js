@@ -49,6 +49,7 @@ var SetDuration_page = Backbone.View.extend({
 		var singleViews = [];
 		var checked = taskList.where({userid:app.user.get("_id"),checked:true});
 		_.chain(checked).each(function(task){
+			console.log(task.get("objectId"));
 			var oneView = new SetDuration_single({model:task});
 			singleViews.push(oneView);
 			this.$(".setList").append(oneView.render().el);
