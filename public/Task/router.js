@@ -85,6 +85,7 @@ var App = Backbone.View.extend({
 
 		if(prev){
 			prev.remove();
+			console.log(prev);
 		}
 		this.$el.append(view.el);
 		this.curView = view;

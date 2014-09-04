@@ -39,7 +39,7 @@ var ChooseTaskView_page = Backbone.View.extend({
 			task = taskList.create({"name":name, "disable":true, "userid":userid});
 		}
 		else
-			task = taskList.create({"name":name, "userid":userid});
+			task = 	taskList.create({"name":name, "userid":userid});
 		this.$(".newTask").val("");
 
 			
