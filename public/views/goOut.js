@@ -8,11 +8,16 @@ var GoOut_page = Backbone.View.extend({
   next: function(){
     
     var curgoOut = this.$("input").val();
-    this.model.save({goOut:curgoOut});
-    router.navigate("choose_tasks", true);
+    this.model.save({goOut:curgoOut},{success:function(){
+       if(app.user.parsMill(app.user.timeLeft()) > 0)
+          router.navigate("choose_tasks", true);
+        else
+          alert("הזנת שעת התעוררות ל-"+app.user.get("wakeUp")+" עליך להזין שעת יציאה מאוחרת משעה זו")
+    }});
 
 
   },
+
 
 	initialize: function(){
 		var compiled = Handlebars.compile($("#titleBar").html());
@@ -31,7 +36,9 @@ var GoOut_page = Backbone.View.extend({
       theme:"ios",
       height:"100",
       timeWheels:"HHii",
-      timeFormat: "HH:ii"});   
+      timeFormat: "HH:ii",
+      stepMinute:5,
+    });   
     this.$('input').val("02:00");	
 
 	},

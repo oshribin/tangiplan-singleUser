@@ -156,7 +156,7 @@ var SetDuration_single = Backbone.View.extend({
         	theme : "ios",
         	timeWheels:"HHii",
         	timeFormat: "HH:ii",
-        	stepMinutes: 30,
+        	stepMinute: 30,
         	onClose: _func,
         });   
 
