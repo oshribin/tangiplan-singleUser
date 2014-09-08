@@ -2,6 +2,7 @@ var Router = Backbone.Router.extend({
 	routes: {
 		"":"signIn",
 		"Debug":"Debug",
+		"checkList":"checkList",
 		"wake_up":"wakeUp",
 		"go_out":"goOut",
 		"choose_tasks":"chooseTask",
@@ -9,6 +10,15 @@ var Router = Backbone.Router.extend({
 		"set_durations":"setDurations",
 		},
 
+		checkList:function(){
+			if(app.user){
+				var view = new CheckList_page({model:app.user});
+				app.render(view);
+			} 
+			else
+				this.navigate("",true);
+			
+		},
 
 		signIn: function(){
 			var view = new SignIn_page();

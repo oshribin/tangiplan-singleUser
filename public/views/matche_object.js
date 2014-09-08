@@ -23,8 +23,9 @@ var MatchObjectView_page = Backbone.View.extend({
 
 	validate: function(){
 		var flag = true;
-		_.chain(this.checked).each(function(task){
-			if(task.get("objectId") == null)
+		var checked = taskList.where({checked:true});
+		_.chain(checked).each(function(task){
+			if(!(task.get("objectId")))
 				flag = false
 		});
 		return flag;
@@ -46,13 +47,16 @@ var MatchObjectView_page = Backbone.View.extend({
 	},
 
 	initialize: function (){
-		this.checked = taskList.where({userid:app.user.get("_id"),checked:true});
-		var compiled = Handlebars.compile($("#titleBar").html());
-		var title = compiled({title:"התאם אובייקט למשימה"});
+		var comTitle = Handlebars.compile($("#titleBar").html());
+		var title = comTitle({title:"התאם משימות לאובייקטים ?"});
+		var comNav = Handlebars.compile($("#bottom-nav").html());
+		var nav = comNav();
+
 		this.$el.html(title);
+		this.$el.append(nav);
 		this.$el.append(this.template);
+
 		taskList.fetch({success: this.build});
-		this.$(".next");
 
 	}, 
 

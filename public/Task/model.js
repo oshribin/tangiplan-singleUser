@@ -8,6 +8,7 @@ var Task = Backbone.Model.extend({
 			givDuration: null,
 			exDuration:null,
 			objectId:null,
+			lastObjectId:null,
 			lastDate:null,
 			checked:false,
 			disable:false,
@@ -37,11 +38,17 @@ var User = Backbone.Model.extend({
 			pass:"",
 			wakeUp:null,
 			goOut:null,
-			timeLeft:""
+			timeLeft:"",
+			clUsage:0,
 		};
 	},
 
 	idAttribute:"_id",
+
+	clUsageInc: function(){
+		var inc = this.get("clUsage") + 1;
+		this.save({clUsage:inc});
+	},
 
 	timeLeft: function(){
 		var start = this.get("wakeUp");

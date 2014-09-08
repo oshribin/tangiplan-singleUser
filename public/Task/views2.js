@@ -178,7 +178,7 @@ var SetDuration_single = Backbone.View.extend({
 
 	save: function(){
 		var curDuration = this.$("input").val();
-		this.model.save({givDuration:curDuration});
+		this.model.save({givDuration:curDuration, exDuration:null});
 	},
 
 	render:function(){
@@ -251,3 +251,30 @@ var SetDuration_single = Backbone.View.extend({
 
 		
 });
+
+var checkTask = Backbone.View.extend({
+
+	template: Handlebars.compile($("#checkTask").html()),
+
+	initialize: function(){
+		var objectId = this.model.get("objectId");
+		var lastObjectId = this.model.get("lastObjectId");
+		this.objectId = objectId ? objectId : lastObjectId;
+		this.listenTo(this.model, "change", this.render);
+	},
+
+	render: function(){
+		var html = this.template({
+			name:this.model.get("name"),
+			objectId:this.objectId,
+			exDuration: this.model.get("exDuration"),
+		});
+		this.$el.html(html);
+		if(this.model.get("exDuration")){
+			this.$(".checkTask").addClass("done");
+		}
+		return this;
+	},
+
+});
+

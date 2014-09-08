@@ -102,10 +102,10 @@ router.route("/users/:user_id")
 				res.send(err);
 			user.wakeUp = req.body.wakeUp;
 			user.goOut = req.body.goOut;
+			user.clUsage = req.body.clUsage;
 			user.save(function(err, user){
 				if(err)
 					res.send(err);
-				console.log(user);
 				res.json(user);
 			});
 		});
@@ -115,7 +115,6 @@ router.route("/users/:user_id")
 router.route("/tasks")
 
 	.post(function(req,res){
-		console.log(req.body);
 		var task = new Task({
 			name:req.body.name,
 			givDuration:req.body.givDuration,
@@ -127,7 +126,6 @@ router.route("/tasks")
 		task.save(function(err){
 			if(err)
 				res.send(err);
-			console.log(task);
 			 res.json(task);
 		});	 
 	})
@@ -170,14 +168,14 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 				task.endedByUser = req.params.flag == true ? true : false;
 				task.overexcep = -(_millexception) > (0.25*_parsDuration);
 				task.lastDate = Date.now() + 10800000//timestamp;
+				task.lastObjectId = task.objectId;
 				task.objectId = null;
 				task.save(function(err, task){
 					
 					if(err)
 						res.send(err);
 					else if(task){
-						var log = new Log(task);
-						console.log(log);	
+						var log = new Log(task);	
 						User.findOne({_id:task.userid}, function(err, user){
 							
 							if(err)
@@ -229,6 +227,7 @@ router.route("/tasks/:task_id")
 			task.exDuration = req.body.exDuration;
 			task.objectId = req.body.objectId;
 			task.lastDate = req.body.lastDate;
+			task.lastDate = req.body.lastDate;
 			task.checked = req.body.checked;
 			task.disable = req.body.disable;
 			task.exception = req.body.exception;
@@ -279,7 +278,6 @@ router.route("/tasks/:task_id")
 	}
 
 	getHMS = function(dt){
-		console.log(dt.getTime());
 		return dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
 	}
 

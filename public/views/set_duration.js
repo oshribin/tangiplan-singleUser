@@ -9,9 +9,14 @@ var SetDuration_page = Backbone.View.extend({
 
 	initialize: function(){
 
-		var compiled = Handlebars.compile($("#titleBar").html());
-		var title = compiled({title:"הגדר זמנים למשימה"});
+		var comTitle = Handlebars.compile($("#titleBar").html());
+		var title = comTitle({title:"הגדר זמנים למשימה ?"});
+		var comNav = Handlebars.compile($("#bottom-nav").html());
+		var nav = comNav();
+
 		this.$el.html(title);
+		this.$el.append(nav);
+
 		this.$el.append(this.template);
 		this.build = _.bind(this.build, this);
 		taskList.fetch({success:this.build});

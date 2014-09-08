@@ -6,16 +6,21 @@ var ChooseTaskView_page = Backbone.View.extend({
 
 	events:{
 		"click .next":"next",
-		"click .btn":"create_new_task"
+		"click .add":"create_new_task"
 	},
 
 	next: function(){
-		_.each(taskList.models, function(model){
-			model.save();
-		});
+
 		var flag = this.validate();
-		if(flag)
-			router.navigate("match_objects", true);
+		if(flag){
+			var nav = _.after(taskList.length, function(){
+				router.navigate("match_objects", true);
+			});
+			taskList.each(function(task){
+				task.save(task.attributes, {success:nav});	
+			});
+		}
+
 		else
 			alert("אתה חייב לבחור לפחות משימה אחת");
 
@@ -60,9 +65,13 @@ var ChooseTaskView_page = Backbone.View.extend({
 	},
 
 	initialize: function(){
-		var compiled = Handlebars.compile($("#titleBar").html());
-		var title = compiled({title:"בחר משימות"});
+		var comTitle = Handlebars.compile($("#titleBar").html());
+		var title = comTitle({title:"בחר משימות"});
+		var comNav = Handlebars.compile($("#bottom-nav").html());
+		var nav = comNav();
+
 		this.$el.html(title);
+		this.$el.append(nav);
 		this.$el.append(this.template);
 		taskList.fetch({success:this.add_all, silent:true});
 		

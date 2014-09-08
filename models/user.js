@@ -5,6 +5,7 @@ var userSchema = new Schema({
 			name: String,
 			wakeUp: String,
 			goOut: String,
+			clUsage: Number,
 
 });
 

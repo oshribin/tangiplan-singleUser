@@ -20,10 +20,15 @@ var GoOut_page = Backbone.View.extend({
 
 
 	initialize: function(){
-		var compiled = Handlebars.compile($("#titleBar").html());
-		var title = compiled({title:"מתי אתה יוצא ?"});
-		this.$el.append(title);
+    var comTitle = Handlebars.compile($("#titleBar").html());
+    var title = comTitle({title:"מתי אתה יוצא ?"});
+    var comNav = Handlebars.compile($("#bottom-nav").html());
+    var nav = comNav();
+
+    this.$el.html(title);
+    this.$el.append(nav);
 		this.$el.append(this.template);
+
 		this.set_clock();
 
 	},

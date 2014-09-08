@@ -4,23 +4,28 @@ var SignIn_page = Backbone.View.extend({
 
 	events:{
 		"click .connect": "connect",
+		"click .arange" : "arangeNav",
+		"click .checkList" : "checkListNav"
 	},
 
 	connect: function () {
 		var name = this.$(".username").val();
-		console.log(name);
 		var user = userList.findWhere({name:name});
 
 		if(user){
 			app.user = user;
-			this.next();
+			this.$(".btn").show();
 		}
 		else
 			this.$(".message").html("שם משתמש לא נכון נסה שוב");
 	},
 
-	next: function(){
+	arangeNav: function(){
 		router.navigate("wake_up", true);
+	},
+
+	checkListNav: function(){
+		router.navigate("checkList", true);
 	},
 
 	initialize: function(){
@@ -28,6 +33,8 @@ var SignIn_page = Backbone.View.extend({
 		var title = compiled({title:"כניסה"});
 		this.$el.html(title);
 		this.$el.append(this.template);
+		this.$(".btn").hide();
+
 		userList.fetch();
 	},
 });
