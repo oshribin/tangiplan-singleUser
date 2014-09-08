@@ -6,7 +6,13 @@ var ChooseTaskView_page = Backbone.View.extend({
 
 	events:{
 		"click .next":"next",
-		"click .add":"create_new_task"
+		"click .back":"back",
+		"click .add":"create_new_task",
+	},
+
+	back: function(){
+		router.navigate("go_out",true);
+
 	},
 
 	next: function(){

@@ -90,10 +90,7 @@ var MatcheObjectViewV2_single = Backbone.View.extend({
 
 
 	update: function(){
-		console.log(this.checked);
 		var current = taskList.findWhere({"objectId" : this.attributes.number});
-		//current = current._wrapped;
-		console.log(current);
 		var title = current ? current.get("name") : "ללא משימה";
 			this.$(".taskTitle").html(title);
 

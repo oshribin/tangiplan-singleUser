@@ -3,9 +3,20 @@ var SetDuration_page = Backbone.View.extend({
 	template: Handlebars.compile($("#setDurations").html()),
 
 	events:{
-		"click .next":"save",
-		"click .btn" : "modal"
+		"click .next":"next",
+		"click .back":"back",
 	},
+
+	next:function(){
+		this.save();
+		router.navigate("checkList", true);
+	},
+
+	back: function(){
+		router.navigate("match_objects", true);
+	},
+
+
 
 	initialize: function(){
 

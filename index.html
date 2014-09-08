@@ -126,11 +126,9 @@
             <!-- choosinge task view template -->
         <script id="chooseTasks" type="text/x-handlebars-template">
             <ul class = "simpleList col-md-12 col-xs-12"></ul>
-            <div class="input-group">
-              <span class="input-group-btn">
-                <button class="btn btn-default add" type="button">הוסף</button>
-              </span>
-              <input type="text" class="newTask form-control" value placeholder="הכנס משימה חדשה" maxlength="26">
+            <div class="input-group input-group-lg add-row">
+              <span class="input-group-addon add"> הוסף </span>
+              <input type="text" class="newTask form-control" value placeholder="הכנס משימה חדשה" maxlength="26"/>
             </div>
             <div class = "message"></div>
         </script>
@@ -139,7 +137,6 @@
             <!-- matching object view template -->
         <script id="matchTasks" type="text/x-handlebars-template">
             <div class="accordion panel-group" id="accordion"></div>
-              <button type="button" class = "btn btn-deafault next">next</button>
         </script>
 
 
@@ -162,12 +159,12 @@
             <div class = "row">
              <div class="panel panel-default col-md-2 col-xs-2 exDuration">
               <div class="panel-body">
-                {{#if exDuration}}{{exDuration}}{{/if}}
+                {{#if exDuration}}{{exDuration}}{{else}}משימה חדשה{{/if}}
               </div>
             </div>            
 
-                <div class="input-group col-md-4 col-xs-4">
-                 <input type="text" class="form-control" placeholder="Username">
+                <div class="input-group setTime col-md-4 col-xs-4">
+                 <input type="text" class="input form-control" placeholder="Username">
                  <span class="input-group-addon glyphicon glyphicon-time"></span>
                 </div>
 
@@ -224,10 +221,8 @@
 
                                   <!--checkList page -->
          <script id="checkList" type="text/x-handlebars-template">
-            <div class = "ListBlock col-md-12 col-xs-12">
-               <ul class = "checkList col-md-12 col-xs-12"></ul>
-            </div>
-            <button type="button" class = "btn btn-deafault render">רענן</button>
+              <ul class = "checkList col-md-12 col-xs-12"></ul>
+              <button type="button" class = "btn btn-deafault render col-md-1 col-xs-2">רענן</button>
          </script>
 
 

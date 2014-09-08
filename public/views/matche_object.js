@@ -4,6 +4,11 @@ var MatchObjectView_page = Backbone.View.extend({
 
 	events:{
 		"click .next":"next",
+		"click .back":"back",
+	},
+
+	back:function(){
+		router.navigate("choose_tasks", true);
 	},
 
 	next: function(){

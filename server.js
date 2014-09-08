@@ -175,7 +175,15 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 					if(err)
 						res.send(err);
 					else if(task){
-						var log = new Log(task);	
+						var log = new Log({
+						name: task.name,
+						givDuration: task.givDuration,
+						exDuration: task.exDuration,
+						lastDate: task.lastDate,
+						exception: task.exception,
+						endedByUser: task.endedByUser,
+						overexcep: task.overexcep,
+					});	
 						User.findOne({_id:task.userid}, function(err, user){
 							
 							if(err)

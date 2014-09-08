@@ -3,7 +3,13 @@ var GoOut_page = Backbone.View.extend({
 
   events:{
     "click .next":"next",
+    "click .back":"back",
   },
+
+  back: function(){
+    router.navigate("wake_up",true);
+  },
+
 
   next: function(){
     
