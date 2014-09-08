@@ -90,7 +90,7 @@ var MatcheObjectViewV2_single = Backbone.View.extend({
 
 
 	update: function(){
-		current = taskList.findWhere({"objectId" : this.attributes.number});
+		current = _.chain(this.checked).findWhere({"objectId" : this.attributes.number});
 		var title = current ? current.get("name") : "ללא משימה";
 			this.$(".taskTitle").html(title);
 
@@ -103,6 +103,7 @@ var MatcheObjectViewV2_single = Backbone.View.extend({
 
 	clickHandler: function(event){
 		this.$(".collapse").collapse("hide");
+
 		var current = taskList.findWhere({"objectId":this.attributes.number});
 		if(current)
 			current.set({"objectId":null});
