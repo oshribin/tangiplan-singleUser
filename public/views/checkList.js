@@ -24,13 +24,15 @@ var CheckList_page = Backbone.View.extend({
 
 	build: function(){
 		this.$(".checkList").html("");
-		this.checked = taskList.where({userid:this.model.get("_id"),checked:true});
+		this.checked = _.chain(taskList
+			.where({userid:this.model.get("_id"),checked:true}))	;
+
 
 		var _iterator = function(task){
 			return Date.parse(task.get("lastDate"))
 		};
 
-		sortChecked = _.chain(this.checked).sortBy(_iterator);
+		var sortChecked = _.chain(this.checked).sortBy(_iterator);
 
 		sortChecked.each(function(task){
 			var oneView = new checkTask({model:task});
@@ -48,10 +50,10 @@ var CheckList_page = Backbone.View.extend({
 			var next = next._wrapped;
 
 			if(next){
-				console.log(next);
 				otp = Date.parse(next.get("lastDate"));
 				tp = Date.parse(task.get("lastDate"));
 				var freeTime = app.user.parseVal(otp - tp - app.user.parsMill(task.get("exDuration")));
+				task.save({"freeTime":freeTime});
 				this.$(".checkList").append("<li class='row'><span class='label label-default col-xs-12'>זמן בין המשימות - "+ freeTime + "</spanv></li>");
 			}
 

@@ -6,6 +6,9 @@ var userSchema = new Schema({
 			wakeUp: String,
 			goOut: String,
 			clUsage: Number,
+			timeLeft:String,
+			arangeTime:String,
+			endToArange:String,
 
 });
 

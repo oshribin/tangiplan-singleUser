@@ -92,6 +92,9 @@ body{
 .exDuration{
 	height: 60px;
 }
+.exFreeTime{
+	height: 60px;
+}
 .bottom-nav{
 	position: absolute;
 	bottom: 0;
@@ -297,3 +300,5 @@ font-size: 30px;
 .setTime .input{
 	background-color: white;
 }
+
+.render

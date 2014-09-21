@@ -38,6 +38,7 @@ var Router = Backbone.Router.extend({
 		wakeUp: function () {
 			if(app.user){
 				var view = new WakeUp_page({model:app.user});
+				console.log(view);
 				app.render(view);
 			}
 			else
@@ -95,7 +96,6 @@ var App = Backbone.View.extend({
 
 		if(prev){
 			prev.remove();
-			console.log(prev);
 		}
 		this.$el.append(view.el);
 		this.curView = view;

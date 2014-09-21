@@ -16,7 +16,8 @@ var Task = Backbone.Model.extend({
 			endedByUser:null,
 			overexcep:null,
 			userid:null,
-			
+			exFreeTime:null,
+			givFreeTime:null,
 		};	
 	},
 
@@ -36,14 +37,37 @@ var User = Backbone.Model.extend({
 		return{
 			name:"",
 			pass:"",
-			wakeUp:null,
-			goOut:null,
+			wakeUp:"07:00",
+			goOut:"08:00",
 			timeLeft:"",
+			arangeTime:"",
+			endToArange:"",
 			clUsage:0,
+			taskList:null,
 		};
 	},
 
 	idAttribute:"_id",
+
+	setTaskList:function(){
+		var userid = this.get("_id");
+		var _func = function(){
+			this.set({taskList:taskList.where({userid:userid})});
+		};
+		_func = _.bind(_func,this);
+
+		taskList.fetch({success:_func});
+
+
+	},
+
+	checked: function(){
+		var userid = this.get("_id");
+		return taskList.where({userid:userid, checked:true});
+
+
+		
+	},
 
 	clUsageInc: function(){
 		var inc = this.get("clUsage") + 1;
@@ -55,7 +79,6 @@ var User = Backbone.Model.extend({
 		var end = this.get("goOut");
 		var milstart = this.parsMill(start);
 		var milend = this.parsMill(end);
-		console.log(milstart + milend);
 		return (this.parseVal(milend*60-milstart*60));
 
 	},
@@ -63,19 +86,48 @@ var User = Backbone.Model.extend({
 	sumDurations: function(){
 		var taskTosum = taskList.where({userid:this.get("_id"),checked:true});
 		var iterator = function(memo, task){
-			return memo + this.parsMill(task.get("givDuration"));
+			return memo + this.parsMill(task.get("givDuration")) + this.parsMill(task.get("givFreeTime"));
 		};
 		var iterator = _.bind(iterator, this);
 		var sum = _.chain(taskTosum).reduce(function(memo, task){
 			return iterator(memo, task);}, 0);
-		return (sum._wrapped + ((taskTosum.length-1)*60000));
+		return (sum._wrapped);
 	},
 
 	updateLeft: function(){
 		var current = this.parsMill(this.timeLeft());
-		var update = this.parseVal(current - this.sumDurations());
-		this.set({timeLeft:update});
+		var sumDurations = this.sumDurations();
+		var timeLeft = this.parseVal(current - sumDurations);
+		var arangeTime = this.msToTime	(sumDurations);
+		var endToArange = this.msToTime(this.parsMill(this.get("wakeUp"))*60 + sumDurations);
+
+		this.set({timeLeft:timeLeft});
+		this.set({arangeTime:arangeTime});
+		this.set({endToArange:endToArange});
+		this.save({success:console.log("saved")});
 	},
+
+	timeValidate :function(){
+		var sumDurations = this.sumDurations();
+		var endTime = this.parsMill(this.get("wakeUp"))*60 + sumDurations;
+		var goOut = this.parsMill(this.get("goOut"))*60;
+		
+		return goOut > endTime;
+
+
+	},
+
+	msToTime: function(duration) {
+	    var  seconds = parseInt((duration/1000)%60)
+	        , minutes = parseInt((duration/(1000*60))%60)
+	        , hours = parseInt((duration/(1000*60*60))%24);
+
+	    hours = (hours < 10) ? "0" + hours : hours;
+	    minutes = (minutes < 10) ? "0" + minutes : minutes;
+	    seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+	    return hours + ":" + minutes + ":" + seconds ;
+	},	
 
 	decreasLeft: function(){
 		var current = this.parsMill(this.get("timeLeft"));
@@ -110,6 +162,8 @@ var User = Backbone.Model.extend({
 		var str = duration < 0 ?  "-"+m+":"+s : m+":"+s;		
 			return str;	
 	},
+
+
 
 });
 

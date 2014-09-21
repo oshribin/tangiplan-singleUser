@@ -14,6 +14,7 @@ var SignIn_page = Backbone.View.extend({
 
 		if(user){
 			app.user = user;
+			app.user.setTaskList();
 			this.$(".btn").show();
 		}
 		else

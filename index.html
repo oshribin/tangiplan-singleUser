@@ -3,8 +3,7 @@
     <head>
      <link rel="stylesheet" href="public/bower_components/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="public/bower_components/jquery-ui/themes/smoothness/jquery-ui.css">
-     <link rel="stylesheet" href="public/bower_components/mobiscroll/css/mobiscroll.scroller.css">
-     <link rel="stylesheet" href="public/bower_components/mobiscroll/css/mobiscroll.scroller.ios.css">
+     <link rel="stylesheet" href="public/mobiscroll/css/mobiscroll.custom-2.13.0.min.css">
      <link rel="stylesheet" href="public/index.css" />
      <meta http-equiv="X-UA-Compatible" content="IE=edge">
      <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
@@ -21,10 +20,8 @@
         <script src="public/bower_components/bootstrap/dist/js/bootstrap.js"></script>
         <script src="public/bower_components/jquery-ui/jquery-ui.js"></script>
         <script src="http://tjvantoll.com/images/posts/2012-07-15/dependencies.js"></script>
-        <script src="public/bower_components/mobiscroll/js/mobiscroll.core.js"></script>
-        <script src="public/bower_components/mobiscroll/js/mobiscroll.scroller.js"></script>
-        <script src="public/bower_components/mobiscroll/js/mobiscroll.datetime.js"></script>
-        
+        <script src="public/mobiscroll/js/mobiscroll.custom-2.13.0.min.js"></script>
+ 
 
        <div class = "container"></div>
 
@@ -164,15 +161,35 @@
             </div>            
 
                 <div class="input-group setTime col-md-4 col-xs-4">
-                 <input type="text" class="input form-control" placeholder="Username">
+                 <input type="text" class="input form-control" placeholder="">
                  <span class="input-group-addon glyphicon glyphicon-time"></span>
                 </div>
 
              <div class="panel panel-default col-md-6 col-xs-6">
-              <div class="panel-body">
-                {{name}}<img class="thumb" src="public/photos/num{{objectId}}.ico">
-                </div> 
+               <div class="panel-body" data-toggle="dropdown" data-target="#">
+                {{name}}
+                  <img class="thumb" src="public/photos/num{{objectId}}.ico">
+                </div>
+                <ul class ="dropdown-menu taskList" role="menu" aria-labelledby="dLabel"></ul> 
               </div>
+             </div>
+
+            <div class = "row">
+             <div class="panel panel-default col-md-2 col-xs-2 exFreeTime">
+              <div class="panel-body">
+                {{#if exFreeTime}}{{exFreeTime}}{{else}}משימה חדשה{{/if}}
+              </div>
+            </div>            
+
+                <div class="input-group setTime col-md-4 col-xs-4">
+                 <input type="text" class="freeTimeInput form-control" placeholder="">
+                 <span class="input-group-addon glyphicon glyphicon-time"></span>
+                </div>
+
+             <div class="panel panel-default col-md-6 col-xs-6">
+              <div class = "panel-body">
+                זמן פנוי אחרי {{name}}
+              <div>
              </div>
         </script>
 
@@ -197,10 +214,22 @@
                         <!--set Duration to tasks, page of-->
         <script id="setDurations" type="text/x-handlebars-template">
           <div class = "row col-md-12">
+             <div class = "col-md-2 col-xs-2">
+              <label class = "yesterday">אתמול בפועל </label>
+             </div>
+             <div class = "col-md-4 col-xs-4">
+              <label class = "current"> הגדרות נוכחיות </label>
+             </div>
              <div class = "col-md-6 col-xs-6">
-              נותרו עוד<span class = "timer"></span>דקות
+              <label class = "name"> רשימת משימות </label>
              </div>
              <ul class = "setList col-md-12 col-xs-12"></ul>
+             <ul class = "dataList col-md-6 col-xs-6 col-md-offset-3 col-xs-offset-3">
+                <li><div class="alert alert-wakeUp alert-info" role="alert">שעת התעוררות - <label class = "wakeUp">{{wakeUp}}</label></div></li>
+                <li><div class="alert alert-info" role="alert">זמן התארגנות - <label class = "arangeTime">{{arangeTime}}</label></div></li>
+                <li><div class="alert alert-info" role="alert">שעת סיום התארגנות - <label class = "endToArange">{{endToArange}}</label></div></li>
+                <li><div class="alert alert-goOut alert-info" role="alert">שעת יציאה - <label class = "goOut">{{goOut}}</label></div></li>
+             </ul>
         </script>
 
 
@@ -231,7 +260,7 @@
                         <!--wake up page-->
         <script id="wakeUp" type="text/x-handlebars-template">
          <div class="col-md-6 col-md-offset-3 clock">
-          <input value="02:00" type = "hidden"/>
+          <input type="hidden"  class="input" value = "07:00" />
          </div>
         </script>
                       <!--sign in page-->

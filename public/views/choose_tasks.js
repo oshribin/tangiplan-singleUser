@@ -20,7 +20,7 @@ var ChooseTaskView_page = Backbone.View.extend({
 		var flag = this.validate();
 		if(flag){
 			var nav = _.after(taskList.length, function(){
-				router.navigate("match_objects", true);
+				router.navigate("set_durations", true);
 			});
 			taskList.each(function(task){
 				task.save(task.attributes, {success:nav});	

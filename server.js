@@ -243,6 +243,7 @@ router.route("/tasks/:task_id")
 			task.overexcep = req.body.overexcep;
 			task.lastDate = req.body.lastDate;
 			task.userid = req.body.userid;
+			task.freeTime = req.body.freeTime;
 			
 			task.save(function(err,task){
 				if(err)

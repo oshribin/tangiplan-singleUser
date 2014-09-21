@@ -103,7 +103,6 @@ var MatcheObjectViewV2_single = Backbone.View.extend({
 
 	clickHandler: function(event){
 		this.$(".collapse").collapse("hide");
-
 		var current = taskList.findWhere({"objectId":this.attributes.number});
 		if(current)
 			current.set({"objectId":null});
@@ -132,13 +131,13 @@ var MatcheObjectViewV2_single = Backbone.View.extend({
 	},
 });
 
-var SetDuration_single = Backbone.View.extend({
+/*var SetDuration_single = Backbone.View.extend({
 	template: Handlebars.compile($("#setDuration").html()),
 
 	tagName:"li",
 
 	events:{
-		"click .dwb-s" : "set",
+		"click  .task":"clickHandler",
 	},
 
 	set_clock: function(){
@@ -170,8 +169,8 @@ var SetDuration_single = Backbone.View.extend({
 
 	},
 
+
 	set: function(){
-		console.log(this.$('input').val());
 		this.model.set({givDuration:this.$('input').val()});
 		app.user.updateLeft();
 	},
@@ -179,16 +178,55 @@ var SetDuration_single = Backbone.View.extend({
 
 	save: function(){
 		var curDuration = this.$("input").val();
-		this.model.save({givDuration:curDuration, exDuration:null});
+		var curObjectId = this.model.get("objectId");
+		console.log(curObjectId);
+		this.model.save({givDuration:curDuration,
+						 exDuration:null,
+						 objectId:curObjectId});
+	},
+
+	clickHandler: function(event){
+		var objectId = this.attributes.objectId;
+		var current = taskList.findWhere({"objectId":objectId});
+		console.log(current);
+		if(current)
+			current.save({"objectId":null});
+		var taskName =  $(event.currentTarget).html();
+		var task = taskList.findWhere({name:taskName});
+		if(task) {
+			task.set({"objectId":objectId});
+			this.model = task;
+			this.render();
+		}
 	},
 
 	render:function(){
-		var html = this.template(this.model.attributes);
-		this.$el.html(html);
-		this.$(".exDuration").toggleClass("warning", this.model.get("overexcep")==true);
-				this.$(".exDuration").toggleClass("success", this.model.get("overexcep")==false);
+		if(this.model.get("objectId") == this.attributes.objectId){
+			var html = this.template(this.model.attributes);
+			this.$el.html(html);
+			this.$(".exDuration").toggleClass("warning", this.model.get("overexcep")==true);
+			this.$(".exDuration").toggleClass("success", this.model.get("overexcep")==false);
+			this.$("input").prop( "disabled", false);
+			this.set_clock();
+		}
+		else{	
+			 this.model = null;
+			 var html = this.template({
+			 	name:"ללא משימה",
+			 	objectId:this.attributes.objectId,
+			 	exDuration:""});
+			 	this.$el.html(html);
+			 	this.$("input").prop( "disabled", true );
+			 }
+			this.checked = taskList.where({userid:app.user.get("_id"),checked:true});
+			var iterator = function(task){
+				var li = "<li><a data-target='#' class='task'>"+task.get("name")+"</a></li>"
+				this.$(".taskList").append(li);
 
-		this.set_clock();
+			};
+		iterator = _.bind(iterator, this);
+		_.chain(this.checked).each(iterator);
+		this.listenToOnce(this.model,"change",this.render);
 		return this;
 	}
 
@@ -251,6 +289,142 @@ var SetDuration_single = Backbone.View.extend({
 
 
 		
+});*/
+
+var SetDuration_single = Backbone.View.extend({
+
+	template: Handlebars.compile($("#setDuration").html()),
+
+
+		events:{
+		"click  .task":"clickHandler",
+	},
+
+		clickHandler: function(event){
+			var objectId = this.attributes.objectId;
+			var current = taskList.findWhere({"objectId":objectId});
+			var taskName =  $(event.currentTarget).html();
+			var task = taskList.findWhere({name:taskName});
+
+			if(current)
+				current.set({"objectId":null});
+			if(task) {
+				task.set({"objectId":objectId});
+				this.model = task;
+				this.render();
+			}
+		},
+
+		set_clock: function(){
+		var _func = function(valueText, btn, inst){
+			if (btn == "set"){
+				this.model.set({givDuration:valueText});
+				app.user.updateLeft();
+        	}
+		};
+		_func = _.bind(_func, this);
+
+		this.$('.input').mobiscroll().time({
+			display : "modal",
+            hourText : "דקות",
+            minuteText : "שניות",
+        	theme : "ios",
+        	timeWheels:"HHii",
+        	timeFormat: "HH:ii",
+        	stepMinute: 30,
+        	onClose: _func,
+        });   
+
+		var cur = this.model.get("givDuration");
+		var cur = cur != null ? cur : "02:00"
+		this.$('.input').val(cur);
+		this.model.set({givDuration:cur});
+	
+		
+		
+
+	},
+
+	set_freeTimeClock: function(){
+		var _func = function(valueText, btn, inst){
+			if (btn == "set"){
+				this.model.set({givFreeTime:valueText});
+				app.user.updateLeft();
+        	}
+		};
+		_func = _.bind(_func, this);
+
+		this.$('.freeTimeInput').mobiscroll().time({
+			display : "modal",
+            hourText : "דקות",
+            minuteText : "שניות",
+        	theme : "ios",
+        	timeWheels:"HHii",
+        	timeFormat: "HH:ii",
+        	stepMinute: 0,
+        	onClose: _func,
+        });   
+
+		var cur = this.model.get("givFreeTime");
+		var cur = cur != null ? cur : "03:00"
+		this.$('.freeTimeInput').val(cur);
+		this.model.set({givFreeTime:cur});
+	},
+
+	render: function(){
+		app.user.updateLeft();
+		if((this.model) && (this.model.get("objectId") == this.attributes.objectId)){
+
+			var html = this.template(this.model.attributes);
+			var flag = this.model.get("overexcep");
+			var timeSpanref = {theme:"bootstrap",
+							labels:["דקות", "שניות"],
+							maxTime:1800000,
+							steps:[1,10],
+							wheelOrder:"iiss",
+							display:"bubble"};
+
+			
+			this.$el.html(html);
+			this.$(".exDuration").toggleClass("warning", flag);
+			this.$(".exDuration").toggleClass("success", flag == false);
+
+			this.listenToOnce(this.model,"change",this.render);
+
+
+
+			this.set_clock();
+			this.set_freeTimeClock();
+		}
+
+		else{
+			this.model = null;
+			var html = this.template({
+			 	name:"ללא משימה",
+			 	objectId:this.attributes.objectId,
+			 	exDuration:""});
+
+			 	this.$el.html(html);
+			 	this.$("input").prop( "disabled", true );
+			}
+
+
+		//create the dropdown list
+		this.$(".taskList").html("");
+		var checked = app.user.checked();
+
+		var iterator = function(task){
+			var li = "<li><a data-target='#' class='task'>"
+					  +task.get("name")+"</a></li>"
+			this.$(".taskList").append(li);
+		};
+
+		iterator = _.bind(iterator, this);
+		_.chain(checked).each(iterator);
+
+		return this;
+				
+	}
 });
 
 var checkTask = Backbone.View.extend({
