@@ -85,6 +85,7 @@ router.route("/users")
 		});
 
 
+
 router.route("/users/:user_id")
 
 	.get(function(req, res){
@@ -103,6 +104,10 @@ router.route("/users/:user_id")
 			user.wakeUp = req.body.wakeUp;
 			user.goOut = req.body.goOut;
 			user.clUsage = req.body.clUsage;
+			user.timeLeft = req.body.timeLeft,
+			user.arangeTime = req.body.arangeTime,
+			user.endToArange = req.body.endToArange,
+
 			user.save(function(err, user){
 				if(err)
 					res.send(err);
@@ -145,10 +150,9 @@ router.route("/getDuration/:object_id")
 		Task.findOne({objectId:req.params.object_id}, function(err, task){
 			if(err)
 				res.send(err);
-			else if((task != null) && (task.givDuration != null))
+			if(task && task.givDuration)
 				res.send(task.objectId+":"+parsMill(task.givDuration));
-			else
-			  res.send("there is not task that match this id");
+			res.send("there is not task that match this id");
 		});
 	});
 
@@ -158,17 +162,18 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 		Task.findOne({objectId:req.params.object_id}, function(err, task){
 			if(err)
 				res.send(err)
-			else if(task){
+			if(task){
 				var _parsDuration = parsMill(task.givDuration);
 				var _millexception = _parsDuration - req.params.ex_duration;
 				var objectId = task.objectId;
+				var lastDate = Date.now();
 
 				task.exDuration = parseVal(req.params.ex_duration);
 				task.exception = parseVal(_millexception);
 				task.endedByUser = req.params.flag == true ? true : false;
-				task.overexcep = -(_millexception) > (0.25*_parsDuration);
-				task.lastDate = Date.now() + 10800000//timestamp;
-				task.lastObjectId = task.objectId;
+				task.overexcep = Math.abs(_millexception) > (0.2*_parsDuration);
+				task.lastDate = lastDate;
+				task.lastObjectId = objectId;
 				task.objectId = null;
 				task.save(function(err, task){
 					
@@ -176,19 +181,22 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 						res.send(err);
 					else if(task){
 						var log = new Log({
-						name: task.name,
-						givDuration: task.givDuration,
-						exDuration: task.exDuration,
-						lastDate: task.lastDate,
-						exception: task.exception,
-						endedByUser: task.endedByUser,
-						overexcep: task.overexcep,
-					});	
+							name: task.name,
+							givDuration: task.givDuration,
+							exDuration: task.exDuration,
+							lastDate: task.lastDate,
+							exception: task.exception,
+							endedByUser: task.endedByUser,
+							overexcep: task.overexcep,
+						});
+						
+						var prev = freeTime(task);
+							console.log(prev);
+
 						User.findOne({_id:task.userid}, function(err, user){
-							
 							if(err)
 								res.send(err)
-							else if(user){
+							else if(user != null){
 								log.objectId = objectId;
 								log.wakeUp = user.wakeUp;
 								log.goOut = user.goOut;
@@ -199,7 +207,7 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 									if(err)
 										res.send(err);
 									res.send("task end");
-								});
+							});
 							}
 							else
 								res.send("task end no user detected");
@@ -229,28 +237,32 @@ router.route("/tasks/:task_id")
 		Task.findById(req.params.task_id, function(err, task){
 			if(err)
 				res.send(err)
+			else if(task){
 			
-			task.name = req.body.name;
-			task.givDuration = req.body.givDuration;
-			task.exDuration = req.body.exDuration;
-			task.objectId = req.body.objectId;
-			task.lastDate = req.body.lastDate;
-			task.lastDate = req.body.lastDate;
-			task.checked = req.body.checked;
-			task.disable = req.body.disable;
-			task.exception = req.body.exception;
-			task.endedByUser = req.body.endedByUser;
-			task.overexcep = req.body.overexcep;
-			task.lastDate = req.body.lastDate;
-			task.userid = req.body.userid;
-			task.freeTime = req.body.freeTime;
-			
-			task.save(function(err,task){
-				if(err)
-					res.send(err);
-	 			res.json(task);
-			});
+				task.name = req.body.name;
+				task.givDuration = req.body.givDuration;
+				task.exDuration = req.body.exDuration;
+				task.objectId = req.body.objectId;
+				task.lastObjectId = req.body.lastObjectId;
+				task.lastDate = req.body.lastDate;
+				task.checked = req.body.checked;
+				task.disable = req.body.disable;
+				task.exception = req.body.exception;
+				task.endedByUser = req.body.endedByUser;
+				task.overexcep = req.body.overexcep;
+				task.lastDate = req.body.lastDate;
+				task.userid = req.body.userid;
+				task.exFreeTime = req.body.exFreeTime;
+				task.givFreeTime = req.body.givFreeTime;
+				
+				task.save(function(err,task){
+					if(err)
+						res.send(err);
+		 			res.json(task);
+				});
+		    }
 		});
+
 	})
 
 	.delete(function(req, res){
@@ -293,6 +305,51 @@ router.route("/tasks/:task_id")
 	calcTime = function(dt, ex){
 		var sturtDate = new Date(dt.getTime()-parsMill(ex));
 		return(getHMS(sturtDate));
+	}
+
+	freeTime = function(task){
+		Task.find({checked:true, userid:task.userid},function(err,tasks){
+			if(err)
+				console.log(err);
+			else if (tasks){
+			
+			var _iterator = function(task){
+				//add '-' to convert the order
+				return -(Date.parse(task.lastDate));
+			};
+
+
+
+			var sortChecked = _.chain(tasks).sortBy(_iterator);
+
+			var _predicate = function(otherTask){
+				otp = Date.parse(otherTask.lastDate);
+				tp = Date.parse(task.lastDate);
+				otx = otherTask.exDuration;
+				tx = task.exDuration; 	
+				return ((otp < tp) && (otx != null) && (tx != null));
+			};
+				var prev = sortChecked.find(_predicate);
+				var prev = prev._wrapped;
+	
+
+				if(prev){
+					otp = Date.parse(prev.lastDate);
+					tp = Date.parse(task.lastDate);
+					var freeTime = parseVal(tp -otp - parsMill(task.exDuration));
+					prev.exFreeTime = freeTime;
+					prev.save(function(err,task){
+						if (err)
+							console.log(err)
+					});
+
+				}
+
+
+			}
+
+
+		});
 	}
 
 
