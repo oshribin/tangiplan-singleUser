@@ -6,6 +6,7 @@ var Task = require("./models/task");
 var Log = require("./models/log");
 var csv = require("csv");
 var User = require("./models/user");
+var _ = require("underscore");
 //var hash = require("./pass").hash;
 //var session = require("express-sesssion");
 
