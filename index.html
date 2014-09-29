@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+  <!DOCTYPE HTML>
 <html>
     <head>
      <link rel="stylesheet" href="public/bower_components/bootstrap/dist/css/bootstrap.css" />
@@ -156,13 +156,12 @@
             <div class = "row">
              <div class="panel panel-default col-md-2 col-xs-2 exDuration">
               <div class="panel-body">
-                {{#if exDuration}}{{exDuration}}{{else}}משימה חדשה{{/if}}
+                {{#if exDuration}}{{exDuration}}{{else}}{{/if}}
               </div>
             </div>            
 
                 <div class="input-group setTime col-md-4 col-xs-4">
                  <input type="text" class="input form-control" placeholder="">
-                 <span class="input-group-addon glyphicon glyphicon-time"></span>
                 </div>
 
              <div class="panel panel-default col-md-6 col-xs-6">
@@ -174,21 +173,20 @@
               </div>
              </div>
 
-            <div class = "row">
+            <div class = "row freeTime">
              <div class="panel panel-default col-md-2 col-xs-2 exFreeTime">
               <div class="panel-body">
-                {{#if exFreeTime}}{{exFreeTime}}{{else}}משימה חדשה{{/if}}
+                {{#if exFreeTime}}{{exFreeTime}}{{else}}{{/if}}
               </div>
             </div>            
 
                 <div class="input-group setTime col-md-4 col-xs-4">
                  <input type="text" class="freeTimeInput form-control" placeholder="">
-                 <span class="input-group-addon glyphicon glyphicon-time"></span>
                 </div>
 
              <div class="panel panel-default col-md-6 col-xs-6">
               <div class = "panel-body">
-                זמן פנוי אחרי {{name}}
+                זמן פנוי
               <div>
              </div>
         </script>
@@ -214,22 +212,30 @@
                         <!--set Duration to tasks, page of-->
         <script id="setDurations" type="text/x-handlebars-template">
           <div class = "row col-md-12">
-             <div class = "col-md-2 col-xs-2">
+            <div class = "labels">
+             <div class = "col-md-2 col-xs-2 head">
               <label class = "yesterday">אתמול בפועל </label>
              </div>
-             <div class = "col-md-4 col-xs-4">
+             <div class = "col-md-4 col-xs-4 head">
               <label class = "current"> הגדרות נוכחיות </label>
              </div>
-             <div class = "col-md-6 col-xs-6">
+             <div class = "col-md-4 col-xs-4 head">
               <label class = "name"> רשימת משימות </label>
              </div>
+             <div class = "col-md-2 col-xs-2 head">
+              <label class = "object"> אובייקט </label>
+             </div>
+            </div>
+
              <ul class = "setList col-md-12 col-xs-12"></ul>
-             <ul class = "dataList col-md-6 col-xs-6 col-md-offset-3 col-xs-offset-3">
-                <li><div class="alert alert-wakeUp alert-info" role="alert">שעת התעוררות - <label class = "wakeUp">{{wakeUp}}</label></div></li>
-                <li><div class="alert alert-info" role="alert">זמן התארגנות - <label class = "arangeTime">{{arangeTime}}</label></div></li>
-                <li><div class="alert alert-info" role="alert">שעת סיום התארגנות - <label class = "endToArange">{{endToArange}}</label></div></li>
-                <li><div class="alert alert-goOut alert-info" role="alert">שעת יציאה - <label class = "goOut">{{goOut}}</label></div></li>
-             </ul>
+              <div class = "dataCont col-md-12 col-xs-12">
+               <ul class = "col-md-6 col-xs-6 col-md-offset-3 col-xs-offset-3 dataList">
+                  <li><button class = "wakeUp btn btn-default" >{{wakeUp}}</button>:שעת התעוררות</li>
+                  <li><button class = "arangeTime btn btn-default" disabled>{{arangeTime}}</button>:משך התארגנות</li>
+                  <li><button class = "endToArange btn btn-default" disabled>{{endToArange}}</button>:מוכן ליציאה ב</li>
+                  <li><button class = "goOut btn btn-default">{{goOut}}</button>:שעת יציאה</li>
+               </ul>
+              </div>
         </script>
 
 
@@ -251,7 +257,26 @@
                                   <!--checkList page -->
          <script id="checkList" type="text/x-handlebars-template">
               <ul class = "checkList col-md-12 col-xs-12"></ul>
-              <span type="button" class = "btn btn-deafault render col-md-1 col-xs-2">רענן</span>         </script>
+              <div class = "buttons col-md-12 col-xs-12 col-md-offset-1">
+              <button type="button" class="btn btn-default col-md-3 col-xs-12 render">
+               <span class=" col-md-12 col-xs-12 glyphicon glyphicon-refresh"></span>
+               <p class = "col-md-12 col-xs-12">רענן רשימה</p>
+              </button>
+
+              <button type="button" class="btn btn-default col-md-3 col-xs-12 home">
+               <span class=" col-md-12 col-xs-12 glyphicon glyphicon-home"></span>
+               <p class = "col-md-12 col-xs-12">חזרה לעמוד הבית</p>
+              </button>       
+            
+               
+                <button type="button" class="btn btn-default col-md-3 col-xs-12 end">
+               <span class=" col-md-12 col-xs-12 glyphicon glyphicon-ok"></span>
+               <p class = "col-md-12 col-xs-12">סיימתי ואני יוצא</p>
+              </button>  
+              </div>
+
+
+         </script>
 
 
 
@@ -270,14 +295,18 @@
             <span class="connect input-group-addon">התחבר</span>
             <input type="text" class="username form-control" placeholder="שם משתמש">
           </div>
-          <div class = "navigate col-md-8 col-xs-6 col-md-offset-2 col-xs-offset-3">
-            <button type="button" class="btn btn-default col-md-4 col-md-offset-2 col-xs-12 arange">
+          <div class = "navigate col-md-12 col-xs-12 col-md-offset-1">
+            <button type="button" class="btn btn-default col-md-3 col-xs-12 arange">
               <span class=" col-md-12 col-xs-12 glyphicon glyphicon-time"></span> 
-              <p class = "col-md-12 col-xs-12">תכנון בוקר</p>
+              <p class = "col-md-12 col-xs-12">תכנון משימות</p>
             </button>
-            <button type="button" class="btn btn-default col-md-4 col-xs-12 checkList">
+            <button type="button" class="btn btn-default col-md-3 col-xs-12 checkList">
              <span class=" col-md-12 col-xs-12 glyphicon glyphicon-ok"></span>
              <p class = "col-md-12 col-xs-12">מעקב בוקר</p>
+            </button>
+            <button type="button" class="btn btn-default col-md-3 col-xs-12 setDuration">
+             <span class=" col-md-12 col-xs-12 glyphicon glyphicon-ok"></span>
+             <p class = "col-md-12 col-xs-12">הגדרת זמנים</p>
             </button>
           </div>
         </script>

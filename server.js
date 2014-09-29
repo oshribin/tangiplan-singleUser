@@ -107,6 +107,7 @@ router.route("/users/:user_id")
 			user.clUsage = req.body.clUsage;
 			user.timeLeft = req.body.timeLeft,
 			user.arangeTime = req.body.arangeTime,
+			user.actGoOut = req.body.actGoOut,
 			user.endToArange = req.body.endToArange,
 
 			user.save(function(err, user){
@@ -192,7 +193,7 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 						});
 						
 						var prev = freeTime(task);
-							console.log(prev);
+							
 
 						User.findOne({_id:task.userid}, function(err, user){
 							if(err)

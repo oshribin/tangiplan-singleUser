@@ -15,12 +15,13 @@ var SetDuration_page = Backbone.View.extend({
 
 		else if(this.validate()){
 			var nav = _.after(this.model.checked().length, function(){
-				router.navigate("checkList", true);
+				router.navigate("", true);
 			});
 			_.chain(this.model.checked())
 			.each(function(task){
 				task.set({exDuration:null});
 				task.set({overexcep:null});
+				task.set({exFreeTime:null});
 				task.save(task.attributes,{success:nav});
 			});
 		}
@@ -43,7 +44,7 @@ var SetDuration_page = Backbone.View.extend({
 	},
 
 	back: function(){
-		router.navigate("match_objects", true);
+		router.navigate("choose_tasks", true);
 	},
 
 
@@ -79,7 +80,7 @@ var SetDuration_page = Backbone.View.extend({
 		};
 		_func = _.bind(_func, this);
 
-		this.$(".alert-wakeUp").mobiscroll().time({
+		this.$(".wakeUp").mobiscroll().time({
 			display : "modal",
        	    hourText : "שעות",
 		    minuteText: "דקות",
@@ -101,7 +102,7 @@ var SetDuration_page = Backbone.View.extend({
 		};
 		_func = _.bind(_func, this);
 
-		this.$(".alert-goOut").mobiscroll().time({
+		this.$(".goOut").mobiscroll().time({
 			display : "modal",
        	    hourText : "שעות",
 		    minuteText: "דקות",
@@ -130,7 +131,7 @@ var SetDuration_page = Backbone.View.extend({
 		};
 		var checked = this.model.checked();
 		var sortChecked = _.chain(checked).sortBy(_iterator);
-		var numbers = [1,2,3,4,5,6];
+		var numbers = [6,5,4,3,2,1];
 
 		_.chain(sortChecked).each(function(task){
 			if(task.get("lastObjectId")){

@@ -18,6 +18,7 @@ var Task = Backbone.Model.extend({
 			userid:null,
 			exFreeTime:null,
 			givFreeTime:null,
+			actGoOut:null,
 		};	
 	},
 
@@ -126,7 +127,7 @@ var User = Backbone.Model.extend({
 	    minutes = (minutes < 10) ? "0" + minutes : minutes;
 	    seconds = (seconds < 10) ? "0" + seconds : seconds;
 
-	    return hours + ":" + minutes + ":" + seconds ;
+	    return hours + ":" + minutes;
 	},	
 
 	decreasLeft: function(){

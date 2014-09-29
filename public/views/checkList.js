@@ -2,7 +2,18 @@ var CheckList_page = Backbone.View.extend({
 	template: Handlebars.compile($("#checkList").html()),
 
 	events:{
-		"click .render" : "render"
+		"click .render" : "render",
+		"click .home" : "home",
+		"click .end" : "end"
+	},
+
+	home: function(){
+		router.navigate("",true);
+	},
+
+	end: function(){
+		var now = Date.now();
+		this.model.save({actGoOut:now}, {success:this.home});
 	},
 
 	render: function(){
@@ -29,36 +40,24 @@ var CheckList_page = Backbone.View.extend({
 
 
 		var _iterator = function(task){
-			return Date.parse(task.get("lastDate"))
+			var x = task.get("lastDate") != null ? Date.parse(task.get("lastDate")) : 0;
+			console.log(x);
+				return x;
 		};
 
 		var sortChecked = _.chain(this.checked).sortBy(_iterator);
 
+
 		sortChecked.each(function(task){
 			var oneView = new checkTask({model:task});
-			this.$(".checkList").append(oneView.render().el);
-			
-			var _predicate = function(otherTask){
-				otp = Date.parse(otherTask.get("lastDate"));
-				tp = Date.parse(task.get("lastDate"));
-				otx = otherTask.get("exDuration");
-				tx = task.get("exDuration"); 	
-				return ((otp > tp) && (otx != null) && (tx != null));
-			};
-
-			var next = sortChecked.find(_predicate);
-			var next = next._wrapped;
-
-			if(next){
-				otp = Date.parse(next.get("lastDate"));
-				tp = Date.parse(task.get("lastDate"));
-				var freeTime = app.user.parseVal(otp - tp - app.user.parsMill(task.get("exDuration")));
-				task.save({"freeTime":freeTime});
-				this.$(".checkList").append("<li class='row'><span class='label label-default col-xs-12'>זמן בין המשימות - "+ freeTime + "</spanv></li>");
-			}
-
+				this.$(".checkList").append(oneView.render().el);
+			var exFreeTime = task.get("exFreeTime");
+			if(exFreeTime)
+				this.$(".checkList").append("<li class='row'><span class='label label-default col-xs-12'>זמן בין המשימות - "+ exFreeTime + "</spanv></li>");
 		});
-	},
+	}
+			
+
 
 
 });

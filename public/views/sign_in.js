@@ -5,7 +5,8 @@ var SignIn_page = Backbone.View.extend({
 	events:{
 		"click .connect": "connect",
 		"click .arange" : "arangeNav",
-		"click .checkList" : "checkListNav"
+		"click .checkList" : "checkListNav",
+		"click .setDuration" : "setDuration"
 	},
 
 	connect: function () {
@@ -19,6 +20,9 @@ var SignIn_page = Backbone.View.extend({
 		}
 		else
 			this.$(".message").html("שם משתמש לא נכון נסה שוב");
+	},
+	setDuration: function(){
+		router.navigate("set_durations", true);
 	},
 
 	arangeNav: function(){
@@ -35,7 +39,11 @@ var SignIn_page = Backbone.View.extend({
 		this.$el.html(title);
 		this.$el.append(this.template);
 		this.$(".btn").hide();
-
 		userList.fetch();
+		if(app.user){
+			this.$(".btn").show();
+		}
+
+		
 	},
 });

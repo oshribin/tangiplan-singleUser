@@ -324,15 +324,28 @@ var SetDuration_single = Backbone.View.extend({
 		};
 		_func = _.bind(_func, this);
 
-		this.$('.input').mobiscroll().time({
+		this.$('.input').mobiscroll().timespan({
 			display : "modal",
             hourText : "דקות",
             minuteText : "שניות",
         	theme : "ios",
         	timeWheels:"HHii",
         	timeFormat: "HH:ii",
-        	stepMinute: 30,
+        	steps: [1,30],
         	onClose: _func,
+        	wheelOrder: 'hh:ii',
+  		  	parseValue: function (d) { 
+        				var ret = [0, 0]; 
+      					if (d) { 
+          				  ret = d.split(':')
+            			  ret[0] = isNaN(+ret[0]) ? 0 : +ret[0];
+            			  ret[1] = isNaN(+ret[1]) ? 0 : +ret[1];
+       					}
+       			 		return ret;
+    		},
+    		formatResult: function (d) {
+       			return (d[0] < 10 ? '0' : '') + d[0] + ':' + (d[1] < 10 ? '0' : '') + d[1];
+    		},
         });   
 
 		var cur = this.model.get("givDuration");
@@ -363,6 +376,20 @@ var SetDuration_single = Backbone.View.extend({
         	timeFormat: "HH:ii",
         	stepMinute: 0,
         	onClose: _func,
+        	wheelOrder: 'hh:ii',
+        	steps: [1,0],
+  		  	parseValue: function (d) { 
+        				var ret = [0, 0]; 
+      					if (d) { 
+          				  ret = d.split(':')
+            			  ret[0] = isNaN(+ret[0]) ? 0 : +ret[0];
+            			  ret[1] = isNaN(+ret[1]) ? 0 : +ret[1];
+       					}
+       			 		return ret;
+    		},
+    		formatResult: function (d) {
+       			return (d[0] < 10 ? '0' : '') + d[0] + ':' + (d[1] < 10 ? '0' : '') + d[1];
+    		},
         });   
 
 		var cur = this.model.get("givFreeTime");
@@ -386,7 +413,7 @@ var SetDuration_single = Backbone.View.extend({
 
 			
 			this.$el.html(html);
-			this.$(".exDuration").toggleClass("warning", flag);
+			this.$(".exDuration").toggleClass("warning", flag == true);
 			this.$(".exDuration").toggleClass("success", flag == false);
 
 			this.listenToOnce(this.model,"change",this.render);
@@ -415,7 +442,7 @@ var SetDuration_single = Backbone.View.extend({
 
 		var iterator = function(task){
 			var li = "<li><a data-target='#' class='task'>"
-					  +task.get("name")+"</a></li>"
+					  +task.get("name")+"</a></li>";
 			this.$(".taskList").append(li);
 		};
 

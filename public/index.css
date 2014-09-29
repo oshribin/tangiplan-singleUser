@@ -92,8 +92,19 @@ body{
 .exDuration{
 	height: 60px;
 }
-.exFreeTime{
-	height: 60px;
+.freeTime .panel{
+	height: 30px;
+	font-size: 15px !important;
+	background-color: #eee !important;
+	
+}
+.freeTime .panel-body{
+	height: 30px;
+	padding: 6px;
+}
+.freeTime .form-control{
+	height: 30px !important;
+	font-size: 15px !important;
 }
 .bottom-nav{
 	position: absolute;
@@ -118,7 +129,7 @@ body{
 	top: 5px;
 }
 
-}
+
 .warning{
 	background-color: rgba(256,0,0,0.5);
 }
@@ -170,12 +181,18 @@ body{
 
 .setList .input-group{
 	float: left !important;
+
 }
 
 .setList .form-control{
-height: 60px;
-text-align: center;
-font-size: 30px;
+	height: 60px;
+	text-align: center;
+	font-size: 30px;
+	border-top-right-radius: 4px !important;
+	border-bottom-right-radius: 4px !important;
+	border-top-left-radius: 4px !important;
+	border-bottom-left-radius: 4px !important;
+
 }
 
 .setList .input-group-addon{
@@ -276,7 +293,11 @@ font-size: 30px;
 	background: #0d7dd0;
 }
 
-.render{
+.buttons .btn{
+	height: 100px;
+	margin-bottom: 10px;
+	margin-right: 10px;
+	font-size: 30px;
 	background-color: #970bb1;
 	color: white;
 	border: 1px solid;
@@ -301,4 +322,28 @@ font-size: 30px;
 	background-color: white;
 }
 
-.render
+.labels{
+	text-align: center;
+}
+
+.labels .head{
+	padding-right: 0px;
+	padding-left: 0px;
+}
+
+.dataList{
+	list-style-type: none;
+}
+
+.dataCont .btn{
+	margin-right: 8px;
+}
+
+.dataCont{
+	font-size: 20px;
+	margin-top: 20px;
+}
+
+.empty{
+	background-color: blue;
+}
