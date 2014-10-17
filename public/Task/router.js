@@ -8,6 +8,16 @@ var Router = Backbone.Router.extend({
 		"choose_tasks":"chooseTask",
 		"match_objects":"matchObjects",
 		"set_durations":"setDurations",
+		"placeObject": "placeObject",
+		},
+
+		placeObject: function(){
+			if(app.user){
+				var view = new placeObject_page({model: app.user});
+				app.render(view);
+			}
+			else
+				this.navigate("", true);
 		},
 
 		checkList:function(){

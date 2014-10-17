@@ -1,4 +1,4 @@
-var MatchObjectView_page = Backbone.View.extend({
+	var MatchObjectView_page = Backbone.View.extend({
 
 	template: Handlebars.compile($("#matchTasks").html()),
 

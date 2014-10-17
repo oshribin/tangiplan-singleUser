@@ -5,7 +5,28 @@ var SetDuration_page = Backbone.View.extend({
 	events:{
 		"click .next":"next",
 		"click .back":"back",
+		"click .toggleAll" : "toggleAll",
 		
+	},
+
+	toggleAll: function(){
+		var flag = false;
+
+		_.chain(this.$(".freeTime")).each(function(single){
+			console.log(single);
+			if(!($(single).is(":visible")))
+				flag = true;
+		});
+
+		if(flag){
+			this.$(".freeTime").show();
+			this.$(".taskBar").removeClass("marged");
+		}
+		else{
+			this.$(".freeTime").hide();
+			this.$(".taskBar").addClass("marged");
+		}
+
 	},
 
 	next:function(){
@@ -15,7 +36,10 @@ var SetDuration_page = Backbone.View.extend({
 
 		else if(this.validate()){
 			var nav = _.after(this.model.checked().length, function(){
-				router.navigate("", true);
+				if (app.last == "signIn")
+					router.navigate("", true);
+				else
+					router.navigate("placeObject",true);
 			});
 			_.chain(this.model.checked())
 			.each(function(task){
@@ -44,7 +68,11 @@ var SetDuration_page = Backbone.View.extend({
 	},
 
 	back: function(){
-		router.navigate("choose_tasks", true);
+
+		if(app.last === "signIn")
+			router.navigate("",true);
+		else
+			router.navigate("choose_tasks", true);
 	},
 
 
@@ -52,21 +80,23 @@ var SetDuration_page = Backbone.View.extend({
 	initialize: function(){
 
 		var comTitle = Handlebars.compile($("#titleBar").html());
-		var title = comTitle({title:"הגדר זמנים למשימה ?"});
+		var title = comTitle({title:"הגדר זמנים"});
 		var comNav = Handlebars.compile($("#bottom-nav").html());
-		var nav = comNav();
+		var nav = comNav({end:"עדכן משימות"});
+
 
 		this.model.updateLeft();
 
 		this.$el.html(title);
-		this.$el.append(nav);
 		this.$el.append(this.template(this.model.attributes));
+		this.$el.append(nav);
 		
 		this.build = _.bind(this.build, this);
 		taskList.fetch({success:this.build});
 		this.listenTo(this.model, "change", this.updateSpan);
 		this.set_wakeUpClock();
 		this.set_goOutClock();
+
 		
 	},
 
@@ -84,13 +114,20 @@ var SetDuration_page = Backbone.View.extend({
 			display : "modal",
        	    hourText : "שעות",
 		    minuteText: "דקות",
-		    theme:"ios",
+		    cancelText: "ביטול",
+            setText: "הגדר",
+		    theme:"ios7",
 		    height:"100",
 		    timeWheels:"HHii",
 		    timeFormat: "HH:ii",
 		    stepMinute:5,
         	onClose: _func,
-        });   
+        });
+
+        var cur = this.model.get("wakeUp");
+		var cur = cur != null ? cur : "07:00"
+		this.$('.wakeUp').val(cur);
+		this.model.set({wakeUp:cur});   
 	},
 
 	set_goOutClock: function(){
@@ -106,13 +143,20 @@ var SetDuration_page = Backbone.View.extend({
 			display : "modal",
        	    hourText : "שעות",
 		    minuteText: "דקות",
-		    theme:"ios",
+		    cancelText: "ביטול",
+            setText: "הגדר",
+		    theme:"ios7",
 		    height:"100",
 		    timeWheels:"HHii",
 		    timeFormat: "HH:ii",
 		    stepMinute:5,
         	onClose: _func,
-        });   
+        }); 
+
+        var cur = this.model.get("goOut");
+		var cur = cur != null ? cur : "08:00"
+		this.$('.goOut').val(cur);
+		this.model.set({wakeUp:cur});  
 	},
 
 
@@ -140,7 +184,7 @@ var SetDuration_page = Backbone.View.extend({
 				});
 			}
 		});
-
+		var viewList = [];
 		sortChecked.each(function(task){
 			if(task.get("lastObjectId"))
 				task.set({objectId:task.get("lastObjectId")});
@@ -150,9 +194,51 @@ var SetDuration_page = Backbone.View.extend({
 			}
 
 			var oneView = new SetDuration_single({model:task, attributes:{objectId:task.get("objectId")}});
-
 			this.$(".setList").append(oneView.render().el);
+			viewList.push(oneView);
 		});
+		
+		this.viewList = viewList;
+
+		/*this.timeBar();
+		this.listenTo(this.model, "change", this.timeBar);*/
+	
 	},
+
+	/*timeBar: function(){
+		var data = this.viewList;
+		var colors = ["blue","yellow","green","cyan","pink","purple"]
+		var cont = d3.select(".timeBar")
+					 .html("")
+					 .attr("width",1110);
+
+		cont.selectAll("rect")
+			.data(data)
+			.enter()
+			.append("rect")
+			.attr("x",function(d,i){
+				console.log(i);
+				if(data[i-1] != null){
+					d.x = app.user.parsMill(data[i-1].model.get("givDuration"))/1000 + data[i-1].x;
+					return d.x;
+				}
+				else{
+					d.x = 0;
+					return d.x;
+				}
+
+			})
+			.attr("y",0)
+			.attr("height",20)
+			.attr("width",function(d){
+				return app.user.parsMill(d.model.get("givDuration"))/1000;
+			})
+			.style("fill",function(d){
+				return colors[d.model.get("objectId")-1];
+			});
+
+
+
+	}*/
 
 });

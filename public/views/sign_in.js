@@ -16,12 +16,13 @@ var SignIn_page = Backbone.View.extend({
 		if(user){
 			app.user = user;
 			app.user.setTaskList();
-			this.$(".btn").show();
+			taskList.fetch({success:this.btncntrl});
 		}
 		else
 			this.$(".message").html("שם משתמש לא נכון נסה שוב");
 	},
 	setDuration: function(){
+		app.last = "signIn";
 		router.navigate("set_durations", true);
 	},
 
@@ -33,17 +34,29 @@ var SignIn_page = Backbone.View.extend({
 		router.navigate("checkList", true);
 	},
 
+	btncntrl: function(){
+		this.$(".login").remove();
+		this.$("h1").show();
+		this.$(".message").remove();
+		if(app.user.checked().length == 0)
+			this.$(".setDuration").prop("disabled",true);
+		if(_.chain(app.user.checked()).length == 0)
+			this.$(".checkList").prop("disabled",true);
+			
+		this.$(".btn").show();
+		},
+
 	initialize: function(){
 		var compiled = Handlebars.compile($("#titleBar").html());
-		var title = compiled({title:"כניסה"});
+		var title = compiled({title:"TangiPlan"});
 		this.$el.html(title);
 		this.$el.append(this.template);
 		this.$(".btn").hide();
+		this.$("h1").hide();
 		userList.fetch();
 		if(app.user){
-			this.$(".btn").show();
+			this.btncntrl();
 		}
-
-		
+	
 	},
 });

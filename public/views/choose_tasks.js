@@ -21,6 +21,7 @@ var ChooseTaskView_page = Backbone.View.extend({
 		if(flag){
 			var nav = _.after(taskList.length, function(){
 				router.navigate("set_durations", true);
+				app.last = "chooseTask";
 			});
 			taskList.each(function(task){
 				task.save(task.attributes, {success:nav});	
@@ -72,7 +73,7 @@ var ChooseTaskView_page = Backbone.View.extend({
 
 	initialize: function(){
 		var comTitle = Handlebars.compile($("#titleBar").html());
-		var title = comTitle({title:"בחר משימות"});
+		var title = comTitle({title:"בנק משימות"});
 		var comNav = Handlebars.compile($("#bottom-nav").html());
 		var nav = comNav();
 
@@ -106,7 +107,7 @@ var ChooseTaskView_page = Backbone.View.extend({
 		this.unchecked = taskList.where({userid:app.user.get("_id"),checked:false});
 		if (this.checked.length == 6){
 			this.disable_unchecked();
-			this.$(".message").html("הגעת למקסימום משימו אפשריות")
+			this.$(".message").html("הגעת למקסימום משימות אפשריות")
 		}
 		else{
 			this.realese();

@@ -27,30 +27,33 @@ var GoOut_page = Backbone.View.extend({
 
 	initialize: function(){
     var comTitle = Handlebars.compile($("#titleBar").html());
-    var title = comTitle({title:"מתי אתה יוצא ?"});
+    var title = comTitle({title:"שעת יציאה"});
     var comNav = Handlebars.compile($("#bottom-nav").html());
     var nav = comNav();
 
     this.$el.html(title);
     this.$el.append(nav);
 		this.$el.append(this.template);
+    this.$("h1").html("? מתי אתם רוצים <span style = 'text-decoration: underline'>לצאת</span> מהבית");
+
 
 		this.set_clock();
 
 	},
 
 	set_clock:function(){
-    this.$('input').mobiscroll().time({
-      display : "inline",
-      hourText : "שעות",
-      minuteText: "דקות",
-      theme:"ios",
-      height:"100",
-      timeWheels:"HHii",
-      timeFormat: "HH:ii",
-      stepMinute:5,
+      this.$('input').mobiscroll().time({
+        display : "inline",
+        hourText : "שעות",
+        minuteText: "דקות",
+        theme:"ios7",
+        height:60,
+        fixedWidth: 180,
+        layout:"fixed",
+        timeWheels:"HHii",
+        timeFormat: "HH:ii",
+        stepMinute:5,
     });   
-    this.$('input').val("02:00");	
 
 	},
 

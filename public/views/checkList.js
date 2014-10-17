@@ -36,12 +36,11 @@ var CheckList_page = Backbone.View.extend({
 	build: function(){
 		this.$(".checkList").html("");
 		this.checked = _.chain(taskList
-			.where({userid:this.model.get("_id"),checked:true}))	;
+			.where({userid:this.model.get("_id"),checked:true}));
 
 
 		var _iterator = function(task){
 			var x = task.get("lastDate") != null ? Date.parse(task.get("lastDate")) : 0;
-			console.log(x);
 				return x;
 		};
 

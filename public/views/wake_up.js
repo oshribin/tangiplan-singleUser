@@ -23,13 +23,14 @@ var WakeUp_page = Backbone.View.extend({
 
 	render: function(){
 		var comTitle = Handlebars.compile($("#titleBar").html());
-		var title = comTitle({title:"מתי אתה מתעורר ?"});
+		var title = comTitle({title:"שעת השקמה"});
 		var comNav = Handlebars.compile($("#bottom-nav").html());
 		var nav = comNav();
 
 		this.$el.html(title);
 		this.$el.append(nav);
 		this.$el.append(this.template);
+		this.$("h1").html("? מתי אתם רוצים להתעורר");
 
 		this.set_clock();
 
@@ -42,8 +43,10 @@ var WakeUp_page = Backbone.View.extend({
 	      display : "inline",
 	      hourText : "שעות",
 	      minuteText: "דקות",
-	      theme:"ios",
-	      height:"100",
+	      theme:"ios7",
+	      height:60,
+	      fixedWidth: 180,
+	      layout:"fixed",
 	      timeWheels:"HHii",
 	      timeFormat: "HH:ii",
 	      stepMinute:5,

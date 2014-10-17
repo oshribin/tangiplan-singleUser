@@ -298,21 +298,27 @@ var SetDuration_single = Backbone.View.extend({
 
 		events:{
 		"click  .task":"clickHandler",
+		"click .addon" : "freeTimeTrigger",
 	},
 
 		clickHandler: function(event){
 			var objectId = this.attributes.objectId;
-			var current = taskList.findWhere({"objectId":objectId});
+			var current = this.model;
 			var taskName =  $(event.currentTarget).html();
 			var task = taskList.findWhere({name:taskName});
+			var lastid;
 
-			if(current)
-				current.set({"objectId":null});
-			if(task) {
-				task.set({"objectId":objectId});
-				this.model = task;
-				this.render();
-			}
+			lastid = task.get("objectId");
+			task.set({"objectId":objectId},{silent:true});
+			current.set({"objectId":lastid});
+			task.trigger("change");
+			
+		},
+
+		freeTimeTrigger: function(){
+			this.$(".taskBar").toggleClass("marged");
+			this.$(".freeTime").toggle();
+			
 		},
 
 		set_clock: function(){
@@ -328,7 +334,10 @@ var SetDuration_single = Backbone.View.extend({
 			display : "modal",
             hourText : "דקות",
             minuteText : "שניות",
-        	theme : "ios",
+            cancelText: "ביטול",
+            labelsShort: ["","","","דקות","שניות"],
+            setText: "הגדר",
+        	theme : "ios7",
         	timeWheels:"HHii",
         	timeFormat: "HH:ii",
         	steps: [1,30],
@@ -367,17 +376,19 @@ var SetDuration_single = Backbone.View.extend({
 		};
 		_func = _.bind(_func, this);
 
-		this.$('.freeTimeInput').mobiscroll().time({
+		this.$('.freeTimeInput').mobiscroll().timespan({
 			display : "modal",
             hourText : "דקות",
             minuteText : "שניות",
-        	theme : "ios",
+            cancelText: "ביטול",
+            setText: "הגדר",
+        	theme : "ios7",
+        	labelsShort: ["","","","דקות","שניות"],
         	timeWheels:"HHii",
         	timeFormat: "HH:ii",
-        	stepMinute: 0,
+        	steps:[1,30],
         	onClose: _func,
         	wheelOrder: 'hh:ii',
-        	steps: [1,0],
   		  	parseValue: function (d) { 
         				var ret = [0, 0]; 
       					if (d) { 
@@ -388,7 +399,7 @@ var SetDuration_single = Backbone.View.extend({
        			 		return ret;
     		},
     		formatResult: function (d) {
-       			return (d[0] < 10 ? '0' : '') + d[0] + ':' + (d[1] < 10 ? '0' : '') + d[1];
+       			return (d[0] < 10 ? '0' : '') + d[0] + ':' + "00";
     		},
         });   
 
@@ -400,7 +411,11 @@ var SetDuration_single = Backbone.View.extend({
 
 	render: function(){
 		app.user.updateLeft();
-		if((this.model) && (this.model.get("objectId") == this.attributes.objectId)){
+		app.user.trigger("change");	
+		if(this.model.get("objectId") != this.attributes.objectId){
+				this.model = taskList.findWhere({objectId:this.attributes.objectId});
+				console.log(taskList);
+			}
 
 			var html = this.template(this.model.attributes);
 			var flag = this.model.get("overexcep");
@@ -413,6 +428,9 @@ var SetDuration_single = Backbone.View.extend({
 
 			
 			this.$el.html(html);
+			this.$(".freeTime").hide();
+			this.$(".taskBar").addClass("marged");
+
 			this.$(".exDuration").toggleClass("warning", flag == true);
 			this.$(".exDuration").toggleClass("success", flag == false);
 
@@ -422,19 +440,7 @@ var SetDuration_single = Backbone.View.extend({
 
 			this.set_clock();
 			this.set_freeTimeClock();
-		}
-
-		else{
-			this.model = null;
-			var html = this.template({
-			 	name:"ללא משימה",
-			 	objectId:this.attributes.objectId,
-			 	exDuration:""});
-
-			 	this.$el.html(html);
-			 	this.$("input").prop( "disabled", true );
-			}
-
+	
 
 		//create the dropdown list
 		this.$(".taskList").html("");
