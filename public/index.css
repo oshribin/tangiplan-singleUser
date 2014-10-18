@@ -143,10 +143,10 @@ body{
 
 
 .warning{
-	background-color: rgba(256,0,0,0.5);
+	background-color: rgba(256,0,0,0.5) !important;
 }
 .success{
-	background-color: rgba(0,256,0,0.5);
+	background-color: rgba(0,256,0,0.5) !important;
 }
 
 .modal-content{
@@ -155,6 +155,7 @@ body{
 
 .checkList{
 	list-style-type: none;
+	margin-bottom: 80px;
 }
 
 .checker{
@@ -231,7 +232,8 @@ body{
 }
 
 .givDuration .exDuration .panel-body{
-	padding: 15px 15px 15px 4px;
+	padding: 15px 15px 15px 15px;
+	text-align: center;
 }
 
 .accordion .panel-heading{
@@ -284,7 +286,7 @@ body{
 .navigate{
 
 }
-.navigate .btn{
+.navigate .btn, .buttons .btn{
 height: 200px;
 margin-bottom: 50px;
 font-size: 30px;
@@ -293,6 +295,8 @@ color: white;
 background-color: #3d4fa6;
 
 }
+
+
 
 .label{
 
@@ -316,15 +320,6 @@ background-color: #3d4fa6;
 
 .ios .dwwr{
 	background: #0d7dd0;
-}
-
-.buttons .btn{
-	height: 100px;
-	margin-bottom: 10px;
-	font-size: 20px;
-	background-color: #970bb1;
-	color: white;
-	border: 1px solid;
 }
 
 
@@ -487,3 +482,8 @@ input{
 	float: left;
 	margin-top: 10px;
 }
+
+.buttons .render, .buttons .home{
+	height: 100px;
+}
+

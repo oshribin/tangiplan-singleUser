@@ -18,7 +18,7 @@ var Task = Backbone.Model.extend({
 			userid:null,
 			exFreeTime:null,
 			givFreeTime:null,
-			actGoOut:null
+
 		};	
 	},
 
@@ -45,6 +45,7 @@ var User = Backbone.Model.extend({
 			endToArange:"",
 			clUsage:0,
 			taskList:null,
+			actGoOut:null
 		};
 	},
 

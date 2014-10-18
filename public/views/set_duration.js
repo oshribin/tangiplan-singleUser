@@ -111,13 +111,12 @@ var SetDuration_page = Backbone.View.extend({
 		_func = _.bind(_func, this);
 
 		this.$(".wakeUp").mobiscroll().time({
-			display : "modal",
+			display : "bubble",
        	    hourText : "שעות",
 		    minuteText: "דקות",
 		    cancelText: "ביטול",
             setText: "הגדר",
 		    theme:"ios7",
-		    height:"100",
 		    timeWheels:"HHii",
 		    timeFormat: "HH:ii",
 		    stepMinute:5,
@@ -140,13 +139,12 @@ var SetDuration_page = Backbone.View.extend({
 		_func = _.bind(_func, this);
 
 		this.$(".goOut").mobiscroll().time({
-			display : "modal",
+			display : "bubble",
        	    hourText : "שעות",
 		    minuteText: "דקות",
 		    cancelText: "ביטול",
             setText: "הגדר",
 		    theme:"ios7",
-		    height:"100",
 		    timeWheels:"HHii",
 		    timeFormat: "HH:ii",
 		    stepMinute:5,

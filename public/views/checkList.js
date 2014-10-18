@@ -12,8 +12,9 @@ var CheckList_page = Backbone.View.extend({
 	},
 
 	end: function(){
-		var now = Date.now();
+		var now = new Date(Date.now());
 		this.model.save({actGoOut:now}, {success:this.home});
+
 	},
 
 	render: function(){

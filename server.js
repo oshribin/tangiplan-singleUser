@@ -6,6 +6,7 @@ var Task = require("./models/task");
 var Log = require("./models/log");
 var csv = require("csv");
 var User = require("./models/user");
+var UserLog = require("./models/userlog");
 var _ = require("underscore");
 //var hash = require("./pass").hash;
 //var session = require("express-sesssion");
@@ -102,19 +103,42 @@ router.route("/users/:user_id")
 		User.findById(req.params.user_id, function(err, user){
 			if(err)
 				res.send(err);
-			user.wakeUp = req.body.wakeUp;
-			user.goOut = req.body.goOut;
-			user.clUsage = req.body.clUsage;
-			user.timeLeft = req.body.timeLeft,
-			user.arangeTime = req.body.arangeTime,
-			user.actGoOut = req.body.actGoOut,
-			user.endToArange = req.body.endToArange,
+			if(user){
+				var lastGoOut = user.actGoOut;
 
-			user.save(function(err, user){
-				if(err)
-					res.send(err);
-				res.json(user);
-			});
+				user.wakeUp = req.body.wakeUp;
+				user.goOut = req.body.goOut;
+				user.clUsage = req.body.clUsage;
+				user.timeLeft = req.body.timeLeft,
+				user.arangeTime = req.body.arangeTime,
+				user.actGoOut = req.body.actGoOut,
+				user.endToArange = req.body.endToArange,
+
+				user.save(function(err,user){
+					if(err)
+						res.send(err)
+					else if(user){
+						if(Date.parse(lastGoOut) !== Date.parse(user.actGoOut)){
+							var userlog = new UserLog({
+							name:user.name,
+							wakeUp:req.body.wakeUp,
+							goOut:req.body.goOut,
+							timeLeft:req.body.timeLeft,
+							arangeTime:req.body.arangeTime,
+							endToArange:req.body.endToArange,
+							clUsage:req.body.clUsager,
+							actGoOut:req.body.actGoOut,
+							});
+							userlog.save(function(err, userlog){
+								if(err)
+							res.send(err);
+							});
+						}
+
+						res.json(user);
+					}
+				});
+			}
 		});
 	});
 

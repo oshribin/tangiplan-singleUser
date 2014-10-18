@@ -331,7 +331,7 @@ var SetDuration_single = Backbone.View.extend({
 		_func = _.bind(_func, this);
 
 		this.$('.input').mobiscroll().timespan({
-			display : "modal",
+			display : "bubble",
             hourText : "דקות",
             minuteText : "שניות",
             cancelText: "ביטול",
@@ -377,7 +377,7 @@ var SetDuration_single = Backbone.View.extend({
 		_func = _.bind(_func, this);
 
 		this.$('.freeTimeInput').mobiscroll().timespan({
-			display : "modal",
+			display : "bubble",
             hourText : "דקות",
             minuteText : "שניות",
             cancelText: "ביטול",
@@ -433,6 +433,8 @@ var SetDuration_single = Backbone.View.extend({
 
 			this.$(".exDuration").toggleClass("warning", flag == true);
 			this.$(".exDuration").toggleClass("success", flag == false);
+			this.$(".addon").toggleClass("warning", flag == true);
+			this.$(".addon").toggleClass("success", flag == false);
 
 			this.listenToOnce(this.model,"change",this.render);
 

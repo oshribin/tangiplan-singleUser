@@ -8,7 +8,7 @@ var userSchema = new Schema({
 			clUsage: Number,
 			timeLeft:String,
 			arangeTime:String,
-			actGoOut:Number,
+			actGoOut:Date,
 			endToArange:String,
 
 });
