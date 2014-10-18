@@ -138,7 +138,7 @@ body{
 }
 
 .bottom-nav .glyphicon{
-	top: 6.5px;
+	top: 6px;
 }
 
 
@@ -487,3 +487,6 @@ input{
 	height: 100px;
 }
 
+.navigate .glyphicon{
+	margin-top: 10px;
+}
