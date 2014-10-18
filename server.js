@@ -126,7 +126,7 @@ router.route("/users/:user_id")
 							timeLeft:req.body.timeLeft,
 							arangeTime:req.body.arangeTime,
 							endToArange:req.body.endToArange,
-							clUsage:req.body.clUsager,
+							clUsage:req.body.clUsage,
 							actGoOut:req.body.actGoOut,
 							});
 							userlog.save(function(err, userlog){

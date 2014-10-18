@@ -73,7 +73,7 @@ var User = Backbone.Model.extend({
 
 	clUsageInc: function(){
 		var inc = this.get("clUsage") + 1;
-		this.save({clUsage:inc});
+		this.set({clUsage:inc});
 	},
 
 	timeLeft: function(){
