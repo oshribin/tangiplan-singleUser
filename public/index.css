@@ -90,6 +90,7 @@ body{
 	width:28px;
 	float: right;
 	margin-left: 10px;
+	bottom:4px;
 }
 .setList{
 	list-style-type: none;
@@ -184,9 +185,6 @@ body{
 	width: 70%;
 }
 
-.clock .dww{
-	height: 200px !important;
-}
 
 .clock .ios .dww .dw-li{
 	font-size: 50px !important;
