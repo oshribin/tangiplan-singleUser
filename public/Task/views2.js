@@ -62,7 +62,7 @@ var ChooseTaskView_single = Backbone.View.extend({
 
 
 	updateView: function(curObjectId){
-		var str = "public/photos/num"+curObjectId+".ico";
+		var str = "public/photos/num"+curObjectId+".png";
 		this.$(".panel-heading").append("<img class='thumb' src="+str+">");
 		this.$(".panel-heading").append("<a class ='clear'>'נקה בחירה'</a>");
 		$("[id ="+curObjectId+"]").addClass("disabled");
