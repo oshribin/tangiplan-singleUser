@@ -159,10 +159,10 @@ var SetDuration_page = Backbone.View.extend({
 
 
 	updateSpan: function(){
-		this.$(".wakeUp").html(this.model.get("wakeUp"));
-		this.$(".arangeTime").html(this.model.get("arangeTime"));
-		this.$(".endToArange").html(this.model.get("endToArange"));
-		this.$(".goOut").html(this.model.get("goOut"));
+		this.$(".wakeUp").val(this.model.get("wakeUp"));
+		this.$(".arangeTime").val(this.model.get("arangeTime"));
+		this.$(".endToArange").val(this.model.get("endToArange"));
+		this.$(".goOut").val(this.model.get("goOut"));
 
 
 	},

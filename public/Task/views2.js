@@ -404,7 +404,7 @@ var SetDuration_single = Backbone.View.extend({
         });   
 
 		var cur = this.model.get("givFreeTime");
-		var cur = cur != null ? cur : "03:00"
+		var cur = cur != null ? cur : "01:00";
 		this.$('.freeTimeInput').val(cur);
 		this.model.set({givFreeTime:cur});
 	},
