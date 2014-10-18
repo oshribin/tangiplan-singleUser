@@ -86,7 +86,7 @@ body{
 	width:70px;
 }
 .thumb{
-	height:28px;
+	height:40px;
 	width:28px;
 	float: right;
 	margin-left: 10px;
@@ -185,7 +185,7 @@ body{
 }
 
 .clock .dww{
-	height: 200px important;
+	height: 200px !important;
 }
 
 .clock .ios .dww .dw-li{
@@ -229,6 +229,7 @@ body{
 
 .givDuration .objIcon{
 	padding-right: 0px;
+	bottom: 4px;
 }
 
 .givDuration .exDuration .panel-body{
