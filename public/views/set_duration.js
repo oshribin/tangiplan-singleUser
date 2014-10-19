@@ -172,6 +172,7 @@ var SetDuration_page = Backbone.View.extend({
 			return Date.parse(task.get("lastDate"))
 		};
 		var checked = this.model.checked();
+		console.log(checked);
 		var sortChecked = _.chain(checked).sortBy(_iterator);
 		var numbers = [6,5,4,3,2,1];
 

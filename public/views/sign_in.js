@@ -6,7 +6,7 @@ var SignIn_page = Backbone.View.extend({
 		"click .connect": "connect",
 		"click .arange" : "arangeNav",
 		"click .checkList" : "checkListNav",
-		"click .setDuration" : "setDuration"
+		"click .setDuration" : "setDurationNav"
 	},
 
 	connect: function () {
@@ -21,7 +21,7 @@ var SignIn_page = Backbone.View.extend({
 		else
 			this.$(".message").html("שם משתמש לא נכון נסה שוב");
 	},
-	setDuration: function(){
+	setDurationNav: function(){
 		app.last = "signIn";
 		router.navigate("set_durations", true);
 	},
