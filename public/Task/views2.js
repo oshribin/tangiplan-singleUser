@@ -417,7 +417,6 @@ var SetDuration_single = Backbone.View.extend({
 		if(this.model.get("objectId") != this.attributes.objectId){
 				this.model = taskList.findWhere({objectId:this.attributes.objectId, userid:app.user.get("_id")});
 			}
-
 			var html = this.template(this.model.attributes);
 			var flag = this.model.get("overexcep");
 			var timeSpanref = {theme:"bootstrap",
