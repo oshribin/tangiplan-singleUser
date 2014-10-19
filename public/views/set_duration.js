@@ -183,19 +183,19 @@ var SetDuration_page = Backbone.View.extend({
 			}
 		});
 		var viewList = [];
-		var newView = function(task){
-			var oneView = new SetDuration_single({model:task, attributes:{objectId:cur}});
-			this.$(".setList").append(oneView.render().el);
-			viewList.push(oneView);
-		}
 		sortChecked.each(function(task){
 			if(task.get("lastObjectId")){
-				task.save({objectId:task.get("lastObjectId")}, {success:});
+				task.set({objectId:task.get("lastObjectId")});
+				var cur = task.get("lastObjectId");
 			}
 			else{
+				var cur = numbers.pop();
 				task.set({objectId:cur});
 			}
 
+			var oneView = new SetDuration_single({model:task, attributes:{objectId:cur}});
+			this.$(".setList").append(oneView.render().el);
+			viewList.push(oneView);
 		});
 		
 		this.viewList = viewList;
