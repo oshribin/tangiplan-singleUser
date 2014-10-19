@@ -197,6 +197,7 @@ var SetDuration_page = Backbone.View.extend({
 		});
 		
 		this.viewList = viewList;
+		app.user.updateLeft();
 
 		/*this.timeBar();
 		this.listenTo(this.model, "change", this.timeBar);*/

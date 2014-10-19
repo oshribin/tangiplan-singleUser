@@ -100,7 +100,7 @@ var User = Backbone.Model.extend({
 		var current = this.parsMill(this.timeLeft());
 		var sumDurations = this.sumDurations();
 		var timeLeft = this.parseVal(current - sumDurations);
-		var arangeTime = this.msToTime	(sumDurations);
+		var arangeTime = this.msToTime(sumDurations);
 		var endToArange = this.msToTime(this.parsMill(this.get("wakeUp"))*60 + sumDurations);
 
 		this.set({timeLeft:timeLeft});
