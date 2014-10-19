@@ -310,7 +310,9 @@ var SetDuration_single = Backbone.View.extend({
 
 			lastid = task.get("objectId");
 			task.set({"objectId":objectId},{silent:true});
+			task.set({"lastObjectId":objectId},{silent:true});
 			current.set({"objectId":lastid});
+			current.set({"lastObjectId":lastid});
 			task.trigger("change");
 			
 		},
