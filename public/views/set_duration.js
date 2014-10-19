@@ -184,9 +184,10 @@ var SetDuration_page = Backbone.View.extend({
 		});
 		var viewList = [];
 		sortChecked.each(function(task){
-			if(task.get("lastObjectId"))
+			if(task.get("lastObjectId")){
 				task.set({objectId:task.get("lastObjectId")});
 				var cur = task.get("lastObjectId");
+			}
 			else{
 				var cur = numbers.pop();
 				task.set({objectId:cur});
