@@ -186,11 +186,13 @@ var SetDuration_page = Backbone.View.extend({
 		sortChecked.each(function(task){
 			if(task.get("lastObjectId"))
 				task.set({objectId:task.get("lastObjectId")});
+				var cur = task.get("lastObjectId");
 			else{
-				task.set({objectId:numbers.pop()});
+				var cur = numbers.pop();
+				task.set({objectId:cur});
 			}
-			
-			var oneView = new SetDuration_single({model:task, attributes:{objectId:task.get("objectId")}});
+
+			var oneView = new SetDuration_single({model:task, attributes:{objectId:cur}});
 			this.$(".setList").append(oneView.render().el);
 			viewList.push(oneView);
 		});
