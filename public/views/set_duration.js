@@ -189,7 +189,7 @@ var SetDuration_page = Backbone.View.extend({
 			else{
 				task.set({objectId:numbers.pop()});
 			}
-
+			console.log(task.get("objectId"));
 			var oneView = new SetDuration_single({model:task, attributes:{objectId:task.get("objectId")}});
 			this.$(".setList").append(oneView.render().el);
 			viewList.push(oneView);

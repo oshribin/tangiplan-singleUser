@@ -413,9 +413,6 @@ var SetDuration_single = Backbone.View.extend({
 		app.user.updateLeft();
 		app.user.trigger("change");	
 		if(this.model.get("objectId") != this.attributes.objectId){
-				console.log(this.model.get("objectId"));
-				console.log(this.attributes.objectId);
-				console.log(taskList);
 				this.model = taskList.findWhere({objectId:this.attributes.objectId, userid:app.user.get("_id")});
 			}
 
