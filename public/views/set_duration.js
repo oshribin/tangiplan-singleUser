@@ -39,7 +39,7 @@ var SetDuration_page = Backbone.View.extend({
 				if (app.last == "signIn")
 					router.navigate("", true);
 				else
-					router.navigate("placeObject",true);
+					router.navigate("placeObject", true);
 			});
 			_.chain(this.model.checked())
 			.each(function(task){
@@ -154,7 +154,7 @@ var SetDuration_page = Backbone.View.extend({
         var cur = this.model.get("goOut");
 		var cur = cur != null ? cur : "08:00"
 		this.$('.goOut').val(cur);
-		this.model.set({wakeUp:cur});  
+		this.model.set({goOut:cur});  
 	},
 
 
