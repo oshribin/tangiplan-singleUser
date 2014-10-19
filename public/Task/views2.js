@@ -358,7 +358,7 @@ var SetDuration_single = Backbone.View.extend({
         });   
 
 		var cur = this.model.get("givDuration");
-		var cur = cur != null ? cur : "02:00"
+		var cur = cur != null ? cur : "02:00";
 		this.$('.input').val(cur);
 		this.model.set({givDuration:cur});
 	
