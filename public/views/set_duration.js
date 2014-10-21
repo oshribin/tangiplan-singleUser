@@ -36,7 +36,7 @@ var SetDuration_page = Backbone.View.extend({
 
 		else if(this.validate()){
 			var nav = _.after(this.model.checked().length, function(){
-				this.viewList.each(function(view){view.remove()});	
+				_.chain(this.viewList).each(function(view){view.remove()});	
 				if (app.last == "signIn")
 					router.navigate("", true);
 				else
