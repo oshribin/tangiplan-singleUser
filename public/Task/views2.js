@@ -421,7 +421,7 @@ var SetDuration_single = Backbone.View.extend({
 			var flag = this.model.get("overexcep");
 			var freeTimeflag = app.user.parsMill(this.model.get("exFreeTime")) > app.user.parsMill(this.model.get("givFreeTime")) * 1.2;
 			if(!this.model.get("exFreeTime"))
-				freeTimeflag = true;
+				freeTimeflag = false;
 
 			var timeSpanref = {theme:"bootstrap",
 							labels:["דקות", "שניות"],
