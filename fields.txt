@@ -5,6 +5,8 @@ objectId
 name
 givDuration
 exDuration
+givFreeTime
+exFreeTime
 startTime
 endTime
 overexcep

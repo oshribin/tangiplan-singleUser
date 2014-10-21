@@ -10,6 +10,8 @@ var logSchema = new Schema({
 			exception:String,
 			endedByUser:Boolean,
 			overexcep: Boolean,
+			givFreeTime: String,
+			exFreeTime: String,
 			wakeUp: String,
 			goOut: String,
 			date: String,

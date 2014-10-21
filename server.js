@@ -197,7 +197,7 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 				task.exDuration = parseVal(req.params.ex_duration);
 				task.exception = parseVal(_millexception);
 				task.endedByUser = req.params.flag == true ? true : false;
-				task.overexcep = Math.abs(_millexception) > (0.2*_parsDuration);
+				task.overexcep = _millexception > (0.2*_parsDuration);
 				task.lastDate = lastDate;
 				task.lastObjectId = objectId;
 				task.objectId = null;
@@ -280,6 +280,7 @@ router.route("/tasks/:task_id")
 				task.userid = req.body.userid;
 				task.exFreeTime = req.body.exFreeTime;
 				task.givFreeTime = req.body.givFreeTime;
+
 				
 				task.save(function(err,task){
 					if(err)
@@ -357,7 +358,7 @@ router.route("/tasks/:task_id")
 			};
 				var prev = sortChecked.find(_predicate);
 				var prev = prev._wrapped;
-	
+				console.log(prev);
 
 				if(prev){
 					otp = Date.parse(prev.lastDate);
@@ -366,7 +367,7 @@ router.route("/tasks/:task_id")
 					prev.exFreeTime = freeTime;
 					prev.save(function(err,task){
 						if (err)
-							console.log(err)
+					console.log(err);
 					});
 
 				}

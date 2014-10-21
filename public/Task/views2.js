@@ -419,6 +419,7 @@ var SetDuration_single = Backbone.View.extend({
 			}
 			var html = this.template(this.model.attributes);
 			var flag = this.model.get("overexcep");
+			var freeTimeflag = this.model.get("exFreeTime") > (this.model.get("givFreeTime") * 1.2);
 			var timeSpanref = {theme:"bootstrap",
 							labels:["דקות", "שניות"],
 							maxTime:1800000,
@@ -433,8 +434,8 @@ var SetDuration_single = Backbone.View.extend({
 
 			this.$(".exDuration").toggleClass("warning", flag == true);
 			this.$(".exDuration").toggleClass("success", flag == false);
-			this.$(".addon").toggleClass("warning", flag == true);
-			this.$(".addon").toggleClass("success", flag == false);
+			this.$(".addon").toggleClass("warning", freeTimeflag == true);
+			this.$(".addon").toggleClass("success", freeTimeflag == false);
 
 			this.listenToOnce(this.model,"change",this.render);
 
