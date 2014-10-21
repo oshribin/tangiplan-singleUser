@@ -31,12 +31,14 @@ var SetDuration_page = Backbone.View.extend({
 
 	next:function(){
 
+		var viewList = this.viewList
+		;
 		if(!this.model.timeValidate())
 			alert("שעת סיום התארגנות מאוחרת משעת היציאה שהגדרת באפשרותך לשנות שעת יציאה שעת התעוררות או את זמני המשימות והמעבר")
 
 		else if(this.validate()){
 			var nav = _.after(this.model.checked().length, function(){
-				_.chain(this.viewList).each(function(view){
+				_.chain(viewList).each(function(view){
 													view.remove();
 													console.log(view);
 													console.log("removed");
