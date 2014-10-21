@@ -190,7 +190,7 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 				res.send(err)
 			if(task){
 				var _parsDuration = parsMill(task.givDuration);
-				var _millexception = _parsDuration - req.params.ex_duration;
+				var _millexception = req.params.ex_duration - _parsDuration;
 				var objectId = task.objectId;
 				var lastDate = Date.now();
 
