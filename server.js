@@ -190,7 +190,7 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 				res.send(err)
 			if(task){
 				var _parsDuration = parsMill(task.givDuration);
-				var _millexception = req.params.ex_duration - _parsDuration;
+				var _millexception = req.params.ex_duration - _parsDuration
 				var objectId = task.objectId;
 				var lastDate = Date.now();
 
@@ -363,7 +363,7 @@ router.route("/tasks/:task_id")
 				if(prev){
 					otp = Date.parse(prev.lastDate);
 					tp = Date.parse(task.lastDate);
-					var freeTime = parseVal(tp -otp - parsMill(task.exDuration));
+					var freeTime = parseVal(tp - otp - parsMill(task.exDuration));
 					prev.exFreeTime = freeTime;
 					prev.save(function(err,task){
 						if (err)
