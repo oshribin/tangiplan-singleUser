@@ -367,27 +367,21 @@ router.route("/tasks/:task_id")
 					prev.exFreeTime = freeTime;
 					prev.save(function(err,task){
 						if (err)
-					console.log(err);
-					Log.findOne({date:getYMD(prev.lastDate)}, function(err, log){
-						if(err)
 							console.log(err);
-						else if(log){
-							log.exfreeTime = freeTime;
-							log.save(function(err, log){
-								if(err)
-									console.log(err);
-
-							});
-						}
+						Log.findOne({date:getYMD(prev.lastDate)}, function(err, log){
+							if(err)
+								console.log(err);
+							else if(log){
+								log.exfreeTime = freeTime;
+								log.save(function(err, log){
+									if(err)
+										console.log(err);
+								});	
+							}
+						});
 					});
-					});
-
 				}
-
-
 			}
-
-
 		});
 	}
 
