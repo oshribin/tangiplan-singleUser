@@ -214,6 +214,7 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 							exception: task.exception,
 							endedByUser: task.endedByUser,
 							overexcep: task.overexcep,
+							givFreeTime: task.givFreeTime,
 						});
 						
 						var prev = freeTime(task);
@@ -372,7 +373,7 @@ router.route("/tasks/:task_id")
 							if(err)
 								console.log(err);
 							else if(log){
-								log.exfreeTime = freeTime;
+								log.exFreeTime = freeTime;
 								log.save(function(err, log){
 									if(err)
 										console.log(err);
