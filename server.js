@@ -373,6 +373,11 @@ router.route("/tasks/:task_id")
 							console.log(err)
 						else if(log){
 							log.exfreeTime = freeTime;
+							log.save(err, log){
+								if(err)
+									console.log(err);
+								
+							}
 						}
 					});
 					});
