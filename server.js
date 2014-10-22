@@ -370,14 +370,14 @@ router.route("/tasks/:task_id")
 					console.log(err);
 					Log.findOne({date:getYMD(prev.lastDate)}, function(err, log){
 						if(err)
-							console.log(err)
+							console.log(err);
 						else if(log){
 							log.exfreeTime = freeTime;
-							log.save(err, log){
+							log.save(function(err, log){
 								if(err)
 									console.log(err);
-								
-							}
+
+							});
 						}
 					});
 					});
