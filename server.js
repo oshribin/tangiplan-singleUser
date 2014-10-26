@@ -109,34 +109,34 @@ router.route("/users/:user_id")
 				user.wakeUp = req.body.wakeUp;
 				user.goOut = req.body.goOut;
 				user.clUsage = req.body.clUsage;
-				user.timeLeft = req.body.timeLeft,
-				user.arangeTime = req.body.arangeTime,
-				user.actGoOut = req.body.actGoOut,
-				user.endToArange = req.body.endToArange,
+				user.timeLeft = req.body.timeLeft;
+				user.arangeTime = req.body.arangeTime;
+				user.actGoOut = req.body.actGoOut;
+				user.endToArange = req.body.endToArange;
+				
+				if(Date.parse(lastGoOut) !== Date.parse(req.body.actGoOut)){
+					var userlog = new UserLog({
+					name:user.name,
+					wakeUp:req.body.wakeUp,
+					goOut:req.body.goOut,
+					timeLeft:req.body.timeLeft,
+					arangeTime:req.body.arangeTime,
+					endToArange:req.body.endToArange,
+					clUsage:req.body.clUsage,
+					actGoOut:req.body.actGoOut,
+					});
+					userlog.save(function(err, userlog){
+						if(err)
+							res.send(err);
+					});
+					user.clUsage = 0;
+				}
 
 				user.save(function(err,user){
 					if(err)
 						res.send(err)
-					else if(user){
-						if(Date.parse(lastGoOut) !== Date.parse(user.actGoOut)){
-							var userlog = new UserLog({
-							name:user.name,
-							wakeUp:req.body.wakeUp,
-							goOut:req.body.goOut,
-							timeLeft:req.body.timeLeft,
-							arangeTime:req.body.arangeTime,
-							endToArange:req.body.endToArange,
-							clUsage:req.body.clUsage,
-							actGoOut:req.body.actGoOut,
-							});
-							userlog.save(function(err, userlog){
-								if(err)
-							res.send(err);
-							});
-						}
-
+					else if(user)
 						res.json(user);
-					}
 				});
 			}
 		});

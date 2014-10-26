@@ -115,7 +115,10 @@
         <script id = "titleBar" type="text/x-handlebars-template">
           <div class = "row">
             <div class = "title-bar col-md-12 col-xs-12">
-              {{title}}
+             <div class = "title col-xs-offset-4 col-xs-4">
+                {{title}}
+             </div>
+              <span class = "col-xs-offset-2 col-xs-2 glyphicon glyphicon-home homeNav"></span>
             </div>
           </div>   
         </script>
@@ -127,8 +130,9 @@
             <h1 class = "header"> עליך לבחור עד 6 משימות</h1>
             <ul class = "simpleList col-md-12 col-xs-12"></ul>
             <div class="input-group input-group-lg add-row">
-              <input type="text" class="newTask form-control" value placeholder="הכנס משימה חדשה" maxlength="26"/>
               <span class="input-group-addon add"><span class = "glyphicon glyphicon-plus"></span>  הוסף משימה</span>
+              <input type="text" class="newTask form-control" value placeholder="הכנס משימה חדשה" maxlength="26"/>
+              
             </div>
             <div class = "message" style = "text-align:right"></div>
         </script>
@@ -164,7 +168,7 @@
             </div>            
 
                 <div class="input-group setTime col-md-3 col-xs-3 ">
-                 <span class="glyphicon input-group-addon glyphicon-save addon"></span>
+                 <span class="glyphicon input-group-addon glyphicon-sort addon"></span>
                  <input type="text" class="input form-control" placeholder="">
                 </div>
 
@@ -250,7 +254,7 @@
              </ul>
 
              <div class = "row block total">
-             <span class="glyphicon glyphicon-save addon col-xs-offset-1 col-xs-1 toggleAll"></span>
+             <span class="glyphicon glyphicon-sort addon col-xs-offset-1 col-xs-1 toggleAll"></span>
               <div class="col-xs-2 settings">
                 <div class = "panel-body">
                   כולל זמני מעבר  
@@ -333,6 +337,17 @@
               </div>  
          </script>
 
+        
+
+        <script id="parentCheckList" type="text/x-handlebars-template">
+          <div class = "message"></div>
+          <div class="input-group input-group-lg login col-xs-offset-3 col-xs-6">
+          <input type="text" class="username form-control" placeholder="שם משתמש">
+          <span class="connect input-group-addon">התחבר</span>
+          </div>
+          <ul class = "checkList col-md-12 col-xs-12"></ul>
+        </script>
+
 
 
         
@@ -412,6 +427,7 @@
         <script src="public/views/sign_in.js"></script>
         <script src="public/views/checkList.js"></script>
         <script src="public/views/place_object.js"></script>
+        <script src="public/views/parentCheckList.js"></script>
         <script src="public/Task/router.js"></script>
 
     </body>

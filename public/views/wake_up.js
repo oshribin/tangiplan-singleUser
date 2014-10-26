@@ -5,6 +5,11 @@ var WakeUp_page = Backbone.View.extend({
 	events:{
 		"click .next":"next",
 		"click .back":"back",
+		"click .homeNav" : "home",
+	},
+
+	home: function(){
+		router.navigate("",true);
 	},
 
 	back: function(){
@@ -55,7 +60,7 @@ var WakeUp_page = Backbone.View.extend({
 
 	initialize: function(){
 		this.render();
-	}
+	},
 
 });
 

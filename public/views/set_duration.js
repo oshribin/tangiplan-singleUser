@@ -6,7 +6,12 @@ var SetDuration_page = Backbone.View.extend({
 		"click .next":"next",
 		"click .back":"back",
 		"click .toggleAll" : "toggleAll",
+		"click .homeNav" : "home",
 		
+	},
+
+	home: function(){
+		router.navigate("",true);
 	},
 
 	toggleAll: function(){
@@ -31,8 +36,7 @@ var SetDuration_page = Backbone.View.extend({
 
 	next:function(){
 
-		var viewList = this.viewList
-		;
+		var viewList = this.viewList;
 		if(!this.model.timeValidate())
 			alert("שעת סיום התארגנות מאוחרת משעת היציאה שהגדרת באפשרותך לשנות שעת יציאה שעת התעוררות או את זמני המשימות והמעבר")
 
@@ -82,7 +86,7 @@ var SetDuration_page = Backbone.View.extend({
 
 
 	initialize: function(){
-
+		var back = app.last === "signIn" ? "לעמוד הבית" : "לתכנון משימות";
 		var comTitle = Handlebars.compile($("#titleBar").html());
 		var title = comTitle({title:"הגדר זמנים"});
 		var comNav = Handlebars.compile($("#bottom-nav").html());

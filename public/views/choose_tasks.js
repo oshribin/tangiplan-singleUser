@@ -8,6 +8,11 @@ var ChooseTaskView_page = Backbone.View.extend({
 		"click .next":"next",
 		"click .back":"back",
 		"click .add":"create_new_task",
+		"click .homeNav":"home",
+	},
+
+	home: function(){
+		router.navigate("",true);
 	},
 
 	back: function(){

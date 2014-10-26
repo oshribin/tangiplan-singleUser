@@ -9,6 +9,13 @@ var Router = Backbone.Router.extend({
 		"match_objects":"matchObjects",
 		"set_durations":"setDurations",
 		"placeObject": "placeObject",
+		"parentCheckList" : "parentChecklist",
+		},
+
+		parentChecklist: function(){
+			var view = new ParentCheckList_page();
+			app.render(view);
+
 		},
 
 		placeObject: function(){
