@@ -112,9 +112,9 @@ router.route("/users/:user_id")
 				user.timeLeft = req.body.timeLeft;
 				user.arangeTime = req.body.arangeTime;
 				user.actGoOut = req.body.actGoOut;
-				user.endToArange = req.body.endToArange;
+				user.endToArange = req.body.endToArange;	
 				
-				if(Date.parse(lastGoOut) !== Date.parse(req.body.actGoOut)){
+				if(Date.parse(lastGoOut) !== Date.parse(user.actGoOut)){
 					var userlog = new UserLog({
 					name:user.name,
 					wakeUp:req.body.wakeUp,
