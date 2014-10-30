@@ -35,7 +35,7 @@ app.use(function(req, res, next){
 var router = express.Router();
 
 router.get("/", function(req, res) {
-	res.sendfile("index.html");
+	res.sendfile("demoindex.html");
 	
 });
 
