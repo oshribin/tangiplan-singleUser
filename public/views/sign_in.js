@@ -11,7 +11,9 @@ var SignIn_page = Backbone.View.extend({
 
 	connect: function () {
 		var name = this.$(".username").val();
+		var password = this.$(".password").val();
 		var user = userList.findWhere({name:name});
+		$.post("/login",{name:name,password:password});
 
 		if(user){
 			app.user = user;
