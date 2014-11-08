@@ -1,73 +1,86 @@
 var express = require("express");
-var app = express();
 var bodyParser = require("body-parser");
+var cookieParser = require("cookie-parser");
+var session = require("express-session");
+var app = express();
 var mongoose = require("mongoose");
-var Task = require("./models/task");
+var Task = require("./models/task"); 
 var Log = require("./models/log");
 var csv = require("csv");
 var User = require("./models/user");
 var UserLog = require("./models/userlog");
 var _ = require("underscore");
-//var hash = require("./pass").hash;
-//var session = require("express-sesssion");
+var passport = require("passport");
+var LocalStrategy = require("passport-local").Strategy;
 
 mongoose.connect("mongodb://localhost:27017/test");
 
 app.use(bodyParser());
-/*app.use(session({
-	resave: false,
-	saveUninitializied:false,
-	secret: "secret"
-}));
-
-app.use(function(req, res, next){
-	var err = req.session.error;
-	var msg = req.session.success;
-	delete req.session.error;
-	delete req.session.success;
-	res.locals.message = "";
-	if(err) res.locals.message = "<p class = 'msg error'>" + err + "</p>";
-	if(msg) res.locals.message = "<p class = 'msg success'>" + msg + "</p>";
-	next();
-});*/
+app.use(session({secret: "keyboard cat"}));
+app.use(cookieParser());
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 var router = express.Router();
 
 router.get("/", function(req, res) {
 	res.sendfile("index.html");
-	
 });
+
+app.post('/login',
+  passport.authenticate('local', {
+    successRedirect: '/loginSuccess',
+    failureRedirect: '/loginFailure'
+  })
+);
+ 
+app.get('/loginFailure', function(req, res, next) {
+  res.send('Failed to authenticate');
+});
+ 
+app.get('/loginSuccess', function(req, res, next) {
+  res.send('Successfully authenticated');
+});
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+ 
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.use(new LocalStrategy(function(username, password,done){
+	process.nextTick(function(){
+
+		User.findOne({'name':username}, function(err,user){
+			if(err){
+				return done(err);
+			}
+
+			if(!user){
+				return done(null,false);
+			}
+			if(user.pass != password){
+				return done(null, false);
+			}
+			return done(null,user);
+		});
+	});
+}));	
+
+
 
 
 router.use("/public", express.static("public"));
-
-/*router.route("/users")
-
-	.post(function(req,res){
-		hash(req.body.pass, function(err,salt,hash){
-		if(err)
-			console.log(err);
-		var user = new User({
-			name: req.body.name,
-			salt: salt,
-			hash: hash,
-		});
-
-		user.save(function(err){
-			if(err)
-				console.log(err);
-			
-		})
-
-
-	})*/
 
 router.route("/users")
 
 	.post(function(req,res){
 		var user = new User({
 			name: req.body.name,
+			pass: req.body.pass,
 		});
 
 		user.save(function(err){
@@ -112,8 +125,8 @@ router.route("/users/:user_id")
 				user.timeLeft = req.body.timeLeft;
 				user.arangeTime = req.body.arangeTime;
 				user.actGoOut = req.body.actGoOut;
-				user.endToArange = req.body.endToArange;	
-				
+				user.endToArange = req.body.endToArange;
+
 				if(Date.parse(lastGoOut) !== Date.parse(user.actGoOut)){
 					var userlog = new UserLog({
 					name:user.name,
@@ -151,6 +164,7 @@ router.route("/tasks")
 			givDuration:req.body.givDuration,
 			objectId:req.body.objectId,
 			userid:req.body.userid,
+			set_id:req.body.set_id,
 
 		});
 
@@ -162,7 +176,8 @@ router.route("/tasks")
 	})
 
 	.get(function(req, res){
-		Task.find(function(err, tasks){
+		var id = req.session.passport.user._id;
+		Task.find({userid:id},function(err, tasks){
 			if(err)
 				res.send(err);
 			res.json(tasks);
@@ -170,10 +185,10 @@ router.route("/tasks")
 	});	
 
 
-router.route("/getDuration/:object_id")
+router.route("/getDuration/:object_id/:set_id")
 
 	.get(function(req, res){
-		Task.findOne({objectId:req.params.object_id}, function(err, task){
+		Task.findOne({objectId:req.params.object_id, set_id:req.params.set_id}, function(err, task){
 			if(err)
 				res.send(err);
 			if(task && task.givDuration)
@@ -182,17 +197,17 @@ router.route("/getDuration/:object_id")
 		});
 	});
 
-router.route("/setDuration/:object_id/:ex_duration/:flag")
+router.route("/setDuration/:object_id/:set_id/:ex_duration/:lastDate/:flag")
 
 	.get(function(req, res){
-		Task.findOne({objectId:req.params.object_id}, function(err, task){
+		Task.findOne({objectId:req.params.object_id, set_id:req.params.set_id}, function(err, task){
 			if(err)
 				res.send(err)
 			if(task){
 				var _parsDuration = parsMill(task.givDuration);
-				var _millexception = req.params.ex_duration - _parsDuration
+				var _millexception = req.params.ex_duration - _parsDuration;
 				var objectId = task.objectId;
-				var lastDate = Date.now();
+				var lastDate = req.params.lastDate;
 
 				task.exDuration = parseVal(req.params.ex_duration);
 				task.exception = parseVal(_millexception);
