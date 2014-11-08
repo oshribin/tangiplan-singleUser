@@ -10,6 +10,7 @@ var userSchema = new Schema({
 			arangeTime:String,
 			actGoOut:Date,
 			endToArange:String,
+			pass:String,
 
 });
 

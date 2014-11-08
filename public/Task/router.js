@@ -108,6 +108,13 @@ var App = Backbone.View.extend({
 
 	user: null,
 
+	initialize: function(){
+		this.userList = new Users;
+		this.taskList = new Tasks;
+		this.router = new Router();
+		this.userList.fetch();
+	},
+
 	render: function(view){
 		var prev = this.curView || null;
 
@@ -118,11 +125,10 @@ var App = Backbone.View.extend({
 		this.curView = view;
 	},
 });
-	var userList = new Users;
-	var taskList = new Tasks;
-	var app = new App({el:(".container")});
-	var router = new Router();
-	Backbone.history.start();
+
+var app = new App({el:(".container")});
+Backbone.history.start();
+
 
 
 

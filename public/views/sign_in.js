@@ -12,17 +12,23 @@ var SignIn_page = Backbone.View.extend({
 	connect: function () {
 		var name = this.$(".username").val();
 		var password = this.$(".password").val();
-		var user = userList.findWhere({name:name});
-		$.post("/login",{name:name,password:password});
+		var user = app.userList.where({name:name});
+		var that = this;
+		var login = function(data){
+			if(data == "Successfully authenticated"){
+				app.user = user;
+				app.taskList.fetch();
+				that.btncntrl();
 
-		if(user){
-			app.user = user;
-			app.user.setTaskList();
-			taskList.fetch({success:this.btncntrl});
-		}
-		else
-			this.$(".message").html("שם משתמש לא נכון נסה שוב");
+			}
+
+			else
+				that.$(".message").html("שם משתמש או סיסמה לא נכונים נסה שוב");
+		};
+
+		$.post("/login",{username:name,password:password},login);
 	},
+
 	setDurationNav: function(){
 		app.last = "signIn";
 		router.navigate("set_durations", true);
@@ -38,13 +44,13 @@ var SignIn_page = Backbone.View.extend({
 
 	btncntrl: function(){
 		this.$(".login").remove();
-		this.$("h1").show();
 		this.$(".message").remove();
-		if(app.user.checked().length == 0)
+		this.$("h1").show();
+
+		if(app.taskList.where({checked:true}).length == 0){
 			this.$(".setDuration").prop("disabled",true);
-		if(_.chain(app.user.checked()).length == 0)
 			this.$(".checkList").prop("disabled",true);
-			
+		}	
 		this.$(".btn").show();
 		},
 
@@ -55,10 +61,7 @@ var SignIn_page = Backbone.View.extend({
 		this.$el.append(this.template);
 		this.$(".btn").hide();
 		this.$("h1").hide();
-		userList.fetch();
-		if(app.user){
+		if(app.user)
 			this.btncntrl();
-		}
-	
 	},
 });
