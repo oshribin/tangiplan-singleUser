@@ -9,7 +9,7 @@ var CheckList_page = Backbone.View.extend({
 	},
 
 	home: function(){
-		router.navigate("",true);
+		app.router.navigate("",true);
 	},
 
 	end: function(){

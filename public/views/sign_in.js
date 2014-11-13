@@ -31,15 +31,15 @@ var SignIn_page = Backbone.View.extend({
 
 	setDurationNav: function(){
 		app.last = "signIn";
-		router.navigate("set_durations", true);
+		app.router.navigate("set_durations", true);
 	},
 
 	arangeNav: function(){
-		router.navigate("wake_up", true);
+		app.router.navigate("wake_up", true);
 	},
 
 	checkListNav: function(){
-		router.navigate("checkList", true);
+		app.router.navigate("checkList", true);
 	},
 
 	btncntrl: function(){

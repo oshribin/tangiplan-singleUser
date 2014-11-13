@@ -12,11 +12,11 @@ var ChooseTaskView_page = Backbone.View.extend({
 	},
 
 	home: function(){
-		router.navigate("",true);
+		app.router.navigate("",true);
 	},
 
 	back: function(){
-		router.navigate("go_out",true);
+		app.router.navigate("go_out",true);
 
 	},
 
@@ -25,7 +25,7 @@ var ChooseTaskView_page = Backbone.View.extend({
 		var flag = this.validate();
 		if(flag){
 			var nav = _.after(taskList.length, function(){
-				router.navigate("set_durations", true);
+				app.router.navigate("set_durations", true);
 				app.last = "chooseTask";
 			});
 			taskList.each(function(task){

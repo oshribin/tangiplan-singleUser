@@ -7,7 +7,7 @@ var placeObject_page = Backbone.View.extend({
 	},
 
 	home: function(){
-		router.navigate("",true);
+		app.router.navigate("",true);
 	},
 
 	initialize: function () {

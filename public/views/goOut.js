@@ -8,11 +8,11 @@ var GoOut_page = Backbone.View.extend({
   },
 
     home: function(){
-    router.navigate("",true);
+    app.router.navigate("",true);
   },
 
   back: function(){
-    router.navigate("wake_up",true);
+    app.router.navigate("wake_up",true);
   },
 
 
@@ -21,7 +21,7 @@ var GoOut_page = Backbone.View.extend({
     var curgoOut = this.$("input").val();
     this.model.save({goOut:curgoOut},{success:function(){
        if(app.user.parsMill(app.user.timeLeft()) > 0)
-          router.navigate("choose_tasks", true);
+          app.router.navigate("choose_tasks", true);
         else
           alert("הזנת שעת התעוררות ל-"+app.user.get("wakeUp")+" עליך להזין שעת יציאה מאוחרת משעה זו")
     }});

@@ -11,7 +11,7 @@ var SetDuration_page = Backbone.View.extend({
 	},
 
 	home: function(){
-		router.navigate("",true);
+		app.router.navigate("",true);
 	},
 
 	toggleAll: function(){
@@ -44,9 +44,9 @@ var SetDuration_page = Backbone.View.extend({
 			var nav = _.after(this.model.checked().length, function(){
 				_.chain(viewList).each(function(view){view.remove()});
 				if (app.last == "signIn")
-					router.navigate("", true);
+					app.router.navigate("", true);
 				else
-					router.navigate("placeObject", true);
+					app.router.navigate("placeObject", true);
 			});
 			_.chain(this.model.checked())
 			.each(function(task){
@@ -78,9 +78,9 @@ var SetDuration_page = Backbone.View.extend({
 	back: function(){
 		_.chain(this.viewList).each(function(view){view.remove()});
 		if(app.last === "signIn")
-			router.navigate("",true);
+			app.router.navigate("",true);
 		else
-			router.navigate("choose_tasks", true);
+			app.router.navigate("choose_tasks", true);
 	},
 
 
