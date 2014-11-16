@@ -16,10 +16,9 @@ var SignIn_page = Backbone.View.extend({
 		var that = this;
 		var login = function(data){
 			if(data == "Successfully authenticated"){
-				app.user = user[0	];
-				app.taskList.fetch();
-				that.btncntrl();
-
+				app.user = user[0];
+				app.taskList.fetch({success:that.btncntrl()});
+				
 			}
 
 			else
