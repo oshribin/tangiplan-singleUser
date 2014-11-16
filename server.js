@@ -185,10 +185,10 @@ router.route("/tasks")
 	});	
 
 
-router.route("/getDuration/:object_id/:set_id")
+router.route("/getDuration/:object_id/")
 
 	.get(function(req, res){
-		Task.findOne({objectId:req.params.object_id, set_id:req.params.set_id}, function(err, task){
+		Task.findOne({objectId:req.params.object_id}, function(err, task){
 			if(err)
 				res.send(err);
 			if(task && task.givDuration)
@@ -197,17 +197,17 @@ router.route("/getDuration/:object_id/:set_id")
 		});
 	});
 
-router.route("/setDuration/:object_id/:set_id/:ex_duration/:lastDate/:flag")
+router.route("/setDuration/:object_id/:ex_duration/:flag")
 
 	.get(function(req, res){
-		Task.findOne({objectId:req.params.object_id, set_id:req.params.set_id}, function(err, task){
+		Task.findOne({objectId:req.params.object_id}, function(err, task){
 			if(err)
 				res.send(err)
 			if(task){
 				var _parsDuration = parsMill(task.givDuration);
 				var _millexception = req.params.ex_duration - _parsDuration;
 				var objectId = task.objectId;
-				var lastDate = req.params.lastDate;
+				var lastDate = Date.now();
 
 				task.exDuration = parseVal(req.params.ex_duration);
 				task.exception = parseVal(_millexception);
