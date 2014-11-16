@@ -9,17 +9,17 @@ var WakeUp_page = Backbone.View.extend({
 	},
 
 	home: function(){
-		router.navigate("",true);
+		app.router.navigate("",true);
 	},
 
 	back: function(){
-		router.navigate("",true);
+		app.router.navigate("",true);
 	},
 
 	next: function(){
 		var current = this.$("input").val();
 		console.log(current);
-		var _rout = function(){router.navigate("go_out", true)};
+		var _rout = function(){app.router.navigate("go_out", true)};
 		
 		this.model.save({wakeUp:current},{success:_rout});
 
