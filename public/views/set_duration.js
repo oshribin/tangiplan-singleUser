@@ -100,7 +100,7 @@ var SetDuration_page = Backbone.View.extend({
 		this.$el.append(nav);
 		
 		this.build = _.bind(this.build, this);
-		taskList.fetch({success:this.build});
+		app.taskList.fetch({success:this.build});
 		this.listenTo(this.model, "change", this.updateSpan);
 		this.set_wakeUpClock();
 		this.set_goOutClock();
