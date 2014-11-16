@@ -23,7 +23,7 @@ var ParentCheckList_page = Backbone.View.extend({
 		if(user){
 			app.user = user;
 			app.user.setTaskList();
-			taskList.fetch({success:this.build});
+			app.taskList.fetch({success:this.build});
 		}
 		else
 			this.$(".message").html("שם משתמש לא נכון נסה שוב");
@@ -34,7 +34,7 @@ var ParentCheckList_page = Backbone.View.extend({
 		this.$(".login").remove();
 		this.$(".message").remove();
 
-		this.checked = _.chain(taskList
+		this.checked = _.chain(app.taskList
 			.where({userid:app.user.get("_id"),checked:true}));
 
 		var _iterator = function(task){

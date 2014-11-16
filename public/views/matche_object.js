@@ -15,10 +15,10 @@
 
 		var flag = this.validate();
 		if(flag){
-			var nav = _.after(taskList.length, function(){
+			var nav = _.after(app.taskList.length, function(){
 				app.router.navigate("set_durations", true);
 			});
-			taskList.each(function(task){
+			app.taskList.each(function(task){
 				task.save(task.attributes,{success:nav});
 			});			
 		}
@@ -28,7 +28,7 @@
 
 	validate: function(){
 		var flag = true;
-		var checked = taskList.where({checked:true});
+		var checked = app.taskList.where({checked:true});
 		_.chain(checked).each(function(task){
 			if(!(task.get("objectId")))
 				flag = false
@@ -38,7 +38,7 @@
 	},
 
 	build: function(){
-		_.chain(taskList.where({userid:app.user.get("_id")}))
+		_.chain(app.taskList.where({userid:app.user.get("_id")}))
 		.each(function(task){
 			task.save({objectId:null});
 
@@ -61,7 +61,7 @@
 		this.$el.append(nav);
 		this.$el.append(this.template);
 
-		taskList.fetch({success: this.build});
+		app.taskList.fetch({success: this.build});
 
 	}, 
 

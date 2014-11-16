@@ -24,11 +24,11 @@ var ChooseTaskView_page = Backbone.View.extend({
 
 		var flag = this.validate();
 		if(flag){
-			var nav = _.after(taskList.length, function(){
+			var nav = _.after(app.taskList.length, function(){
 				app.router.navigate("set_durations", true);
 				app.last = "chooseTask";
 			});
-			taskList.each(function(task){
+			app.taskList.each(function(task){
 				task.save(task.attributes, {success:nav});	
 			});
 		}
@@ -40,7 +40,7 @@ var ChooseTaskView_page = Backbone.View.extend({
 
 	validate: function(){
 		var flag = false;
-		taskList.each(function(task){
+		app.taskList.each(function(task){
 			if(task.get("checked")){
 				flag = true;
 			}
@@ -53,10 +53,10 @@ var ChooseTaskView_page = Backbone.View.extend({
 		var name = this.$(".newTask").val();
 		var userid = app.user.get("_id");
 		if(this.checked.length == 6){
-			task = taskList.create({"name":name, "disable":true, "userid":userid});
+			task = app.taskList.create({"name":name, "disable":true, "userid":userid});
 		}
 		else
-			task = 	taskList.create({"name":name, "userid":userid});
+			task = 	app.taskList.create({"name":name, "userid":userid});
 		this.$(".newTask").val("");
 
 			
@@ -70,7 +70,7 @@ var ChooseTaskView_page = Backbone.View.extend({
 	},
 	
 	add_all: function(){
-		_.chain(taskList.where({userid:app.user.get("_id")})).each(function(task){
+		_.chain(app.taskList.where({userid:app.user.get("_id")})).each(function(task){
 			var oneView = new ChooseTaskView_single({model:task});
 			this.$(".simpleList").append(oneView.render().el);
 		});
@@ -85,10 +85,10 @@ var ChooseTaskView_page = Backbone.View.extend({
 		this.$el.html(title);
 		this.$el.append(nav);
 		this.$el.append(this.template);
-		taskList.fetch({success:this.add_all, silent:true});
+		app.taskList.fetch({success:this.add_all, silent:true});
 		
-		this.listenTo(taskList, "add", this.add_one);
-		this.listenTo(taskList, "change", this.render);
+		this.listenTo(app.taskList, "add", this.add_one);
+		this.listenTo(app.taskList, "change", this.render);
 		this.render();
 
 
@@ -101,15 +101,15 @@ var ChooseTaskView_page = Backbone.View.extend({
 	},
 
 	realese: function(){
-		taskList.each(function(model){
+		app.taskList.each(function(model){
 			model.set({"disable":false});
 		});
 	},
 
 
 	render: function(){
-		this.checked = taskList.where({userid:app.user.get("_id"),checked:true});
-		this.unchecked = taskList.where({userid:app.user.get("_id"),checked:false});
+		this.checked = app.taskList.where({userid:app.user.get("_id"),checked:true});
+		this.unchecked = app.taskList.where({userid:app.user.get("_id"),checked:false});
 		if (this.checked.length == 6){
 			this.disable_unchecked();
 			this.$(".message").html("הגעת למקסימום משימות אפשריות")

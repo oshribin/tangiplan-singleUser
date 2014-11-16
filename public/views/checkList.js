@@ -20,7 +20,7 @@ var CheckList_page = Backbone.View.extend({
 
 	render: function(){
 		this.model.clUsageInc();
-		taskList.fetch({success:this.build});
+		app.taskList.fetch({success:this.build});
 	},
 
 
@@ -32,12 +32,12 @@ var CheckList_page = Backbone.View.extend({
 		this.$el.html(title);
 		this.$el.append(this.template);
 		this.build = _.bind(this.build,this);
-		taskList.fetch({success:this.build});
+		app.taskList.fetch({success:this.build});
 	},
 
 	build: function(){
 		this.$(".checkList").html("");
-		this.checked = _.chain(taskList
+		this.checked = _.chain(app.taskList
 			.where({userid:this.model.get("_id"),checked:true}));
 
 
