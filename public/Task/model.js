@@ -54,18 +54,18 @@ var User = Backbone.Model.extend({
 	setTaskList:function(){
 		var userid = this.get("_id");
 		var _func = function(){
-			this.set({taskList:taskList.where({userid:userid})});
+			this.set({taskList:app.taskList.where({userid:userid})});
 		};
 		_func = _.bind(_func,this);
 
-		taskList.fetch({success:_func});
+		app.taskList.fetch({success:_func});
 
 
 	},
 
 	checked: function(){
 		var userid = this.get("_id");
-		return taskList.where({userid:userid, checked:true});
+		return app.taskList.where({userid:userid, checked:true});
 
 
 		
@@ -86,7 +86,7 @@ var User = Backbone.Model.extend({
 	},
 
 	sumDurations: function(){
-		var taskTosum = taskList.where({userid:this.get("_id"),checked:true});
+		var taskTosum = app.taskList.where({userid:this.get("_id"),checked:true});
 		var iterator = function(memo, task){
 			return memo + this.parsMill(task.get("givDuration")) + this.parsMill(task.get("givFreeTime"));
 		};

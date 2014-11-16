@@ -90,24 +90,24 @@ var MatcheObjectViewV2_single = Backbone.View.extend({
 
 
 	update: function(){
-		var current = taskList.findWhere({"objectId" : this.attributes.number});
+		var current = app.taskList.findWhere({"objectId" : this.attributes.number});
 		var title = current ? current.get("name") : "ללא משימה";
 			this.$(".taskTitle").html(title);
 
 	},
 	
 	initialize: function(){
-		this.listenTo(taskList, "change" , this.update)
+		this.listenTo(app.taskList, "change" , this.update)
 	},
 
 
 	clickHandler: function(event){
 		this.$(".collapse").collapse("hide");
-		var current = taskList.findWhere({"objectId":this.attributes.number});
+		var current = app.taskList.findWhere({"objectId":this.attributes.number});
 		if(current)
 			current.set({"objectId":null});
 		var taskName =  $(event.currentTarget).html();
-		var task = taskList.findWhere({name:taskName});
+		var task = app.taskList.findWhere({name:taskName});
 		if(task)
 			task.set({"objectId":this.attributes.number});
 	},
@@ -117,7 +117,7 @@ var MatcheObjectViewV2_single = Backbone.View.extend({
 	render: function () {
 		var html = this.template({number:this.attributes.number});
 		this.$el.html(html);
-		this.checked = taskList.where({userid:app.user.get("_id"),checked:true});
+		this.checked = app.taskList.where({userid:app.user.get("_id"),checked:true});
 		var iterator = function(task){
 			var li = Handlebars.compile($("#tfoV2").html());
 			li = li(task.attributes);
@@ -305,7 +305,7 @@ var SetDuration_single = Backbone.View.extend({
 			var objectId = this.attributes.objectId;
 			var current = this.model;
 			var taskName =  $(event.currentTarget).html();
-			var task = taskList.findWhere({name:taskName});
+			var task = app.taskList.findWhere({name:taskName});
 			var lastid;
 
 			lastid = task.get("objectId");
@@ -415,7 +415,7 @@ var SetDuration_single = Backbone.View.extend({
 		app.user.updateLeft();
 		app.user.trigger("change");	
 		if(this.model.get("objectId") != this.attributes.objectId){
-				this.model = taskList.findWhere({objectId:this.attributes.objectId, userid:app.user.get("_id")});
+				this.model = app.taskList.findWhere({objectId:this.attributes.objectId, userid:app.user.get("_id")});
 			}
 			var html = this.template(this.model.attributes);
 			var flag = this.model.get("overexcep");
