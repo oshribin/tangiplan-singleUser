@@ -47,6 +47,7 @@ var SignIn_page = Backbone.View.extend({
 		this.$("h1").show();
 
 		if(app.taskList.where({checked:true}).length == 0){
+			console.log("here");
 			this.$(".setDuration").prop("disabled",true);
 			this.$(".checkList").prop("disabled",true);
 		}	
