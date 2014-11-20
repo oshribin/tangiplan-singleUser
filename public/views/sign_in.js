@@ -17,7 +17,8 @@ var SignIn_page = Backbone.View.extend({
 		var login = function(data){
 			if(data == "Successfully authenticated"){
 				app.user = user[0];
-				app.taskList.fetch({success:that.btncntrl()});
+				app.taskList.fetch({success:that.btncntrl});
+
 				
 			}
 
@@ -47,7 +48,7 @@ var SignIn_page = Backbone.View.extend({
 		this.$("h1").show();
 
 		if(app.taskList.where({checked:true}).length == 0){
-			console.log("here");
+			console.log(app.taskList.length);
 			this.$(".setDuration").prop("disabled",true);
 			this.$(".checkList").prop("disabled",true);
 		}	

@@ -185,15 +185,18 @@ router.route("/tasks")
 	});	
 
 
-router.route("/getDuration/:object_id/")
+router.route("/getDuration/:object_id")
 
 	.get(function(req, res){
 		Task.findOne({objectId:req.params.object_id}, function(err, task){
 			if(err)
-				res.send(err);
-			if(task && task.givDuration)
+				cnosole.log(err);
+			if(task && task.givDuration){
 				res.send(task.objectId+":"+parsMill(task.givDuration));
-			res.send("there is not task that match this id");
+				console.log(res);
+}
+			else
+				res.send("there is not task that match this id");
 		});
 	});
 
