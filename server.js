@@ -182,7 +182,12 @@ router.route("/tasks")
 				res.send(err);
 			res.json(tasks);
 		});
-	});	
+	});
+
+router.get("/goToSleep/:deepSleepTime",function(req,res){
+	console.log(req.params.deepSleepTime);
+	res.send("done");
+});	
 
 
 router.route("/getDuration/:object_id")
