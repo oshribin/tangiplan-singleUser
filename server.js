@@ -16,7 +16,7 @@ var LocalStrategy = require("passport-local").Strategy;
 mongoose.connect("mongodb://localhost:27017/test");
 
 app.use(bodyParser());
-app.use(session({secret: "keyboard cat"}));
+app.use(session({secret: "keyboard cat", cookie:{maxAge:10*24*60*60*1000}}));
 app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session());
@@ -26,6 +26,11 @@ var router = express.Router();
 
 router.get("/", function(req, res) {
 	res.sendfile("index.html");
+});
+
+app.get("/currentUser", function(req,res){
+	if(req.session.passport.user)
+		res.send(req.session.passport.user.name);
 });
 
 app.post('/login',
@@ -182,14 +187,9 @@ router.route("/tasks")
 				res.send(err);
 			res.json(tasks);
 		});
-	});
+	});	
 
-router.get("/goToSleep/:deepSleepTime",function(req,res){
-	console.log(req.params.deepSleepTime);
-	res.send("done");
-});	
-
-
+	
 router.route("/getDuration/:object_id")
 
 	.get(function(req, res){

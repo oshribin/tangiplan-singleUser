@@ -62,7 +62,13 @@ var SignIn_page = Backbone.View.extend({
 		this.$el.append(this.template);
 		this.$(".btn").hide();
 		this.$("h1").hide();
-		if(app.user)
-			this.btncntrl();
+		var that = this;
+		var callback = function(data){
+			app.user = app.userList.where({name:data})[0];
+			if(app.user)
+				app.taskList.fetch({success:that.btncntrl});
+		};
+		$.get("/currentUser", callback);
+
 	},
 });

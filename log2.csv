@@ -1,0 +1,2885 @@
+$__,isNew,errors,_maxListeners,_doc,_pres,_posts,save,_events,db,__v,id,_id,startTime,endTime,date,goOut,wakeUp,exFreeTime,givFreeTime,overexcep,endedByUser,exception,lastDate,objectId,exDuration,givDuration,name,schema,collection,$__delta,$__version,increment,$__where,remove,model,$__buildDoc,init,$__storeShard,hook,pre,post,removePre,_lazySetupHooks,update,set,$__shouldModify,$__set,getValue,setValue,get,$__path,markModified,$__try,modifiedPaths,isModified,isDirectModified,isInit,isSelected,validate,invalidate,$__reset,$__dirty,$__setSchema,$__registerHooks,$__error,$__doQueue,toObject,toJSON,inspect,toString,equals,populate,populated,$__fullPath,setMaxListeners,emit,addListener,on,once,removeListener,removeAllListeners,listeners
+[object Object],false,,0,[object Object],[object Object],[object Object],"function () {
+      var self = this
+        , hookArgs // arguments eventually passed to the hook - are mutable
+        , lastArg = arguments[arguments.length-1]
+        , pres = this._pres[name]
+        , posts = this._posts[name]
+        , _total = pres.length
+        , _current = -1
+        , _asyncsLeft = proto[name].numAsyncPres
+        , _next = function () {
+            if (arguments[0] instanceof Error) {
+              return handleError(arguments[0]);
+            }
+            var _args = Array.prototype.slice.call(arguments)
+              , currPre
+              , preArgs;
+            if (_args.length && !(arguments[0] == null && typeof lastArg === 'function'))
+              hookArgs = _args;
+            if (++_current < _total) {
+              currPre = pres[_current]
+              if (currPre.isAsync && currPre.length < 2)
+                throw new Error(""Your pre must have next and done arguments -- e.g., function (next, done, ...)"");
+              if (currPre.length < 1)
+                throw new Error(""Your pre must have a next argument -- e.g., function (next, ...)"");
+              preArgs = (currPre.isAsync
+                          ? [once(_next), once(_asyncsDone)]
+                          : [once(_next)]).concat(hookArgs);
+              return currPre.apply(self, preArgs);
+            } else if (!proto[name].numAsyncPres) {
+              return _done.apply(self, hookArgs);
+            }
+          }
+        , _done = function () {
+            var args_ = Array.prototype.slice.call(arguments)
+              , ret, total_, current_, next_, done_, postArgs;
+            if (_current === _total) {
+              ret = fn.apply(self, args_);
+              total_ = posts.length;
+              current_ = -1;
+              next_ = function () {
+                if (arguments[0] instanceof Error) {
+                  return handleError(arguments[0]);
+                }
+                var args_ = Array.prototype.slice.call(arguments, 1)
+                  , currPost
+                  , postArgs;
+                if (args_.length) hookArgs = args_;
+                if (++current_ < total_) {
+                  currPost = posts[current_]
+                  if (currPost.length < 1)
+                    throw new Error(""Your post must have a next argument -- e.g., function (next, ...)"");
+                  postArgs = [once(next_)].concat(hookArgs);
+                  return currPost.apply(self, postArgs);
+                }
+              };
+              if (total_) return next_();
+              return ret;
+            }
+          };
+      if (_asyncsLeft) {
+        function _asyncsDone (err) {
+          if (err && err instanceof Error) {
+            return handleError(err);
+          }
+          --_asyncsLeft || _done.apply(self, hookArgs);
+        }
+      }
+      function handleError (err) {
+        if ('function' == typeof lastArg)
+          return lastArg(err);
+        if (errorCb) return errorCb.call(self, err);
+        throw err;
+      }
+      return _next.apply(this, arguments);
+    }",[object Object],[object Object],0,546d00e6e9f654701c000001,546d00e6e9f654701c000001,22:40:18,22:43:18,19/11/2014,08:00,07:00,-02:54,01:00,true,false,01:00,Wed Nov 19 2014 22:43:18 GMT+0200 (IST),1,03:00,02:00,לשטוף פנים,[object Object],[object Object],"function () {
+  var dirty = this.$__dirty();
+  if (!dirty.length && VERSION_ALL != this.$__.version) return;
+
+  var where = {}
+    , delta = {}
+    , len = dirty.length
+    , divergent = []
+    , d = 0
+    , val
+    , obj
+
+  for (; d < len; ++d) {
+    var data = dirty[d]
+    var value = data.value
+    var schema = data.schema
+
+    var match = checkDivergentArray(this, data.path, value);
+    if (match) {
+      divergent.push(match);
+      continue;
+    }
+
+    if (divergent.length) continue;
+
+    if (undefined === value) {
+      operand(this, where, delta, data, 1, '$unset');
+
+    } else if (null === value) {
+      operand(this, where, delta, data, null);
+
+    } else if (value._path && value._atomics) {
+      // arrays and other custom types (support plugins etc)
+      handleAtomics(this, where, delta, data, value);
+
+    } else if (value._path && Buffer.isBuffer(value)) {
+      // MongooseBuffer
+      value = value.toObject();
+      operand(this, where, delta, data, value);
+
+    } else {
+      value = utils.clone(value, { depopulate: 1 });
+      operand(this, where, delta, data, value);
+    }
+  }
+
+  if (divergent.length) {
+    return new DivergentArrayError(divergent);
+  }
+
+  if (this.$__.version) {
+    this.$__version(where, delta);
+  }
+
+  return [where, delta];
+}","function (where, delta) {
+  var key = this.schema.options.versionKey;
+
+  if (true === where) {
+    // this is an insert
+    if (key) this.setValue(key, delta[key] = 0);
+    return;
+  }
+
+  // updates
+
+  // only apply versioning if our versionKey was selected. else
+  // there is no way to select the correct version. we could fail
+  // fast here and force them to include the versionKey but
+  // thats a bit intrusive. can we do this automatically?
+  if (!this.isSelected(key)) {
+    return;
+  }
+
+  // $push $addToSet don't need the where clause set
+  if (VERSION_WHERE === (VERSION_WHERE & this.$__.version)) {
+    where[key] = this.getValue(key);
+  }
+
+  if (VERSION_INC === (VERSION_INC & this.$__.version)) {
+    delta.$inc || (delta.$inc = {});
+    delta.$inc[key] = 1;
+  }
+}","function increment() {
+  this.$__.version = VERSION_ALL;
+  return this;
+}","function _where(where) {
+  where || (where = {});
+
+  var paths
+    , len
+
+  if (this.$__.shardval) {
+    paths = Object.keys(this.$__.shardval)
+    len = paths.length
+
+    for (var i = 0; i < len; ++i) {
+      where[paths[i]] = this.$__.shardval[paths[i]];
+    }
+  }
+
+  where._id = this._doc._id;
+  return where;
+}","function remove(fn) {
+  if (this.$__.removing) {
+    this.$__.removing.addBack(fn);
+    return this;
+  }
+
+  var promise = this.$__.removing = new Promise(fn)
+    , where = this.$__where()
+    , self = this
+    , options = {}
+
+  if (this.schema.options.safe) {
+    options.safe = this.schema.options.safe;
+  }
+
+  this.collection.remove(where, options, tick(function (err) {
+    if (err) {
+      promise.error(err);
+      promise = self = self.$__.removing = where = options = null;
+      return;
+    }
+    self.emit('remove', self);
+    promise.complete();
+    promise = self = where = options = null;
+  }));
+
+  return this;
+}","function model(name) {
+  return this.db.model(name);
+}","function (obj, fields, skipId) {
+  var doc = {}
+    , self = this
+    , exclude
+    , keys
+    , key
+    , ki
+
+  // determine if this doc is a result of a query with
+  // excluded fields
+  if (fields && 'Object' === fields.constructor.name) {
+    keys = Object.keys(fields);
+    ki = keys.length;
+
+    while (ki--) {
+      if ('_id' !== keys[ki]) {
+        exclude = 0 === fields[keys[ki]];
+        break;
+      }
+    }
+  }
+
+  var paths = Object.keys(this.schema.paths)
+    , plen = paths.length
+    , ii = 0
+
+  for (; ii < plen; ++ii) {
+    var p = paths[ii];
+
+    if ('_id' == p) {
+      if (skipId) continue;
+      if (obj && '_id' in obj) continue;
+    }
+
+    var type = this.schema.paths[p]
+      , path = p.split('.')
+      , len = path.length
+      , last = len-1
+      , curPath = ''
+      , doc_ = doc
+      , i = 0
+
+    for (; i < len; ++i) {
+      var piece = path[i]
+        , def
+
+      // support excluding intermediary levels
+      if (exclude) {
+        curPath += piece;
+        if (curPath in fields) break;
+        curPath += '.';
+      }
+
+      if (i === last) {
+        if (fields) {
+          if (exclude) {
+            // apply defaults to all non-excluded fields
+            if (p in fields) continue;
+
+            def = type.getDefault(self, true);
+            if ('undefined' !== typeof def) {
+              doc_[piece] = def;
+              self.$__.activePaths.default(p);
+            }
+
+          } else if (p in fields) {
+            // selected field
+            def = type.getDefault(self, true);
+            if ('undefined' !== typeof def) {
+              doc_[piece] = def;
+              self.$__.activePaths.default(p);
+            }
+          }
+        } else {
+          def = type.getDefault(self, true);
+          if ('undefined' !== typeof def) {
+            doc_[piece] = def;
+            self.$__.activePaths.default(p);
+          }
+        }
+      } else {
+        doc_ = doc_[piece] || (doc_[piece] = {});
+      }
+    }
+  };
+
+  return doc;
+}","function (doc, opts, fn) {
+  // do not prefix this method with $__ since its
+  // used by public hooks
+
+  if ('function' == typeof opts) {
+    fn = opts;
+    opts = null;
+  }
+
+  this.isNew = false;
+
+  // handle docs with populated paths
+  if (doc._id && opts && opts.populated && opts.populated.length) {
+    var id = String(doc._id);
+    for (var i = 0; i < opts.populated.length; ++i) {
+      var item = opts.populated[i];
+      this.populated(item.path, item._docs[id], item);
+    }
+  }
+
+  init(this, doc, this._doc);
+  this.$__storeShard();
+
+  this.emit('init', this);
+  if (fn) fn(null);
+  return this;
+}","function () {
+  // backwards compat
+  var key = this.schema.options.shardKey || this.schema.options.shardkey;
+  if (!(key && 'Object' == key.constructor.name)) return;
+
+  var orig = this.$__.shardval = {}
+    , paths = Object.keys(key)
+    , len = paths.length
+    , val
+
+  for (var i = 0; i < len; ++i) {
+    val = this.getValue(paths[i]);
+    if (isMongooseObject(val)) {
+      orig[paths[i]] = val.toObject({ depopulate: true })
+    } else if (null != val && val.valueOf) {
+      orig[paths[i]] = val.valueOf();
+    } else {
+      orig[paths[i]] = val;
+    }
+  }
+}","function (name, fn, errorCb) {
+    if (arguments.length === 1 && typeof name === 'object') {
+      for (var k in name) { // `name` is a hash of hookName->hookFn
+        this.hook(k, name[k]);
+      }
+      return;
+    }
+
+    var proto = this.prototype || this
+      , pres = proto._pres = proto._pres || {}
+      , posts = proto._posts = proto._posts || {};
+    pres[name] = pres[name] || [];
+    posts[name] = posts[name] || [];
+
+    proto[name] = function () {
+      var self = this
+        , hookArgs // arguments eventually passed to the hook - are mutable
+        , lastArg = arguments[arguments.length-1]
+        , pres = this._pres[name]
+        , posts = this._posts[name]
+        , _total = pres.length
+        , _current = -1
+        , _asyncsLeft = proto[name].numAsyncPres
+        , _next = function () {
+            if (arguments[0] instanceof Error) {
+              return handleError(arguments[0]);
+            }
+            var _args = Array.prototype.slice.call(arguments)
+              , currPre
+              , preArgs;
+            if (_args.length && !(arguments[0] == null && typeof lastArg === 'function'))
+              hookArgs = _args;
+            if (++_current < _total) {
+              currPre = pres[_current]
+              if (currPre.isAsync && currPre.length < 2)
+                throw new Error(""Your pre must have next and done arguments -- e.g., function (next, done, ...)"");
+              if (currPre.length < 1)
+                throw new Error(""Your pre must have a next argument -- e.g., function (next, ...)"");
+              preArgs = (currPre.isAsync
+                          ? [once(_next), once(_asyncsDone)]
+                          : [once(_next)]).concat(hookArgs);
+              return currPre.apply(self, preArgs);
+            } else if (!proto[name].numAsyncPres) {
+              return _done.apply(self, hookArgs);
+            }
+          }
+        , _done = function () {
+            var args_ = Array.prototype.slice.call(arguments)
+              , ret, total_, current_, next_, done_, postArgs;
+            if (_current === _total) {
+              ret = fn.apply(self, args_);
+              total_ = posts.length;
+              current_ = -1;
+              next_ = function () {
+                if (arguments[0] instanceof Error) {
+                  return handleError(arguments[0]);
+                }
+                var args_ = Array.prototype.slice.call(arguments, 1)
+                  , currPost
+                  , postArgs;
+                if (args_.length) hookArgs = args_;
+                if (++current_ < total_) {
+                  currPost = posts[current_]
+                  if (currPost.length < 1)
+                    throw new Error(""Your post must have a next argument -- e.g., function (next, ...)"");
+                  postArgs = [once(next_)].concat(hookArgs);
+                  return currPost.apply(self, postArgs);
+                }
+              };
+              if (total_) return next_();
+              return ret;
+            }
+          };
+      if (_asyncsLeft) {
+        function _asyncsDone (err) {
+          if (err && err instanceof Error) {
+            return handleError(err);
+          }
+          --_asyncsLeft || _done.apply(self, hookArgs);
+        }
+      }
+      function handleError (err) {
+        if ('function' == typeof lastArg)
+          return lastArg(err);
+        if (errorCb) return errorCb.call(self, err);
+        throw err;
+      }
+      return _next.apply(this, arguments);
+    };
+    
+    proto[name].numAsyncPres = 0;
+
+    return this;
+  }","function (name, isAsync, fn, errorCb) {
+    if ('boolean' !== typeof arguments[1]) {
+      errorCb = fn;
+      fn = isAsync;
+      isAsync = false;
+    }
+    var proto = this.prototype || this
+      , pres = proto._pres = proto._pres || {};
+
+    this._lazySetupHooks(proto, name, errorCb);
+
+    if (fn.isAsync = isAsync) {
+      proto[name].numAsyncPres++;
+    }
+
+    (pres[name] = pres[name] || []).push(fn);
+    return this;
+  }","function (name, isAsync, fn) {
+    if (arguments.length === 2) {
+      fn = isAsync;
+      isAsync = false;
+    }
+    var proto = this.prototype || this
+      , posts = proto._posts = proto._posts || {};
+    
+    this._lazySetupHooks(proto, name);
+    (posts[name] = posts[name] || []).push(fn);
+    return this;
+  }","function (name, fnToRemove) {
+    var proto = this.prototype || this
+      , pres = proto._pres || (proto._pres || {});
+    if (!pres[name]) return this;
+    if (arguments.length === 1) {
+      // Remove all pre callbacks for hook `name`
+      pres[name].length = 0;
+    } else {
+      pres[name] = pres[name].filter( function (currFn) {
+        return currFn !== fnToRemove;
+      });
+    }
+    return this;
+  }","function (proto, methodName, errorCb) {
+    if ('undefined' === typeof proto[methodName].numAsyncPres) {
+      this.hook(methodName, proto[methodName], errorCb);
+    }
+  }","function update() {
+  var args = utils.args(arguments);
+  args.unshift({_id: this._id});
+  return this.constructor.update.apply(this.constructor, args);
+}","function (path, val, type, options) {
+  if (type && 'Object' == type.constructor.name) {
+    options = type;
+    type = undefined;
+  }
+
+  var merge = options && options.merge
+    , adhoc = type && true !== type
+    , constructing = true === type
+    , adhocs
+
+  var strict = options && 'strict' in options
+    ? options.strict
+    : this.$__.strictMode;
+
+  if (adhoc) {
+    adhocs = this.$__.adhocPaths || (this.$__.adhocPaths = {});
+    adhocs[path] = Schema.interpretAsType(path, type);
+  }
+
+  if ('string' !== typeof path) {
+    // new Document({ key: val })
+
+    if (null === path || undefined === path) {
+      var _ = path;
+      path = val;
+      val = _;
+
+    } else {
+      var prefix = val
+        ? val + '.'
+        : '';
+
+      if (path instanceof Document) path = path._doc;
+
+      var keys = Object.keys(path)
+        , i = keys.length
+        , pathtype
+        , key
+
+
+      while (i--) {
+        key = keys[i];
+        pathtype = this.schema.pathType(prefix + key);
+        if (null != path[key]
+            // need to know if plain object - no Buffer, ObjectId, ref, etc
+            && utils.isObject(path[key])
+            && (!path[key].constructor || 'Object' == path[key].constructor.name)
+            && 'virtual' != pathtype
+            && !(this.$__path(prefix + key) instanceof MixedSchema)
+            && !(this.schema.paths[key] && this.schema.paths[key].options.ref)
+          ) {
+          this.set(path[key], prefix + key, constructing);
+        } else if (strict) {
+          if ('real' === pathtype || 'virtual' === pathtype) {
+            this.set(prefix + key, path[key], constructing);
+          } else if ('throw' == strict) {
+            throw new Error(""Field `"" + key + ""` is not in schema."");
+          }
+        } else if (undefined !== path[key]) {
+          this.set(prefix + key, path[key], constructing);
+        }
+      }
+
+      return this;
+    }
+  }
+
+  // ensure _strict is honored for obj props
+  // docschema = new Schema({ path: { nest: 'string' }})
+  // doc.set('path', obj);
+  var pathType = this.schema.pathType(path);
+  if ('nested' == pathType && val && utils.isObject(val) &&
+      (!val.constructor || 'Object' == val.constructor.name)) {
+    if (!merge) this.setValue(path, null);
+    this.set(val, path, constructing);
+    return this;
+  }
+
+  var schema;
+  var parts = path.split('.');
+
+  if ('adhocOrUndefined' == pathType && strict) {
+
+    // check for roots that are Mixed types
+    var mixed;
+
+    for (var i = 0; i < parts.length; ++i) {
+      var subpath = parts.slice(0, i+1).join('.');
+      schema = this.schema.path(subpath);
+      if (schema instanceof MixedSchema) {
+        // allow changes to sub paths of mixed types
+        mixed = true;
+        break;
+      }
+    }
+
+    if (!mixed) {
+      if ('throw' == strict) {
+        throw new Error(""Field `"" + path + ""` is not in schema."");
+      }
+      return this;
+    }
+
+  } else if ('virtual' == pathType) {
+    schema = this.schema.virtualpath(path);
+    schema.applySetters(val, this);
+    return this;
+  } else {
+    schema = this.$__path(path);
+  }
+
+  var pathToMark;
+
+  // When using the $set operator the path to the field must already exist.
+  // Else mongodb throws: ""LEFT_SUBFIELD only supports Object""
+
+  if (parts.length <= 1) {
+    pathToMark = path;
+  } else {
+    for (var i = 0; i < parts.length; ++i) {
+      var subpath = parts.slice(0, i+1).join('.');
+      if (this.isDirectModified(subpath) // earlier prefixes that are already
+                                         // marked as dirty have precedence
+          || this.get(subpath) === null) {
+        pathToMark = subpath;
+        break;
+      }
+    }
+
+    if (!pathToMark) pathToMark = path;
+  }
+
+  // if this doc is being constructed we should not trigger getters
+  var priorVal = constructing
+    ? undefined
+    : this.get(path);
+
+  if (!schema || undefined === val) {
+    this.$__set(pathToMark, path, constructing, parts, schema, val, priorVal);
+    return this;
+  }
+
+  var self = this;
+  var shouldSet = this.$__try(function(){
+    val = schema.applySetters(val, self, false, priorVal);
+  });
+
+  if (shouldSet) {
+    this.$__set(pathToMark, path, constructing, parts, schema, val, priorVal);
+  }
+
+  return this;
+}","function (
+    pathToMark, path, constructing, parts, schema, val, priorVal) {
+
+  if (this.isNew) return true;
+  if (this.isDirectModified(pathToMark)) return false;
+
+  if (undefined === val && !this.isSelected(path)) {
+    // when a path is not selected in a query, its initial
+    // value will be undefined.
+    return true;
+  }
+
+  if (undefined === val && path in this.$__.activePaths.states.default) {
+    // we're just unsetting the default value which was never saved
+    return false;
+  }
+
+  if (!deepEqual(val, priorVal || this.get(path))) {
+    return true;
+  }
+
+  if (!constructing &&
+      null != val &&
+      path in this.$__.activePaths.states.default &&
+      deepEqual(val, schema.getDefault(this, constructing))) {
+    // a path with a default was $unset on the server
+    // and the user is setting it to the same value again
+    return true;
+  }
+
+  return false;
+}","function (
+    pathToMark, path, constructing, parts, schema, val, priorVal) {
+
+  var shouldModify = this.$__shouldModify.apply(this, arguments);
+
+  if (shouldModify) {
+    this.markModified(pathToMark, val);
+
+    // handle directly setting arrays (gh-1126)
+    MongooseArray || (MongooseArray = require('./types/array'));
+    if (val instanceof MongooseArray) {
+      val._registerAtomic('$set', val);
+    }
+  }
+
+  var obj = this._doc
+    , i = 0
+    , l = parts.length
+
+  for (; i < l; i++) {
+    var next = i + 1
+      , last = next === l;
+
+    if (last) {
+      obj[parts[i]] = val;
+    } else {
+      if (obj[parts[i]] && 'Object' === obj[parts[i]].constructor.name) {
+        obj = obj[parts[i]];
+      } else if (obj[parts[i]] && Array.isArray(obj[parts[i]])) {
+        obj = obj[parts[i]];
+      } else {
+        obj = obj[parts[i]] = {};
+      }
+    }
+  }
+}","function (path) {
+  return utils.getValue(path, this._doc);
+}","function (path, val) {
+  utils.setValue(path, val, this._doc);
+  return this;
+}","function (path, type) {
+  var adhocs;
+  if (type) {
+    adhocs = this.$__.adhocPaths || (this.$__.adhocPaths = {});
+    adhocs[path] = Schema.interpretAsType(path, type);
+  }
+
+  var schema = this.$__path(path) || this.schema.virtualpath(path)
+    , pieces = path.split('.')
+    , obj = this._doc;
+
+  for (var i = 0, l = pieces.length; i < l; i++) {
+    obj = undefined === obj || null === obj
+      ? undefined
+      : obj[pieces[i]];
+  }
+
+  if (schema) {
+    obj = schema.applyGetters(obj, this);
+  }
+
+  return obj;
+}","function (path) {
+  var adhocs = this.$__.adhocPaths
+    , adhocType = adhocs && adhocs[path];
+
+  if (adhocType) {
+    return adhocType;
+  } else {
+    return this.schema.path(path);
+  }
+}","function (path) {
+  this.$__.activePaths.modify(path);
+}","function (fn, scope) {
+  var res;
+  try {
+    fn.call(scope);
+    res = true;
+  } catch (e) {
+    this.$__error(e);
+    res = false;
+  }
+  return res;
+}","function () {
+  var directModifiedPaths = Object.keys(this.$__.activePaths.states.modify);
+
+  return directModifiedPaths.reduce(function (list, path) {
+    var parts = path.split('.');
+    return list.concat(parts.reduce(function (chains, part, i) {
+      return chains.concat(parts.slice(0, i).concat(part).join('.'));
+    }, []));
+  }, []);
+}","function (path) {
+  return path
+    ? !!~this.modifiedPaths().indexOf(path)
+    : this.$__.activePaths.some('modify');
+}","function (path) {
+  return (path in this.$__.activePaths.states.modify);
+}","function (path) {
+  return (path in this.$__.activePaths.states.init);
+}","function isSelected(path) {
+  if (this.$__.selected) {
+
+    if ('_id' === path) {
+      return 0 !== this.$__.selected._id;
+    }
+
+    var paths = Object.keys(this.$__.selected)
+      , i = paths.length
+      , inclusive = false
+      , cur
+
+    if (1 === i && '_id' === paths[0]) {
+      // only _id was selected.
+      return 0 === this.$__.selected._id;
+    }
+
+    while (i--) {
+      cur = paths[i];
+      if ('_id' == cur) continue;
+      inclusive = !! this.$__.selected[cur];
+      break;
+    }
+
+    if (path in this.$__.selected) {
+      return inclusive;
+    }
+
+    i = paths.length;
+    var pathDot = path + '.';
+
+    while (i--) {
+      cur = paths[i];
+      if ('_id' == cur) continue;
+
+      if (0 === cur.indexOf(pathDot)) {
+        return inclusive;
+      }
+
+      if (0 === pathDot.indexOf(cur + '.')) {
+        return inclusive;
+      }
+    }
+
+    return ! inclusive;
+  }
+
+  return true;
+}","function (cb) {
+  var self = this
+
+  // only validate required fields when necessary
+  var paths = Object.keys(this.$__.activePaths.states.require).filter(function (path) {
+    if (!self.isSelected(path) && !self.isModified(path)) return false;
+    return true;
+  });
+
+  paths = paths.concat(Object.keys(this.$__.activePaths.states.init));
+  paths = paths.concat(Object.keys(this.$__.activePaths.states.modify));
+  paths = paths.concat(Object.keys(this.$__.activePaths.states.default));
+
+  if (0 === paths.length) {
+    complete();
+    return this;
+  }
+
+  var validating = {}
+    , total = 0;
+
+  paths.forEach(validatePath);
+  return this;
+
+  function validatePath (path) {
+    if (validating[path]) return;
+
+    validating[path] = true;
+    total++;
+
+    process.nextTick(function(){
+      var p = self.schema.path(path);
+      if (!p) return --total || complete();
+
+      var val = self.getValue(path);
+      p.doValidate(val, function (err) {
+        if (err) {
+          self.invalidate(
+              path
+            , err
+            , undefined
+            , true // embedded docs
+            );
+        }
+        --total || complete();
+      }, self);
+    });
+  }
+
+  function complete () {
+    var err = self.$__.validationError;
+    self.$__.validationError = undefined;
+    self.emit('validate', self);
+    cb(err);
+  }
+}","function (path, err, val) {
+  if (!this.$__.validationError) {
+    this.$__.validationError = new ValidationError(this);
+  }
+
+  if (!err || 'string' === typeof err) {
+    // sniffing arguments:
+    // need to handle case where user does not pass value
+    // so our error message is cleaner
+    err = 2 < arguments.length
+      ? new ValidatorError(path, err, val)
+      : new ValidatorError(path, err)
+  }
+
+  this.$__.validationError.errors[path] = err;
+}","function reset() {
+  var self = this;
+  DocumentArray || (DocumentArray = require('./types/documentarray'));
+
+  this.$__.activePaths
+  .map('init', 'modify', function (i) {
+    return self.getValue(i);
+  })
+  .filter(function (val) {
+    return val && val instanceof DocumentArray && val.length;
+  })
+  .forEach(function (array) {
+    var i = array.length;
+    while (i--) {
+      var doc = array[i];
+      if (!doc) continue;
+      doc.$__reset();
+    }
+  });
+
+  // clear atomics
+  this.$__dirty().forEach(function (dirt) {
+    var type = dirt.value;
+    if (type && type._atomics) {
+      type._atomics = {};
+    }
+  });
+
+  // Clear 'modify'('dirty') cache
+  this.$__.activePaths.clear('modify');
+  this.$__.validationError = undefined;
+  this.errors = undefined;
+  var self = this;
+  this.schema.requiredPaths().forEach(function (path) {
+    self.$__.activePaths.require(path);
+  });
+
+  return this;
+}","function () {
+  var self = this;
+
+  var all = this.$__.activePaths.map('modify', function (path) {
+    return { path: path
+           , value: self.getValue(path)
+           , schema: self.$__path(path) };
+  });
+
+  // Sort dirty paths in a flat hierarchy.
+  all.sort(function (a, b) {
+    return (a.path < b.path ? -1 : (a.path > b.path ? 1 : 0));
+  });
+
+  // Ignore ""foo.a"" if ""foo"" is dirty already.
+  var minimal = []
+    , lastPath
+    , top;
+
+  all.forEach(function (item, i) {
+    if (item.path.indexOf(lastPath) !== 0) {
+      lastPath = item.path + '.';
+      minimal.push(item);
+      top = item;
+    } else {
+      // special case for top level MongooseArrays
+      if (top.value && top.value._atomics && top.value.hasAtomics()) {
+        // the `top` array itself and a sub path of `top` are being modified.
+        // the only way to honor all of both modifications is through a $set
+        // of entire array.
+        top.value._atomics = {};
+        top.value._atomics.$set = top.value;
+      }
+    }
+  });
+
+  top = lastPath = null;
+  return minimal;
+}","function (schema) {
+  compile(schema.tree, this);
+  this.schema = schema;
+}","function () {
+  if (!this.save) return;
+
+  DocumentArray || (DocumentArray = require('./types/documentarray'));
+
+  this.pre('save', function (next) {
+    // validate all document arrays.
+    // we keep the error semaphore to make sure we don't
+    // call `save` unnecessarily (we only need 1 error)
+    var subdocs = 0
+      , error = false
+      , self = this;
+
+    // check for DocumentArrays
+    var arrays = this.$__.activePaths
+    .map('init', 'modify', function (i) {
+      return self.getValue(i);
+    })
+    .filter(function (val) {
+      return val && val instanceof DocumentArray && val.length;
+    });
+
+    if (!arrays.length)
+      return next();
+
+    arrays.forEach(function (array) {
+      if (error) return;
+
+      // handle sparse arrays by using for loop vs array.forEach
+      // which skips the sparse elements
+
+      var len = array.length
+      subdocs += len;
+
+      for (var i = 0; i < len; ++i) {
+        if (error) break;
+
+        var doc = array[i];
+        if (!doc) {
+          --subdocs || next();
+          continue;
+        }
+
+        doc.save(handleSave);
+      }
+    });
+
+    function handleSave (err) {
+      if (error) return;
+
+      if (err) {
+        self.$__.validationError = undefined;
+        return next(error = err);
+      }
+
+      --subdocs || next();
+    }
+
+  }, function (err) {
+    // emit on the Model if listening
+    if (this.constructor.listeners('error').length) {
+      this.constructor.emit('error', err);
+    } else {
+      // emit on the connection
+      if (!this.db.listeners('error').length) {
+        err.stack = 'No listeners detected, throwing. '
+                  + 'Consider adding an error listener to your connection.\n'
+                  + err.stack
+      }
+      this.db.emit('error', err);
+    }
+  }).pre('save', function checkForExistingErrors (next) {
+    // if any doc.set() calls failed
+    var err = this.$__.saveError;
+    if (err) {
+      this.$__.saveError = null;
+      next(err);
+    } else {
+      next();
+    }
+  }).pre('save', function validation (next) {
+    return this.validate(next);
+  });
+
+  // add user defined queues
+  this.$__doQueue();
+}","function (err) {
+  this.$__.saveError = err;
+  return this;
+}","function () {
+  var q = this.schema && this.schema.callQueue;
+  if (q) {
+    for (var i = 0, l = q.length; i < l; i++) {
+      this[q[i][0]].apply(this, q[i][1]);
+    }
+  }
+  return this;
+}","function (options) {
+  if (options && options.depopulate && this.$__.wasPopulated) {
+    // populated paths that we set to a document
+    return clone(this._id, options);
+  }
+
+  // When internally saving this document we always pass options,
+  // bypassing the custom schema options.
+  if (!(options && 'Object' == options.constructor.name)) {
+    options = this.schema.options.toObject
+      ? clone(this.schema.options.toObject)
+      : {};
+  }
+
+  ;('minimize' in options) || (options.minimize = this.schema.options.minimize);
+
+  var ret = clone(this._doc, options);
+
+  if (options.virtuals || options.getters && false !== options.virtuals) {
+    applyGetters(this, ret, 'virtuals', options);
+  }
+
+  if (options.getters) {
+    applyGetters(this, ret, 'paths', options);
+  }
+
+  if (true === options.transform) {
+    var opts = options.json
+      ? this.schema.options.toJSON
+      : this.schema.options.toObject;
+    if (opts) {
+      options.transform = opts.transform;
+    }
+  }
+
+  if ('function' == typeof options.transform) {
+    var xformed = options.transform(this, ret, options);
+    if ('undefined' != typeof xformed) ret = xformed;
+  }
+
+  return ret;
+}","function (options) {
+  // check for object type since an array of documents
+  // being stringified passes array indexes instead
+  // of options objects. JSON.stringify([doc, doc])
+  if (!(options && 'Object' == options.constructor.name)) {
+    options = this.schema.options.toJSON
+      ? clone(this.schema.options.toJSON)
+      : {};
+  }
+  options.json = true;
+  return this.toObject(options);
+}","function (options) {
+  var opts = options && 'Object' == options.constructor.name ? options :
+      this.schema.options.toObject ? clone(this.schema.options.toObject) :
+      {};
+  opts.minimize = false;
+  return inspect(this.toObject(opts));
+}","function (options) {
+  var opts = options && 'Object' == options.constructor.name ? options :
+      this.schema.options.toObject ? clone(this.schema.options.toObject) :
+      {};
+  opts.minimize = false;
+  return inspect(this.toObject(opts));
+}","function (doc) {
+  var tid = this.get('_id');
+  var docid = doc.get('_id');
+  return tid && tid.equals
+    ? tid.equals(docid)
+    : tid === docid;
+}","function populate() {
+  if (0 === arguments.length) return this;
+
+  var pop = this.$__.populate || (this.$__.populate = {});
+  var args = utils.args(arguments);
+  var fn;
+
+  if ('function' == typeof args[args.length-1]) {
+    fn = args.pop();
+  }
+
+  // allow `doc.populate(callback)`
+  if (args.length) {
+    // use hash to remove duplicate paths
+    var res = utils.populate.apply(null, args);
+    for (var i = 0; i < res.length; ++i) {
+      pop[res[i].path] = res[i];
+    }
+  }
+
+  if (fn) {
+    var paths = utils.object.vals(pop);
+    this.$__.populate = undefined;
+    this.constructor.populate(this, paths, fn);
+  }
+
+  return this;
+}","function (path, val, options) {
+  // val and options are internal
+
+  if (null == val) {
+    if (!this.$__.populated) return undefined;
+    var v = this.$__.populated[path];
+    if (v) return v.value;
+    return undefined;
+  }
+
+  // internal
+
+  if (true === val) {
+    if (!this.$__.populated) return undefined;
+    return this.$__.populated[path];
+  }
+
+  this.$__.populated || (this.$__.populated = {});
+  this.$__.populated[path] = { value: val, options: options };
+  return val;
+}","function (path) {
+  // overridden in SubDocuments
+  return path || '';
+}","function (n) {
+  if (typeof n !== 'number' || n < 0 || isNaN(n))
+    throw TypeError('n must be a positive number');
+  this._maxListeners = n;
+}","function (type) {
+  var er, handler, len, args, i, listeners;
+
+  if (!this._events)
+    this._events = {};
+
+  // If there is no 'error' event listener then throw.
+  if (type === 'error') {
+    if (!this._events.error ||
+        (typeof this._events.error === 'object' &&
+         !this._events.error.length)) {
+      er = arguments[1];
+      if (this.domain) {
+        if (!er) er = new TypeError('Uncaught, unspecified ""error"" event.');
+        er.domainEmitter = this;
+        er.domain = this.domain;
+        er.domainThrown = false;
+        this.domain.emit('error', er);
+      } else if (er instanceof Error) {
+        throw er; // Unhandled 'error' event
+      } else {
+        throw TypeError('Uncaught, unspecified ""error"" event.');
+      }
+      return false;
+    }
+  }
+
+  handler = this._events[type];
+
+  if (typeof handler === 'undefined')
+    return false;
+
+  if (this.domain && this !== process)
+    this.domain.enter();
+
+  if (typeof handler === 'function') {
+    switch (arguments.length) {
+      // fast cases
+      case 1:
+        handler.call(this);
+        break;
+      case 2:
+        handler.call(this, arguments[1]);
+        break;
+      case 3:
+        handler.call(this, arguments[1], arguments[2]);
+        break;
+      // slower
+      default:
+        len = arguments.length;
+        args = new Array(len - 1);
+        for (i = 1; i < len; i++)
+          args[i - 1] = arguments[i];
+        handler.apply(this, args);
+    }
+  } else if (typeof handler === 'object') {
+    len = arguments.length;
+    args = new Array(len - 1);
+    for (i = 1; i < len; i++)
+      args[i - 1] = arguments[i];
+
+    listeners = handler.slice();
+    len = listeners.length;
+    for (i = 0; i < len; i++)
+      listeners[i].apply(this, args);
+  }
+
+  if (this.domain && this !== process)
+    this.domain.exit();
+
+  return true;
+}","function (type, listener) {
+  var m;
+
+  if (typeof listener !== 'function')
+    throw TypeError('listener must be a function');
+
+  if (!this._events)
+    this._events = {};
+
+  // To avoid recursion in the case that type === ""newListener""! Before
+  // adding it to the listeners, first emit ""newListener"".
+  if (this._events.newListener)
+    this.emit('newListener', type, typeof listener.listener === 'function' ?
+              listener.listener : listener);
+
+  if (!this._events[type])
+    // Optimize the case of one listener. Don't need the extra array object.
+    this._events[type] = listener;
+  else if (typeof this._events[type] === 'object')
+    // If we've already got an array, just append.
+    this._events[type].push(listener);
+  else
+    // Adding the second element, need to change to array.
+    this._events[type] = [this._events[type], listener];
+
+  // Check for listener leak
+  if (typeof this._events[type] === 'object' && !this._events[type].warned) {
+    m = this._maxListeners;
+    if (m && m > 0 && this._events[type].length > m) {
+      this._events[type].warned = true;
+      console.error('(node) warning: possible EventEmitter memory ' +
+                    'leak detected. %d listeners added. ' +
+                    'Use emitter.setMaxListeners() to increase limit.',
+                    this._events[type].length);
+      console.trace();
+    }
+  }
+
+  return this;
+}","function (type, listener) {
+  var m;
+
+  if (typeof listener !== 'function')
+    throw TypeError('listener must be a function');
+
+  if (!this._events)
+    this._events = {};
+
+  // To avoid recursion in the case that type === ""newListener""! Before
+  // adding it to the listeners, first emit ""newListener"".
+  if (this._events.newListener)
+    this.emit('newListener', type, typeof listener.listener === 'function' ?
+              listener.listener : listener);
+
+  if (!this._events[type])
+    // Optimize the case of one listener. Don't need the extra array object.
+    this._events[type] = listener;
+  else if (typeof this._events[type] === 'object')
+    // If we've already got an array, just append.
+    this._events[type].push(listener);
+  else
+    // Adding the second element, need to change to array.
+    this._events[type] = [this._events[type], listener];
+
+  // Check for listener leak
+  if (typeof this._events[type] === 'object' && !this._events[type].warned) {
+    m = this._maxListeners;
+    if (m && m > 0 && this._events[type].length > m) {
+      this._events[type].warned = true;
+      console.error('(node) warning: possible EventEmitter memory ' +
+                    'leak detected. %d listeners added. ' +
+                    'Use emitter.setMaxListeners() to increase limit.',
+                    this._events[type].length);
+      console.trace();
+    }
+  }
+
+  return this;
+}","function (type, listener) {
+  if (typeof listener !== 'function')
+    throw TypeError('listener must be a function');
+
+  var fired = false;
+
+  function g() {
+    this.removeListener(type, g);
+
+    if (!fired) {
+      fired = true;
+      listener.apply(this, arguments);
+    }
+  }
+
+  g.listener = listener;
+  this.on(type, g);
+
+  return this;
+}","function (type, listener) {
+  var list, position, length, i;
+
+  if (typeof listener !== 'function')
+    throw TypeError('listener must be a function');
+
+  if (!this._events || !this._events[type])
+    return this;
+
+  list = this._events[type];
+  length = list.length;
+  position = -1;
+
+  if (list === listener ||
+      (typeof list.listener === 'function' && list.listener === listener)) {
+    delete this._events[type];
+    if (this._events.removeListener)
+      this.emit('removeListener', type, listener);
+
+  } else if (typeof list === 'object') {
+    for (i = length; i-- > 0;) {
+      if (list[i] === listener ||
+          (list[i].listener && list[i].listener === listener)) {
+        position = i;
+        break;
+      }
+    }
+
+    if (position < 0)
+      return this;
+
+    if (list.length === 1) {
+      list.length = 0;
+      delete this._events[type];
+    } else {
+      list.splice(position, 1);
+    }
+
+    if (this._events.removeListener)
+      this.emit('removeListener', type, listener);
+  }
+
+  return this;
+}","function (type) {
+  var key, listeners;
+
+  if (!this._events)
+    return this;
+
+  // not listening for removeListener, no need to emit
+  if (!this._events.removeListener) {
+    if (arguments.length === 0)
+      this._events = {};
+    else if (this._events[type])
+      delete this._events[type];
+    return this;
+  }
+
+  // emit removeListener for all listeners on all events
+  if (arguments.length === 0) {
+    for (key in this._events) {
+      if (key === 'removeListener') continue;
+      this.removeAllListeners(key);
+    }
+    this.removeAllListeners('removeListener');
+    this._events = {};
+    return this;
+  }
+
+  listeners = this._events[type];
+
+  if (typeof listeners === 'function') {
+    this.removeListener(type, listeners);
+  } else if (Array.isArray(listeners)) {
+    // LIFO order
+    while (listeners.length)
+      this.removeListener(type, listeners[listeners.length - 1]);
+  }
+  delete this._events[type];
+
+  return this;
+}","function (type) {
+  var ret;
+  if (!this._events || !this._events[type])
+    ret = [];
+  else if (typeof this._events[type] === 'function')
+    ret = [this._events[type]];
+  else
+    ret = this._events[type].slice();
+  return ret;
+}"
+[object Object],false,,0,[object Object],[object Object],[object Object],"function () {
+      var self = this
+        , hookArgs // arguments eventually passed to the hook - are mutable
+        , lastArg = arguments[arguments.length-1]
+        , pres = this._pres[name]
+        , posts = this._posts[name]
+        , _total = pres.length
+        , _current = -1
+        , _asyncsLeft = proto[name].numAsyncPres
+        , _next = function () {
+            if (arguments[0] instanceof Error) {
+              return handleError(arguments[0]);
+            }
+            var _args = Array.prototype.slice.call(arguments)
+              , currPre
+              , preArgs;
+            if (_args.length && !(arguments[0] == null && typeof lastArg === 'function'))
+              hookArgs = _args;
+            if (++_current < _total) {
+              currPre = pres[_current]
+              if (currPre.isAsync && currPre.length < 2)
+                throw new Error(""Your pre must have next and done arguments -- e.g., function (next, done, ...)"");
+              if (currPre.length < 1)
+                throw new Error(""Your pre must have a next argument -- e.g., function (next, ...)"");
+              preArgs = (currPre.isAsync
+                          ? [once(_next), once(_asyncsDone)]
+                          : [once(_next)]).concat(hookArgs);
+              return currPre.apply(self, preArgs);
+            } else if (!proto[name].numAsyncPres) {
+              return _done.apply(self, hookArgs);
+            }
+          }
+        , _done = function () {
+            var args_ = Array.prototype.slice.call(arguments)
+              , ret, total_, current_, next_, done_, postArgs;
+            if (_current === _total) {
+              ret = fn.apply(self, args_);
+              total_ = posts.length;
+              current_ = -1;
+              next_ = function () {
+                if (arguments[0] instanceof Error) {
+                  return handleError(arguments[0]);
+                }
+                var args_ = Array.prototype.slice.call(arguments, 1)
+                  , currPost
+                  , postArgs;
+                if (args_.length) hookArgs = args_;
+                if (++current_ < total_) {
+                  currPost = posts[current_]
+                  if (currPost.length < 1)
+                    throw new Error(""Your post must have a next argument -- e.g., function (next, ...)"");
+                  postArgs = [once(next_)].concat(hookArgs);
+                  return currPost.apply(self, postArgs);
+                }
+              };
+              if (total_) return next_();
+              return ret;
+            }
+          };
+      if (_asyncsLeft) {
+        function _asyncsDone (err) {
+          if (err && err instanceof Error) {
+            return handleError(err);
+          }
+          --_asyncsLeft || _done.apply(self, hookArgs);
+        }
+      }
+      function handleError (err) {
+        if ('function' == typeof lastArg)
+          return lastArg(err);
+        if (errorCb) return errorCb.call(self, err);
+        throw err;
+      }
+      return _next.apply(this, arguments);
+    }",[object Object],[object Object],0,546d00ece9f654701c000002,546d00ece9f654701c000002,22:40:24,22:43:24,19/11/2014,08:00,07:00,,01:00,true,false,01:00,Wed Nov 19 2014 22:43:24 GMT+0200 (IST),2,03:00,02:00,לצחצח שיניים,[object Object],[object Object],"function () {
+  var dirty = this.$__dirty();
+  if (!dirty.length && VERSION_ALL != this.$__.version) return;
+
+  var where = {}
+    , delta = {}
+    , len = dirty.length
+    , divergent = []
+    , d = 0
+    , val
+    , obj
+
+  for (; d < len; ++d) {
+    var data = dirty[d]
+    var value = data.value
+    var schema = data.schema
+
+    var match = checkDivergentArray(this, data.path, value);
+    if (match) {
+      divergent.push(match);
+      continue;
+    }
+
+    if (divergent.length) continue;
+
+    if (undefined === value) {
+      operand(this, where, delta, data, 1, '$unset');
+
+    } else if (null === value) {
+      operand(this, where, delta, data, null);
+
+    } else if (value._path && value._atomics) {
+      // arrays and other custom types (support plugins etc)
+      handleAtomics(this, where, delta, data, value);
+
+    } else if (value._path && Buffer.isBuffer(value)) {
+      // MongooseBuffer
+      value = value.toObject();
+      operand(this, where, delta, data, value);
+
+    } else {
+      value = utils.clone(value, { depopulate: 1 });
+      operand(this, where, delta, data, value);
+    }
+  }
+
+  if (divergent.length) {
+    return new DivergentArrayError(divergent);
+  }
+
+  if (this.$__.version) {
+    this.$__version(where, delta);
+  }
+
+  return [where, delta];
+}","function (where, delta) {
+  var key = this.schema.options.versionKey;
+
+  if (true === where) {
+    // this is an insert
+    if (key) this.setValue(key, delta[key] = 0);
+    return;
+  }
+
+  // updates
+
+  // only apply versioning if our versionKey was selected. else
+  // there is no way to select the correct version. we could fail
+  // fast here and force them to include the versionKey but
+  // thats a bit intrusive. can we do this automatically?
+  if (!this.isSelected(key)) {
+    return;
+  }
+
+  // $push $addToSet don't need the where clause set
+  if (VERSION_WHERE === (VERSION_WHERE & this.$__.version)) {
+    where[key] = this.getValue(key);
+  }
+
+  if (VERSION_INC === (VERSION_INC & this.$__.version)) {
+    delta.$inc || (delta.$inc = {});
+    delta.$inc[key] = 1;
+  }
+}","function increment() {
+  this.$__.version = VERSION_ALL;
+  return this;
+}","function _where(where) {
+  where || (where = {});
+
+  var paths
+    , len
+
+  if (this.$__.shardval) {
+    paths = Object.keys(this.$__.shardval)
+    len = paths.length
+
+    for (var i = 0; i < len; ++i) {
+      where[paths[i]] = this.$__.shardval[paths[i]];
+    }
+  }
+
+  where._id = this._doc._id;
+  return where;
+}","function remove(fn) {
+  if (this.$__.removing) {
+    this.$__.removing.addBack(fn);
+    return this;
+  }
+
+  var promise = this.$__.removing = new Promise(fn)
+    , where = this.$__where()
+    , self = this
+    , options = {}
+
+  if (this.schema.options.safe) {
+    options.safe = this.schema.options.safe;
+  }
+
+  this.collection.remove(where, options, tick(function (err) {
+    if (err) {
+      promise.error(err);
+      promise = self = self.$__.removing = where = options = null;
+      return;
+    }
+    self.emit('remove', self);
+    promise.complete();
+    promise = self = where = options = null;
+  }));
+
+  return this;
+}","function model(name) {
+  return this.db.model(name);
+}","function (obj, fields, skipId) {
+  var doc = {}
+    , self = this
+    , exclude
+    , keys
+    , key
+    , ki
+
+  // determine if this doc is a result of a query with
+  // excluded fields
+  if (fields && 'Object' === fields.constructor.name) {
+    keys = Object.keys(fields);
+    ki = keys.length;
+
+    while (ki--) {
+      if ('_id' !== keys[ki]) {
+        exclude = 0 === fields[keys[ki]];
+        break;
+      }
+    }
+  }
+
+  var paths = Object.keys(this.schema.paths)
+    , plen = paths.length
+    , ii = 0
+
+  for (; ii < plen; ++ii) {
+    var p = paths[ii];
+
+    if ('_id' == p) {
+      if (skipId) continue;
+      if (obj && '_id' in obj) continue;
+    }
+
+    var type = this.schema.paths[p]
+      , path = p.split('.')
+      , len = path.length
+      , last = len-1
+      , curPath = ''
+      , doc_ = doc
+      , i = 0
+
+    for (; i < len; ++i) {
+      var piece = path[i]
+        , def
+
+      // support excluding intermediary levels
+      if (exclude) {
+        curPath += piece;
+        if (curPath in fields) break;
+        curPath += '.';
+      }
+
+      if (i === last) {
+        if (fields) {
+          if (exclude) {
+            // apply defaults to all non-excluded fields
+            if (p in fields) continue;
+
+            def = type.getDefault(self, true);
+            if ('undefined' !== typeof def) {
+              doc_[piece] = def;
+              self.$__.activePaths.default(p);
+            }
+
+          } else if (p in fields) {
+            // selected field
+            def = type.getDefault(self, true);
+            if ('undefined' !== typeof def) {
+              doc_[piece] = def;
+              self.$__.activePaths.default(p);
+            }
+          }
+        } else {
+          def = type.getDefault(self, true);
+          if ('undefined' !== typeof def) {
+            doc_[piece] = def;
+            self.$__.activePaths.default(p);
+          }
+        }
+      } else {
+        doc_ = doc_[piece] || (doc_[piece] = {});
+      }
+    }
+  };
+
+  return doc;
+}","function (doc, opts, fn) {
+  // do not prefix this method with $__ since its
+  // used by public hooks
+
+  if ('function' == typeof opts) {
+    fn = opts;
+    opts = null;
+  }
+
+  this.isNew = false;
+
+  // handle docs with populated paths
+  if (doc._id && opts && opts.populated && opts.populated.length) {
+    var id = String(doc._id);
+    for (var i = 0; i < opts.populated.length; ++i) {
+      var item = opts.populated[i];
+      this.populated(item.path, item._docs[id], item);
+    }
+  }
+
+  init(this, doc, this._doc);
+  this.$__storeShard();
+
+  this.emit('init', this);
+  if (fn) fn(null);
+  return this;
+}","function () {
+  // backwards compat
+  var key = this.schema.options.shardKey || this.schema.options.shardkey;
+  if (!(key && 'Object' == key.constructor.name)) return;
+
+  var orig = this.$__.shardval = {}
+    , paths = Object.keys(key)
+    , len = paths.length
+    , val
+
+  for (var i = 0; i < len; ++i) {
+    val = this.getValue(paths[i]);
+    if (isMongooseObject(val)) {
+      orig[paths[i]] = val.toObject({ depopulate: true })
+    } else if (null != val && val.valueOf) {
+      orig[paths[i]] = val.valueOf();
+    } else {
+      orig[paths[i]] = val;
+    }
+  }
+}","function (name, fn, errorCb) {
+    if (arguments.length === 1 && typeof name === 'object') {
+      for (var k in name) { // `name` is a hash of hookName->hookFn
+        this.hook(k, name[k]);
+      }
+      return;
+    }
+
+    var proto = this.prototype || this
+      , pres = proto._pres = proto._pres || {}
+      , posts = proto._posts = proto._posts || {};
+    pres[name] = pres[name] || [];
+    posts[name] = posts[name] || [];
+
+    proto[name] = function () {
+      var self = this
+        , hookArgs // arguments eventually passed to the hook - are mutable
+        , lastArg = arguments[arguments.length-1]
+        , pres = this._pres[name]
+        , posts = this._posts[name]
+        , _total = pres.length
+        , _current = -1
+        , _asyncsLeft = proto[name].numAsyncPres
+        , _next = function () {
+            if (arguments[0] instanceof Error) {
+              return handleError(arguments[0]);
+            }
+            var _args = Array.prototype.slice.call(arguments)
+              , currPre
+              , preArgs;
+            if (_args.length && !(arguments[0] == null && typeof lastArg === 'function'))
+              hookArgs = _args;
+            if (++_current < _total) {
+              currPre = pres[_current]
+              if (currPre.isAsync && currPre.length < 2)
+                throw new Error(""Your pre must have next and done arguments -- e.g., function (next, done, ...)"");
+              if (currPre.length < 1)
+                throw new Error(""Your pre must have a next argument -- e.g., function (next, ...)"");
+              preArgs = (currPre.isAsync
+                          ? [once(_next), once(_asyncsDone)]
+                          : [once(_next)]).concat(hookArgs);
+              return currPre.apply(self, preArgs);
+            } else if (!proto[name].numAsyncPres) {
+              return _done.apply(self, hookArgs);
+            }
+          }
+        , _done = function () {
+            var args_ = Array.prototype.slice.call(arguments)
+              , ret, total_, current_, next_, done_, postArgs;
+            if (_current === _total) {
+              ret = fn.apply(self, args_);
+              total_ = posts.length;
+              current_ = -1;
+              next_ = function () {
+                if (arguments[0] instanceof Error) {
+                  return handleError(arguments[0]);
+                }
+                var args_ = Array.prototype.slice.call(arguments, 1)
+                  , currPost
+                  , postArgs;
+                if (args_.length) hookArgs = args_;
+                if (++current_ < total_) {
+                  currPost = posts[current_]
+                  if (currPost.length < 1)
+                    throw new Error(""Your post must have a next argument -- e.g., function (next, ...)"");
+                  postArgs = [once(next_)].concat(hookArgs);
+                  return currPost.apply(self, postArgs);
+                }
+              };
+              if (total_) return next_();
+              return ret;
+            }
+          };
+      if (_asyncsLeft) {
+        function _asyncsDone (err) {
+          if (err && err instanceof Error) {
+            return handleError(err);
+          }
+          --_asyncsLeft || _done.apply(self, hookArgs);
+        }
+      }
+      function handleError (err) {
+        if ('function' == typeof lastArg)
+          return lastArg(err);
+        if (errorCb) return errorCb.call(self, err);
+        throw err;
+      }
+      return _next.apply(this, arguments);
+    };
+    
+    proto[name].numAsyncPres = 0;
+
+    return this;
+  }","function (name, isAsync, fn, errorCb) {
+    if ('boolean' !== typeof arguments[1]) {
+      errorCb = fn;
+      fn = isAsync;
+      isAsync = false;
+    }
+    var proto = this.prototype || this
+      , pres = proto._pres = proto._pres || {};
+
+    this._lazySetupHooks(proto, name, errorCb);
+
+    if (fn.isAsync = isAsync) {
+      proto[name].numAsyncPres++;
+    }
+
+    (pres[name] = pres[name] || []).push(fn);
+    return this;
+  }","function (name, isAsync, fn) {
+    if (arguments.length === 2) {
+      fn = isAsync;
+      isAsync = false;
+    }
+    var proto = this.prototype || this
+      , posts = proto._posts = proto._posts || {};
+    
+    this._lazySetupHooks(proto, name);
+    (posts[name] = posts[name] || []).push(fn);
+    return this;
+  }","function (name, fnToRemove) {
+    var proto = this.prototype || this
+      , pres = proto._pres || (proto._pres || {});
+    if (!pres[name]) return this;
+    if (arguments.length === 1) {
+      // Remove all pre callbacks for hook `name`
+      pres[name].length = 0;
+    } else {
+      pres[name] = pres[name].filter( function (currFn) {
+        return currFn !== fnToRemove;
+      });
+    }
+    return this;
+  }","function (proto, methodName, errorCb) {
+    if ('undefined' === typeof proto[methodName].numAsyncPres) {
+      this.hook(methodName, proto[methodName], errorCb);
+    }
+  }","function update() {
+  var args = utils.args(arguments);
+  args.unshift({_id: this._id});
+  return this.constructor.update.apply(this.constructor, args);
+}","function (path, val, type, options) {
+  if (type && 'Object' == type.constructor.name) {
+    options = type;
+    type = undefined;
+  }
+
+  var merge = options && options.merge
+    , adhoc = type && true !== type
+    , constructing = true === type
+    , adhocs
+
+  var strict = options && 'strict' in options
+    ? options.strict
+    : this.$__.strictMode;
+
+  if (adhoc) {
+    adhocs = this.$__.adhocPaths || (this.$__.adhocPaths = {});
+    adhocs[path] = Schema.interpretAsType(path, type);
+  }
+
+  if ('string' !== typeof path) {
+    // new Document({ key: val })
+
+    if (null === path || undefined === path) {
+      var _ = path;
+      path = val;
+      val = _;
+
+    } else {
+      var prefix = val
+        ? val + '.'
+        : '';
+
+      if (path instanceof Document) path = path._doc;
+
+      var keys = Object.keys(path)
+        , i = keys.length
+        , pathtype
+        , key
+
+
+      while (i--) {
+        key = keys[i];
+        pathtype = this.schema.pathType(prefix + key);
+        if (null != path[key]
+            // need to know if plain object - no Buffer, ObjectId, ref, etc
+            && utils.isObject(path[key])
+            && (!path[key].constructor || 'Object' == path[key].constructor.name)
+            && 'virtual' != pathtype
+            && !(this.$__path(prefix + key) instanceof MixedSchema)
+            && !(this.schema.paths[key] && this.schema.paths[key].options.ref)
+          ) {
+          this.set(path[key], prefix + key, constructing);
+        } else if (strict) {
+          if ('real' === pathtype || 'virtual' === pathtype) {
+            this.set(prefix + key, path[key], constructing);
+          } else if ('throw' == strict) {
+            throw new Error(""Field `"" + key + ""` is not in schema."");
+          }
+        } else if (undefined !== path[key]) {
+          this.set(prefix + key, path[key], constructing);
+        }
+      }
+
+      return this;
+    }
+  }
+
+  // ensure _strict is honored for obj props
+  // docschema = new Schema({ path: { nest: 'string' }})
+  // doc.set('path', obj);
+  var pathType = this.schema.pathType(path);
+  if ('nested' == pathType && val && utils.isObject(val) &&
+      (!val.constructor || 'Object' == val.constructor.name)) {
+    if (!merge) this.setValue(path, null);
+    this.set(val, path, constructing);
+    return this;
+  }
+
+  var schema;
+  var parts = path.split('.');
+
+  if ('adhocOrUndefined' == pathType && strict) {
+
+    // check for roots that are Mixed types
+    var mixed;
+
+    for (var i = 0; i < parts.length; ++i) {
+      var subpath = parts.slice(0, i+1).join('.');
+      schema = this.schema.path(subpath);
+      if (schema instanceof MixedSchema) {
+        // allow changes to sub paths of mixed types
+        mixed = true;
+        break;
+      }
+    }
+
+    if (!mixed) {
+      if ('throw' == strict) {
+        throw new Error(""Field `"" + path + ""` is not in schema."");
+      }
+      return this;
+    }
+
+  } else if ('virtual' == pathType) {
+    schema = this.schema.virtualpath(path);
+    schema.applySetters(val, this);
+    return this;
+  } else {
+    schema = this.$__path(path);
+  }
+
+  var pathToMark;
+
+  // When using the $set operator the path to the field must already exist.
+  // Else mongodb throws: ""LEFT_SUBFIELD only supports Object""
+
+  if (parts.length <= 1) {
+    pathToMark = path;
+  } else {
+    for (var i = 0; i < parts.length; ++i) {
+      var subpath = parts.slice(0, i+1).join('.');
+      if (this.isDirectModified(subpath) // earlier prefixes that are already
+                                         // marked as dirty have precedence
+          || this.get(subpath) === null) {
+        pathToMark = subpath;
+        break;
+      }
+    }
+
+    if (!pathToMark) pathToMark = path;
+  }
+
+  // if this doc is being constructed we should not trigger getters
+  var priorVal = constructing
+    ? undefined
+    : this.get(path);
+
+  if (!schema || undefined === val) {
+    this.$__set(pathToMark, path, constructing, parts, schema, val, priorVal);
+    return this;
+  }
+
+  var self = this;
+  var shouldSet = this.$__try(function(){
+    val = schema.applySetters(val, self, false, priorVal);
+  });
+
+  if (shouldSet) {
+    this.$__set(pathToMark, path, constructing, parts, schema, val, priorVal);
+  }
+
+  return this;
+}","function (
+    pathToMark, path, constructing, parts, schema, val, priorVal) {
+
+  if (this.isNew) return true;
+  if (this.isDirectModified(pathToMark)) return false;
+
+  if (undefined === val && !this.isSelected(path)) {
+    // when a path is not selected in a query, its initial
+    // value will be undefined.
+    return true;
+  }
+
+  if (undefined === val && path in this.$__.activePaths.states.default) {
+    // we're just unsetting the default value which was never saved
+    return false;
+  }
+
+  if (!deepEqual(val, priorVal || this.get(path))) {
+    return true;
+  }
+
+  if (!constructing &&
+      null != val &&
+      path in this.$__.activePaths.states.default &&
+      deepEqual(val, schema.getDefault(this, constructing))) {
+    // a path with a default was $unset on the server
+    // and the user is setting it to the same value again
+    return true;
+  }
+
+  return false;
+}","function (
+    pathToMark, path, constructing, parts, schema, val, priorVal) {
+
+  var shouldModify = this.$__shouldModify.apply(this, arguments);
+
+  if (shouldModify) {
+    this.markModified(pathToMark, val);
+
+    // handle directly setting arrays (gh-1126)
+    MongooseArray || (MongooseArray = require('./types/array'));
+    if (val instanceof MongooseArray) {
+      val._registerAtomic('$set', val);
+    }
+  }
+
+  var obj = this._doc
+    , i = 0
+    , l = parts.length
+
+  for (; i < l; i++) {
+    var next = i + 1
+      , last = next === l;
+
+    if (last) {
+      obj[parts[i]] = val;
+    } else {
+      if (obj[parts[i]] && 'Object' === obj[parts[i]].constructor.name) {
+        obj = obj[parts[i]];
+      } else if (obj[parts[i]] && Array.isArray(obj[parts[i]])) {
+        obj = obj[parts[i]];
+      } else {
+        obj = obj[parts[i]] = {};
+      }
+    }
+  }
+}","function (path) {
+  return utils.getValue(path, this._doc);
+}","function (path, val) {
+  utils.setValue(path, val, this._doc);
+  return this;
+}","function (path, type) {
+  var adhocs;
+  if (type) {
+    adhocs = this.$__.adhocPaths || (this.$__.adhocPaths = {});
+    adhocs[path] = Schema.interpretAsType(path, type);
+  }
+
+  var schema = this.$__path(path) || this.schema.virtualpath(path)
+    , pieces = path.split('.')
+    , obj = this._doc;
+
+  for (var i = 0, l = pieces.length; i < l; i++) {
+    obj = undefined === obj || null === obj
+      ? undefined
+      : obj[pieces[i]];
+  }
+
+  if (schema) {
+    obj = schema.applyGetters(obj, this);
+  }
+
+  return obj;
+}","function (path) {
+  var adhocs = this.$__.adhocPaths
+    , adhocType = adhocs && adhocs[path];
+
+  if (adhocType) {
+    return adhocType;
+  } else {
+    return this.schema.path(path);
+  }
+}","function (path) {
+  this.$__.activePaths.modify(path);
+}","function (fn, scope) {
+  var res;
+  try {
+    fn.call(scope);
+    res = true;
+  } catch (e) {
+    this.$__error(e);
+    res = false;
+  }
+  return res;
+}","function () {
+  var directModifiedPaths = Object.keys(this.$__.activePaths.states.modify);
+
+  return directModifiedPaths.reduce(function (list, path) {
+    var parts = path.split('.');
+    return list.concat(parts.reduce(function (chains, part, i) {
+      return chains.concat(parts.slice(0, i).concat(part).join('.'));
+    }, []));
+  }, []);
+}","function (path) {
+  return path
+    ? !!~this.modifiedPaths().indexOf(path)
+    : this.$__.activePaths.some('modify');
+}","function (path) {
+  return (path in this.$__.activePaths.states.modify);
+}","function (path) {
+  return (path in this.$__.activePaths.states.init);
+}","function isSelected(path) {
+  if (this.$__.selected) {
+
+    if ('_id' === path) {
+      return 0 !== this.$__.selected._id;
+    }
+
+    var paths = Object.keys(this.$__.selected)
+      , i = paths.length
+      , inclusive = false
+      , cur
+
+    if (1 === i && '_id' === paths[0]) {
+      // only _id was selected.
+      return 0 === this.$__.selected._id;
+    }
+
+    while (i--) {
+      cur = paths[i];
+      if ('_id' == cur) continue;
+      inclusive = !! this.$__.selected[cur];
+      break;
+    }
+
+    if (path in this.$__.selected) {
+      return inclusive;
+    }
+
+    i = paths.length;
+    var pathDot = path + '.';
+
+    while (i--) {
+      cur = paths[i];
+      if ('_id' == cur) continue;
+
+      if (0 === cur.indexOf(pathDot)) {
+        return inclusive;
+      }
+
+      if (0 === pathDot.indexOf(cur + '.')) {
+        return inclusive;
+      }
+    }
+
+    return ! inclusive;
+  }
+
+  return true;
+}","function (cb) {
+  var self = this
+
+  // only validate required fields when necessary
+  var paths = Object.keys(this.$__.activePaths.states.require).filter(function (path) {
+    if (!self.isSelected(path) && !self.isModified(path)) return false;
+    return true;
+  });
+
+  paths = paths.concat(Object.keys(this.$__.activePaths.states.init));
+  paths = paths.concat(Object.keys(this.$__.activePaths.states.modify));
+  paths = paths.concat(Object.keys(this.$__.activePaths.states.default));
+
+  if (0 === paths.length) {
+    complete();
+    return this;
+  }
+
+  var validating = {}
+    , total = 0;
+
+  paths.forEach(validatePath);
+  return this;
+
+  function validatePath (path) {
+    if (validating[path]) return;
+
+    validating[path] = true;
+    total++;
+
+    process.nextTick(function(){
+      var p = self.schema.path(path);
+      if (!p) return --total || complete();
+
+      var val = self.getValue(path);
+      p.doValidate(val, function (err) {
+        if (err) {
+          self.invalidate(
+              path
+            , err
+            , undefined
+            , true // embedded docs
+            );
+        }
+        --total || complete();
+      }, self);
+    });
+  }
+
+  function complete () {
+    var err = self.$__.validationError;
+    self.$__.validationError = undefined;
+    self.emit('validate', self);
+    cb(err);
+  }
+}","function (path, err, val) {
+  if (!this.$__.validationError) {
+    this.$__.validationError = new ValidationError(this);
+  }
+
+  if (!err || 'string' === typeof err) {
+    // sniffing arguments:
+    // need to handle case where user does not pass value
+    // so our error message is cleaner
+    err = 2 < arguments.length
+      ? new ValidatorError(path, err, val)
+      : new ValidatorError(path, err)
+  }
+
+  this.$__.validationError.errors[path] = err;
+}","function reset() {
+  var self = this;
+  DocumentArray || (DocumentArray = require('./types/documentarray'));
+
+  this.$__.activePaths
+  .map('init', 'modify', function (i) {
+    return self.getValue(i);
+  })
+  .filter(function (val) {
+    return val && val instanceof DocumentArray && val.length;
+  })
+  .forEach(function (array) {
+    var i = array.length;
+    while (i--) {
+      var doc = array[i];
+      if (!doc) continue;
+      doc.$__reset();
+    }
+  });
+
+  // clear atomics
+  this.$__dirty().forEach(function (dirt) {
+    var type = dirt.value;
+    if (type && type._atomics) {
+      type._atomics = {};
+    }
+  });
+
+  // Clear 'modify'('dirty') cache
+  this.$__.activePaths.clear('modify');
+  this.$__.validationError = undefined;
+  this.errors = undefined;
+  var self = this;
+  this.schema.requiredPaths().forEach(function (path) {
+    self.$__.activePaths.require(path);
+  });
+
+  return this;
+}","function () {
+  var self = this;
+
+  var all = this.$__.activePaths.map('modify', function (path) {
+    return { path: path
+           , value: self.getValue(path)
+           , schema: self.$__path(path) };
+  });
+
+  // Sort dirty paths in a flat hierarchy.
+  all.sort(function (a, b) {
+    return (a.path < b.path ? -1 : (a.path > b.path ? 1 : 0));
+  });
+
+  // Ignore ""foo.a"" if ""foo"" is dirty already.
+  var minimal = []
+    , lastPath
+    , top;
+
+  all.forEach(function (item, i) {
+    if (item.path.indexOf(lastPath) !== 0) {
+      lastPath = item.path + '.';
+      minimal.push(item);
+      top = item;
+    } else {
+      // special case for top level MongooseArrays
+      if (top.value && top.value._atomics && top.value.hasAtomics()) {
+        // the `top` array itself and a sub path of `top` are being modified.
+        // the only way to honor all of both modifications is through a $set
+        // of entire array.
+        top.value._atomics = {};
+        top.value._atomics.$set = top.value;
+      }
+    }
+  });
+
+  top = lastPath = null;
+  return minimal;
+}","function (schema) {
+  compile(schema.tree, this);
+  this.schema = schema;
+}","function () {
+  if (!this.save) return;
+
+  DocumentArray || (DocumentArray = require('./types/documentarray'));
+
+  this.pre('save', function (next) {
+    // validate all document arrays.
+    // we keep the error semaphore to make sure we don't
+    // call `save` unnecessarily (we only need 1 error)
+    var subdocs = 0
+      , error = false
+      , self = this;
+
+    // check for DocumentArrays
+    var arrays = this.$__.activePaths
+    .map('init', 'modify', function (i) {
+      return self.getValue(i);
+    })
+    .filter(function (val) {
+      return val && val instanceof DocumentArray && val.length;
+    });
+
+    if (!arrays.length)
+      return next();
+
+    arrays.forEach(function (array) {
+      if (error) return;
+
+      // handle sparse arrays by using for loop vs array.forEach
+      // which skips the sparse elements
+
+      var len = array.length
+      subdocs += len;
+
+      for (var i = 0; i < len; ++i) {
+        if (error) break;
+
+        var doc = array[i];
+        if (!doc) {
+          --subdocs || next();
+          continue;
+        }
+
+        doc.save(handleSave);
+      }
+    });
+
+    function handleSave (err) {
+      if (error) return;
+
+      if (err) {
+        self.$__.validationError = undefined;
+        return next(error = err);
+      }
+
+      --subdocs || next();
+    }
+
+  }, function (err) {
+    // emit on the Model if listening
+    if (this.constructor.listeners('error').length) {
+      this.constructor.emit('error', err);
+    } else {
+      // emit on the connection
+      if (!this.db.listeners('error').length) {
+        err.stack = 'No listeners detected, throwing. '
+                  + 'Consider adding an error listener to your connection.\n'
+                  + err.stack
+      }
+      this.db.emit('error', err);
+    }
+  }).pre('save', function checkForExistingErrors (next) {
+    // if any doc.set() calls failed
+    var err = this.$__.saveError;
+    if (err) {
+      this.$__.saveError = null;
+      next(err);
+    } else {
+      next();
+    }
+  }).pre('save', function validation (next) {
+    return this.validate(next);
+  });
+
+  // add user defined queues
+  this.$__doQueue();
+}","function (err) {
+  this.$__.saveError = err;
+  return this;
+}","function () {
+  var q = this.schema && this.schema.callQueue;
+  if (q) {
+    for (var i = 0, l = q.length; i < l; i++) {
+      this[q[i][0]].apply(this, q[i][1]);
+    }
+  }
+  return this;
+}","function (options) {
+  if (options && options.depopulate && this.$__.wasPopulated) {
+    // populated paths that we set to a document
+    return clone(this._id, options);
+  }
+
+  // When internally saving this document we always pass options,
+  // bypassing the custom schema options.
+  if (!(options && 'Object' == options.constructor.name)) {
+    options = this.schema.options.toObject
+      ? clone(this.schema.options.toObject)
+      : {};
+  }
+
+  ;('minimize' in options) || (options.minimize = this.schema.options.minimize);
+
+  var ret = clone(this._doc, options);
+
+  if (options.virtuals || options.getters && false !== options.virtuals) {
+    applyGetters(this, ret, 'virtuals', options);
+  }
+
+  if (options.getters) {
+    applyGetters(this, ret, 'paths', options);
+  }
+
+  if (true === options.transform) {
+    var opts = options.json
+      ? this.schema.options.toJSON
+      : this.schema.options.toObject;
+    if (opts) {
+      options.transform = opts.transform;
+    }
+  }
+
+  if ('function' == typeof options.transform) {
+    var xformed = options.transform(this, ret, options);
+    if ('undefined' != typeof xformed) ret = xformed;
+  }
+
+  return ret;
+}","function (options) {
+  // check for object type since an array of documents
+  // being stringified passes array indexes instead
+  // of options objects. JSON.stringify([doc, doc])
+  if (!(options && 'Object' == options.constructor.name)) {
+    options = this.schema.options.toJSON
+      ? clone(this.schema.options.toJSON)
+      : {};
+  }
+  options.json = true;
+  return this.toObject(options);
+}","function (options) {
+  var opts = options && 'Object' == options.constructor.name ? options :
+      this.schema.options.toObject ? clone(this.schema.options.toObject) :
+      {};
+  opts.minimize = false;
+  return inspect(this.toObject(opts));
+}","function (options) {
+  var opts = options && 'Object' == options.constructor.name ? options :
+      this.schema.options.toObject ? clone(this.schema.options.toObject) :
+      {};
+  opts.minimize = false;
+  return inspect(this.toObject(opts));
+}","function (doc) {
+  var tid = this.get('_id');
+  var docid = doc.get('_id');
+  return tid && tid.equals
+    ? tid.equals(docid)
+    : tid === docid;
+}","function populate() {
+  if (0 === arguments.length) return this;
+
+  var pop = this.$__.populate || (this.$__.populate = {});
+  var args = utils.args(arguments);
+  var fn;
+
+  if ('function' == typeof args[args.length-1]) {
+    fn = args.pop();
+  }
+
+  // allow `doc.populate(callback)`
+  if (args.length) {
+    // use hash to remove duplicate paths
+    var res = utils.populate.apply(null, args);
+    for (var i = 0; i < res.length; ++i) {
+      pop[res[i].path] = res[i];
+    }
+  }
+
+  if (fn) {
+    var paths = utils.object.vals(pop);
+    this.$__.populate = undefined;
+    this.constructor.populate(this, paths, fn);
+  }
+
+  return this;
+}","function (path, val, options) {
+  // val and options are internal
+
+  if (null == val) {
+    if (!this.$__.populated) return undefined;
+    var v = this.$__.populated[path];
+    if (v) return v.value;
+    return undefined;
+  }
+
+  // internal
+
+  if (true === val) {
+    if (!this.$__.populated) return undefined;
+    return this.$__.populated[path];
+  }
+
+  this.$__.populated || (this.$__.populated = {});
+  this.$__.populated[path] = { value: val, options: options };
+  return val;
+}","function (path) {
+  // overridden in SubDocuments
+  return path || '';
+}","function (n) {
+  if (typeof n !== 'number' || n < 0 || isNaN(n))
+    throw TypeError('n must be a positive number');
+  this._maxListeners = n;
+}","function (type) {
+  var er, handler, len, args, i, listeners;
+
+  if (!this._events)
+    this._events = {};
+
+  // If there is no 'error' event listener then throw.
+  if (type === 'error') {
+    if (!this._events.error ||
+        (typeof this._events.error === 'object' &&
+         !this._events.error.length)) {
+      er = arguments[1];
+      if (this.domain) {
+        if (!er) er = new TypeError('Uncaught, unspecified ""error"" event.');
+        er.domainEmitter = this;
+        er.domain = this.domain;
+        er.domainThrown = false;
+        this.domain.emit('error', er);
+      } else if (er instanceof Error) {
+        throw er; // Unhandled 'error' event
+      } else {
+        throw TypeError('Uncaught, unspecified ""error"" event.');
+      }
+      return false;
+    }
+  }
+
+  handler = this._events[type];
+
+  if (typeof handler === 'undefined')
+    return false;
+
+  if (this.domain && this !== process)
+    this.domain.enter();
+
+  if (typeof handler === 'function') {
+    switch (arguments.length) {
+      // fast cases
+      case 1:
+        handler.call(this);
+        break;
+      case 2:
+        handler.call(this, arguments[1]);
+        break;
+      case 3:
+        handler.call(this, arguments[1], arguments[2]);
+        break;
+      // slower
+      default:
+        len = arguments.length;
+        args = new Array(len - 1);
+        for (i = 1; i < len; i++)
+          args[i - 1] = arguments[i];
+        handler.apply(this, args);
+    }
+  } else if (typeof handler === 'object') {
+    len = arguments.length;
+    args = new Array(len - 1);
+    for (i = 1; i < len; i++)
+      args[i - 1] = arguments[i];
+
+    listeners = handler.slice();
+    len = listeners.length;
+    for (i = 0; i < len; i++)
+      listeners[i].apply(this, args);
+  }
+
+  if (this.domain && this !== process)
+    this.domain.exit();
+
+  return true;
+}","function (type, listener) {
+  var m;
+
+  if (typeof listener !== 'function')
+    throw TypeError('listener must be a function');
+
+  if (!this._events)
+    this._events = {};
+
+  // To avoid recursion in the case that type === ""newListener""! Before
+  // adding it to the listeners, first emit ""newListener"".
+  if (this._events.newListener)
+    this.emit('newListener', type, typeof listener.listener === 'function' ?
+              listener.listener : listener);
+
+  if (!this._events[type])
+    // Optimize the case of one listener. Don't need the extra array object.
+    this._events[type] = listener;
+  else if (typeof this._events[type] === 'object')
+    // If we've already got an array, just append.
+    this._events[type].push(listener);
+  else
+    // Adding the second element, need to change to array.
+    this._events[type] = [this._events[type], listener];
+
+  // Check for listener leak
+  if (typeof this._events[type] === 'object' && !this._events[type].warned) {
+    m = this._maxListeners;
+    if (m && m > 0 && this._events[type].length > m) {
+      this._events[type].warned = true;
+      console.error('(node) warning: possible EventEmitter memory ' +
+                    'leak detected. %d listeners added. ' +
+                    'Use emitter.setMaxListeners() to increase limit.',
+                    this._events[type].length);
+      console.trace();
+    }
+  }
+
+  return this;
+}","function (type, listener) {
+  var m;
+
+  if (typeof listener !== 'function')
+    throw TypeError('listener must be a function');
+
+  if (!this._events)
+    this._events = {};
+
+  // To avoid recursion in the case that type === ""newListener""! Before
+  // adding it to the listeners, first emit ""newListener"".
+  if (this._events.newListener)
+    this.emit('newListener', type, typeof listener.listener === 'function' ?
+              listener.listener : listener);
+
+  if (!this._events[type])
+    // Optimize the case of one listener. Don't need the extra array object.
+    this._events[type] = listener;
+  else if (typeof this._events[type] === 'object')
+    // If we've already got an array, just append.
+    this._events[type].push(listener);
+  else
+    // Adding the second element, need to change to array.
+    this._events[type] = [this._events[type], listener];
+
+  // Check for listener leak
+  if (typeof this._events[type] === 'object' && !this._events[type].warned) {
+    m = this._maxListeners;
+    if (m && m > 0 && this._events[type].length > m) {
+      this._events[type].warned = true;
+      console.error('(node) warning: possible EventEmitter memory ' +
+                    'leak detected. %d listeners added. ' +
+                    'Use emitter.setMaxListeners() to increase limit.',
+                    this._events[type].length);
+      console.trace();
+    }
+  }
+
+  return this;
+}","function (type, listener) {
+  if (typeof listener !== 'function')
+    throw TypeError('listener must be a function');
+
+  var fired = false;
+
+  function g() {
+    this.removeListener(type, g);
+
+    if (!fired) {
+      fired = true;
+      listener.apply(this, arguments);
+    }
+  }
+
+  g.listener = listener;
+  this.on(type, g);
+
+  return this;
+}","function (type, listener) {
+  var list, position, length, i;
+
+  if (typeof listener !== 'function')
+    throw TypeError('listener must be a function');
+
+  if (!this._events || !this._events[type])
+    return this;
+
+  list = this._events[type];
+  length = list.length;
+  position = -1;
+
+  if (list === listener ||
+      (typeof list.listener === 'function' && list.listener === listener)) {
+    delete this._events[type];
+    if (this._events.removeListener)
+      this.emit('removeListener', type, listener);
+
+  } else if (typeof list === 'object') {
+    for (i = length; i-- > 0;) {
+      if (list[i] === listener ||
+          (list[i].listener && list[i].listener === listener)) {
+        position = i;
+        break;
+      }
+    }
+
+    if (position < 0)
+      return this;
+
+    if (list.length === 1) {
+      list.length = 0;
+      delete this._events[type];
+    } else {
+      list.splice(position, 1);
+    }
+
+    if (this._events.removeListener)
+      this.emit('removeListener', type, listener);
+  }
+
+  return this;
+}","function (type) {
+  var key, listeners;
+
+  if (!this._events)
+    return this;
+
+  // not listening for removeListener, no need to emit
+  if (!this._events.removeListener) {
+    if (arguments.length === 0)
+      this._events = {};
+    else if (this._events[type])
+      delete this._events[type];
+    return this;
+  }
+
+  // emit removeListener for all listeners on all events
+  if (arguments.length === 0) {
+    for (key in this._events) {
+      if (key === 'removeListener') continue;
+      this.removeAllListeners(key);
+    }
+    this.removeAllListeners('removeListener');
+    this._events = {};
+    return this;
+  }
+
+  listeners = this._events[type];
+
+  if (typeof listeners === 'function') {
+    this.removeListener(type, listeners);
+  } else if (Array.isArray(listeners)) {
+    // LIFO order
+    while (listeners.length)
+      this.removeListener(type, listeners[listeners.length - 1]);
+  }
+  delete this._events[type];
+
+  return this;
+}","function (type) {
+  var ret;
+  if (!this._events || !this._events[type])
+    ret = [];
+  else if (typeof this._events[type] === 'function')
+    ret = [this._events[type]];
+  else
+    ret = this._events[type].slice();
+  return ret;
+}"
