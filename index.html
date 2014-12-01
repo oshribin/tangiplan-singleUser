@@ -19,9 +19,7 @@
         <script src="public/bower_components/backbone/backbone.js"></script>
         <script src="public/bower_components/bootstrap/dist/js/bootstrap.js"></script>
         <script src="public/bower_components/jquery-ui/jquery-ui.js"></script>
-        <script src="http://tjvantoll.com/images/posts/2012-07-15/dependencies.js"></script>
         <script src="public/mobiscroll/js/mobiscroll.custom-2.13.2.min.js"></script>
-        <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
  
 
        <div class = "container"></div>
@@ -243,8 +241,8 @@
                <div class = "col-md-4 col-xs-offset-1 col-xs-2 head">
                 <label class = "current"> זמן מתוכנן </label>
                </div>
-               <div class = "col-md-4 col-xs-3 head">
-                <label class = "name"> משימה </label>
+               <div class = "col-md-4 col-xs-3 head" style = "text-alight:right;">
+                <label class = "name" stle = "margin-right:15px;"> משימה </label>
                </div>
                <div class = "col-md-2 col-xs-1 head">
                 <label class = "object"> אובייקט </label>
@@ -332,7 +330,7 @@
 
               <button type="button" class="btn btn-default col-md-3 col-xs-12 end">
                <span class=" col-md-12 col-xs-12 glyphicon glyphicon-ok"></span>
-               <p class = "col-md-12 col-xs-12">סיימתי ואני יוצא</p>
+               <p class = "col-md-12 col-xs-12">סיימתי ואני בדרך החוצה </p>
               </button> 
               </div>  
          </script>
@@ -403,9 +401,10 @@
         </script>
 
         <script id = "placeObject" type = "text/x-handlebars-template">
-          <h1 class = "header">מקם את האובייקטים באיזור המשימה אחד אחד</h1>
-          <ul class = "placeList"></ul>
-          <img src = "public/photos/u76.png"></img>
+          <h1 class = "header" >הנח כל אובייקט במקום המתאים למשימה שלו</h1>
+          <img src = "public/photos/u76.png" style = "height:400px; width:250px;" class = "col-xs-offset-3 col-xs-6"></img>
+          <h3 class = "header col-xs-offset-3 col-xs-4" style ="text-align:right">רשימת המשימות</h3>
+          <ul class = "placeList col-xs-offset-3 col-xs-4"></ul>
         </script>
 
 

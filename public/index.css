@@ -493,3 +493,10 @@ input{
 .homeNav{
 
 }
+
+.placeList{
+	list-style-type: none;
+	list-style-type: none;
+	text-align: right;
+	font-size: 20px;
+}

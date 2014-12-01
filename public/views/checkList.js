@@ -50,8 +50,9 @@ var CheckList_page = Backbone.View.extend({
 
 
 		sortChecked.each(function(task){
+			console.log(this.$(".checkList"));
 			var oneView = new checkTask({model:task});
-				this.$(".checkList").append(oneView.render().el);
+			this.$(".checkList").append(oneView.render().el);
 			var exFreeTime = task.get("exFreeTime");
 			if(exFreeTime)
 				this.$(".checkList").append("<li class='row'><span class='label label-default col-xs-12'>זמן בין המשימות - "+ exFreeTime + "</spanv></li>");
