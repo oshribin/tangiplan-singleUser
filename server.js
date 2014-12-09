@@ -185,7 +185,7 @@ router.route("/users/:user_id")
 						}
 					}
 				});
-			});
+			}
 		});
 	});
 
