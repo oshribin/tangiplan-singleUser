@@ -176,15 +176,16 @@ router.route("/users/:user_id")
 									res.send(err);
 							});
 							user.clUsage = 0;
+							user.save(function(err,user){
+								if(err)
+									res.send(err)
+								else if(user)
+									res.json(user);
+							});
 						}
-
-				user.save(function(err,user){
-					if(err)
-						res.send(err)
-					else if(user)
-						res.json(user);
+					}
 				});
-			}
+			});
 		});
 	});
 
