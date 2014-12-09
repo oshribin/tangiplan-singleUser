@@ -68,6 +68,7 @@ var SignIn_page = Backbone.View.extend({
 			if(app.user)
 				app.taskList.fetch({success:that.btncntrl});
 		};
+		
 		$.get("/currentUser", callback);
 
 	},

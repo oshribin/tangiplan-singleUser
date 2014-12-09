@@ -6,12 +6,13 @@ var app = express();
 var mongoose = require("mongoose");
 var Task = require("./models/task"); 
 var Log = require("./models/log");
-var csv = require("csv");
 var User = require("./models/user");
 var UserLog = require("./models/userlog");
 var _ = require("underscore");
 var passport = require("passport");
 var LocalStrategy = require("passport-local").Strategy;
+var csv = require("fast-csv");
+var fs = require("fs");
 
 mongoose.connect("mongodb://localhost:27017/test");
 
@@ -23,6 +24,27 @@ app.use(passport.session());
 
 
 var router = express.Router();
+
+router.get("/download", function(req,res){
+	Log.find(function(err, logs){
+		if(err)
+			res.send(err);
+		else if(logs){	
+			console.log(logs[0]);
+			var csvStream = csv.format({headers: true, objectMode: true});
+   			var writableStream = fs.createWriteStream("log.csv");
+   				writableStream.on("finish", function(){
+   					console.log("done");
+  					res.download("log.csv");
+				});
+			csvStream.pipe(writableStream);
+			logs.forEach(function(log){
+				csvStream.write(log.toObject());
+			});	
+			csvStream.end();
+		}
+	});
+});
 
 router.get("/", function(req, res) {
 	res.sendfile("index.html");
@@ -132,23 +154,29 @@ router.route("/users/:user_id")
 				user.actGoOut = req.body.actGoOut;
 				user.endToArange = req.body.endToArange;
 
-				if(Date.parse(lastGoOut) !== Date.parse(user.actGoOut)){
-					var userlog = new UserLog({
-					name:user.name,
-					wakeUp:req.body.wakeUp,
-					goOut:req.body.goOut,
-					timeLeft:req.body.timeLeft,
-					arangeTime:req.body.arangeTime,
-					endToArange:req.body.endToArange,
-					clUsage:req.body.clUsage,
-					actGoOut:req.body.actGoOut,
-					});
-					userlog.save(function(err, userlog){
-						if(err)
-							res.send(err);
-					});
-					user.clUsage = 0;
-				}
+				user.save(function(err,user){
+					if(err)
+						res.send(err)
+					else if(user){
+						if(Date.parse(lasGoOut) !== Date.parse(user.actGoOut)){
+							console.log("changed");
+							var userlog = new UserLog({
+							name:user.name,
+							wakeUp:req.body.wakeUp,
+							goOut:req.body.goOut,
+							timeLeft:req.body.timeLeft,
+							arangeTime:req.body.arangeTime,
+							endToArange:req.body.endToArange,
+							clUsage:req.body.clUsage,
+							actGoOut:req.body.actGoOut,
+							});
+
+							userlog.save(function(err, userlog){
+								if(err)
+									res.send(err);
+							});
+							user.clUsage = 0;
+						}
 
 				user.save(function(err,user){
 					if(err)
