@@ -83,8 +83,8 @@ var ChooseTaskView_page = Backbone.View.extend({
 		var nav = comNav();
 
 		this.$el.html(title);
-		this.$el.append(nav);
 		this.$el.append(this.template);
+		this.$el.append(nav);
 		app.taskList.fetch({success:this.add_all, silent:true});
 		
 		this.listenTo(app.taskList, "add", this.add_one);

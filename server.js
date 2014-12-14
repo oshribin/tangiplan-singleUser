@@ -158,7 +158,8 @@ router.route("/users/:user_id")
 					if(err)
 						res.send(err)
 					else if(user){
-						if(Date.parse(lasGoOut) !== Date.parse(user.actGoOut)){
+						if(Date.parse(lastGoOut) !== Date.parse(user.actGoOut)){
+
 							console.log("changed");
 							var userlog = new UserLog({
 							name:user.name,
@@ -183,6 +184,8 @@ router.route("/users/:user_id")
 									res.json(user);
 							});
 						}
+					else
+					res.json(user);
 					}
 				});
 			}
