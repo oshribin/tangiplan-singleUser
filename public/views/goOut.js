@@ -37,8 +37,8 @@ var GoOut_page = Backbone.View.extend({
     var nav = comNav();
 
     this.$el.html(title);
-    this.$el.append(nav);
 		this.$el.append(this.template);
+    this.$el.append(nav);
     this.$("h1").html("? מתי אתם רוצים <span style = 'text-decoration: underline'>לצאת</span> מהבית");
 
 

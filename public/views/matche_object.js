@@ -58,8 +58,8 @@
 		var nav = comNav();
 
 		this.$el.html(title);
-		this.$el.append(nav);
 		this.$el.append(this.template);
+		this.$el.append(nav);
 
 		app.taskList.fetch({success: this.build});
 
