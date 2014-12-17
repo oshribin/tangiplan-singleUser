@@ -107,8 +107,9 @@ passport.use(new LocalStrategy(function(username, password,done){
 
 router.use("/public", express.static("public"));
 
-router.get("/ojbectOn/:timeStamp", function(req, res){
-	console.log(req.params.timeStamp);
+router.get("/objectOn/:objectId/:timeStamp", function(req, res){
+	console.log(req.params.objectId + "/" + req.params.timeStamp);
+	res.send(req.params.timeStamp + req.params.objectId);
 });
 
 router.route("/users")
