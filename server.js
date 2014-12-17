@@ -46,6 +46,11 @@ router.get("/download", function(req,res){
 	});
 });
 
+
+	
+
+
+
 router.get("/", function(req, res) {
 	res.sendfile("index.html");
 });
@@ -101,6 +106,10 @@ passport.use(new LocalStrategy(function(username, password,done){
 
 
 router.use("/public", express.static("public"));
+
+router.get("/ojbectOn/:timeStamp", function(req, res){
+	console.log(req.params.timeStamp);
+});
 
 router.route("/users")
 
