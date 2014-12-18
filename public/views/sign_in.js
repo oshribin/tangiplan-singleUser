@@ -48,7 +48,6 @@ var SignIn_page = Backbone.View.extend({
 		this.$("h1").show();
 
 		if(app.taskList.where({checked:true}).length == 0){
-			console.log(app.taskList.length);
 			this.$(".setDuration").prop("disabled",true);
 			this.$(".checkList").prop("disabled",true);
 		}	
@@ -63,13 +62,18 @@ var SignIn_page = Backbone.View.extend({
 		this.$(".btn").hide();
 		this.$("h1").hide();
 		var that = this;
-		var callback = function(data){
-			app.user = app.userList.where({name:data})[0];
-			if(app.user)
-				app.taskList.fetch({success:that.btncntrl});
-		};
-		
-		$.get("/currentUser", callback);
+		if(app.user){
+			app.taskList.fetch({success:that.btncntrl});
+		}
+		else {
+			var callback = function(data){
+				app.user = app.userList.where({name:data})[0];
+				if(app.user)
+					app.taskList.fetch({success:that.btncntrl});
+			};
+			
+			$.get("/currentUser", callback);
+		}
 
 	},
 });

@@ -14,16 +14,29 @@ var LocalStrategy = require("passport-local").Strategy;
 var csv = require("fast-csv");
 var fs = require("fs");
 
+
 mongoose.connect("mongodb://localhost:27017/test");
 
 app.use(bodyParser());
-app.use(session({secret: "keyboard cat", cookie:{maxAge:10*24*60*60*1000}}));
+app.use(session({secret: "keyboard cat"}));
 app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session());
 
 
 var router = express.Router();
+
+
+router.get("/logfile", function(req, res){
+	res.sendfile("mainlog.log");
+});
+
+router.get("/objectslogfile", function(req, res){
+	res.sendfile("objectlog.log");
+})
+
+
+
 
 router.get("/download", function(req,res){
 	Log.find(function(err, logs){
@@ -46,18 +59,24 @@ router.get("/download", function(req,res){
 	});
 });
 
-
-	
-
-
-
 router.get("/", function(req, res) {
 	res.sendfile("index.html");
+	console.log(req.session.passport.user);
 });
 
 app.get("/currentUser", function(req,res){
-	if(req.session.passport.user)
+	if(req.session.passport.user){
 		res.send(req.session.passport.user.name);
+		 logger(req.session.passport.user.name + " have been connected successfully ");
+	}
+
+
+});
+
+app.get("/logTomain/:message", function(req, res){
+	var username = req.session.passport.user.name;
+	var date = new Date(Date.now());
+	logger(username+ " " + message + " " + date);
 });
 
 app.post('/login',
@@ -73,6 +92,7 @@ app.get('/loginFailure', function(req, res, next) {
  
 app.get('/loginSuccess', function(req, res, next) {
   res.send('Successfully authenticated');
+  logger(req.session.passport.user.name + " have been connected successfully ");
 });
 
 passport.serializeUser(function(user, done) {
@@ -108,8 +128,10 @@ passport.use(new LocalStrategy(function(username, password,done){
 router.use("/public", express.static("public"));
 
 router.get("/objectOn/:objectId/:timeStamp", function(req, res){
-	console.log(req.params.objectId + "/" + req.params.timeStamp);
-	res.send(req.params.timeStamp + req.params.objectId);
+	objectlogger("object number " + req.params.objectId + " woke up at " + new Date(req.params.timeStamp*1000));
+	console.log("object number " + req.params.objectId + " woke up at " + new Date(req.params.timeStamp*1000));
+	console.log(req.params.timeStamp);
+
 });
 
 router.route("/users")
@@ -164,39 +186,29 @@ router.route("/users/:user_id")
 				user.actGoOut = req.body.actGoOut;
 				user.endToArange = req.body.endToArange;
 
+				if(Date.parse(lastGoOut) !== Date.parse(user.actGoOut)){
+					var userlog = new UserLog({
+					name:user.name,
+					wakeUp:req.body.wakeUp,
+					goOut:req.body.goOut,
+					timeLeft:req.body.timeLeft,
+					arangeTime:req.body.arangeTime,
+					endToArange:req.body.endToArange,
+					clUsage:req.body.clUsage,
+					actGoOut:req.body.actGoOut,
+					});
+					userlog.save(function(err, userlog){
+						if(err)
+							res.send(err);
+					});
+					user.clUsage = 0;
+				}
+
 				user.save(function(err,user){
 					if(err)
 						res.send(err)
-					else if(user){
-						if(Date.parse(lastGoOut) !== Date.parse(user.actGoOut)){
-
-							console.log("changed");
-							var userlog = new UserLog({
-							name:user.name,
-							wakeUp:req.body.wakeUp,
-							goOut:req.body.goOut,
-							timeLeft:req.body.timeLeft,
-							arangeTime:req.body.arangeTime,
-							endToArange:req.body.endToArange,
-							clUsage:req.body.clUsage,
-							actGoOut:req.body.actGoOut,
-							});
-
-							userlog.save(function(err, userlog){
-								if(err)
-									res.send(err);
-							});
-							user.clUsage = 0;
-							user.save(function(err,user){
-								if(err)
-									res.send(err)
-								else if(user)
-									res.json(user);
-							});
-						}
-					else
-					res.json(user);
-					}
+					else if(user)
+						res.json(user);
 				});
 			}
 		});
@@ -231,28 +243,34 @@ router.route("/tasks")
 		});
 	});	
 
-	
-router.route("/getDuration/:object_id")
 
+router.route("/getDuration/:object_id")
+	
 	.get(function(req, res){
-		Task.findOne({objectId:req.params.object_id}, function(err, task){
-			if(err)
-				cnosole.log(err);
+		Task.findOne({objectId:req.params.object_id, set_id:req.params.set_id}, function(err, task){
+			if(err){
+				objectlogger("object number " + req.params.object_id + " asked for task and get error");
+				res.send(err);
+			}
 			if(task && task.givDuration){
 				res.send(task.objectId+":"+parsMill(task.givDuration));
-				console.log(res);
-}
-			else
-				res.send("there is not task that match this id");
+				objectlogger("object number " + req.params.object_id + " asked for task and got " + task.name);
+			}
+			else{
+				res.send("there is no task that match this id");
+				objectlogger("object number " + req.params.object_id + " asked for task but there is no task for this object");
+			}
 		});
 	});
 
 router.route("/setDuration/:object_id/:ex_duration/:flag")
 
 	.get(function(req, res){
-		Task.findOne({objectId:req.params.object_id}, function(err, task){
-			if(err)
+		Task.findOne({objectId:req.params.object_id, set_id:req.params.set_id}, function(err, task){
+			if(err){
+				objectlogger("object number " + req.params.object_id + "try to closed the task and got error");
 				res.send(err)
+			}
 			if(task){
 				var _parsDuration = parsMill(task.givDuration);
 				var _millexception = req.params.ex_duration - _parsDuration;
@@ -268,8 +286,11 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 				task.objectId = null;
 				task.save(function(err, task){
 					
-					if(err)
+					if(err){
+						objectlogger("object number " + req.params.object_id + "try to closed the task and got error");
 						res.send(err);
+					}
+
 					else if(task){
 						var log = new Log({
 							name: task.name,
@@ -296,9 +317,14 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 								log.endTime = getHMS(task.lastDate);
 								log.startTime = calcTime(task.lastDate, task.exDuration);
 								log.save(function(err,log){
-									if(err)
+									if(err){
+										objectlogger("object number " + req.params.object_id + " try to closed the task and got error");
 										res.send(err);
+									}
+									else {
 									res.send("task end");
+									objectlogger("object number " + req.params.object_id + " closed the task " + task.name);
+								}
 							});
 							}
 							else
@@ -307,8 +333,10 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 					}	
 				});
 			}
-			else
-				res.send("there is not task that match this id");	
+			else{
+				objectlogger("object number " + req.params.object_id + " try to closed the task but ther is no task ");
+				res.send("there is no task that match this id");	
+			}
 		});
 	});
 
@@ -330,7 +358,7 @@ router.route("/tasks/:task_id")
 			if(err)
 				res.send(err)
 			else if(task){
-			
+				logger(req.session.passport.user.name + " update the task: " + task.name + " to object number: " + req.body.objectId);	
 				task.name = req.body.name;
 				task.givDuration = req.body.givDuration;
 				task.exDuration = req.body.exDuration;
@@ -449,6 +477,20 @@ router.route("/tasks/:task_id")
 					});
 				}
 			}
+		});
+	}
+
+	logger = function(string){
+		fs.appendFile('mainlog.log', string + " " +  new Date(Date.now()) + "\n"  , function(err){
+			if (err) 
+				console.log(err); 
+		});
+	}
+
+	objectlogger = function(string){
+		fs.appendFile('objectlog.log', string + " " +  new Date(Date.now()) + "\n" , function(err){
+			if(err)
+				console.log(err);
 		});
 	}
 
