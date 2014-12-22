@@ -26,6 +26,10 @@ var Task = Backbone.Model.extend({
 
 	toggle: function() {
 		this.set({checked:!this.get("checked")});
+	},
+
+	erase: function(){
+		this.destroy();
 	}
 
 });

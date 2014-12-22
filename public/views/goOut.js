@@ -41,8 +41,8 @@ var GoOut_page = Backbone.View.extend({
     this.$el.append(nav);
     this.$("h1").html("? מתי אתם רוצים <span style = 'text-decoration: underline'>לצאת</span> מהבית");
 
-
 		this.set_clock();
+    this.$(".dwwc").css({"border":"5px solid","border-color":"#2980b9"});
 
 	},
 

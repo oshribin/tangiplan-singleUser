@@ -85,10 +85,12 @@ var ChooseTaskView_page = Backbone.View.extend({
 		this.$el.html(title);
 		this.$el.append(this.template);
 		this.$el.append(nav);
+		this.$(".bottom-nav").css({"position":"relative"});
 		app.taskList.fetch({success:this.add_all, silent:true});
 		
 		this.listenTo(app.taskList, "add", this.add_one);
 		this.listenTo(app.taskList, "change", this.render);
+		this.listenTo(app.taskList, "remove", this.render);
 		this.render();
 
 
@@ -118,6 +120,8 @@ var ChooseTaskView_page = Backbone.View.extend({
 			this.realese();
 			this.$(".message").html("")
 		}
+		this.$(".simpleList").html("");
+		this.add_all();
 	},
 });
 

@@ -34,6 +34,7 @@
             <div class = "row">
               <div class="panel panel-default col-md-12 col-xs-12">
                 <div class='panel-body task'>
+                <button type = "button" class = "delete btn btn-danger">מחק</button>
                   {{name}}
                   {{#if checked}}
                     <input class="checker" type="checkbox" checked /> 
@@ -171,7 +172,11 @@
                 </div>
 
              <div class="panel panel-default col-md-5 col-xs-4">
-               <div class="panel-body col-xs-10" data-toggle="dropdown" data-target="#">
+             <div class = "panel-body col-xs-1 objIcon">
+             <span class="caret"></span>
+             </div>
+              
+               <div class="panel-body col-xs-9" data-toggle="dropdown" data-target="#">
                 {{name}}
                 </div>
                 <div class= "panel-body col-xs-2 objIcon">

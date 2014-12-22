@@ -5,7 +5,8 @@ var ChooseTaskView_single = Backbone.View.extend({
 	tagName:"li",
 
 	events: {
-		"click .checker" : "check"
+		"click .checker" : "check",
+		"click .delete" : "delete"
 	
 	},
 
@@ -13,6 +14,10 @@ var ChooseTaskView_single = Backbone.View.extend({
 	check: function () {
 		this.model.toggle();
 
+	},
+
+	delete: function(){
+		this.model.erase();
 	},
 
 	initialize: function() {

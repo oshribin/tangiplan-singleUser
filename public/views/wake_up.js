@@ -36,8 +36,8 @@ var WakeUp_page = Backbone.View.extend({
 		this.$el.append(this.template);
 		this.$el.append(nav);
 		this.$("h1").html("? מתי אתם רוצים להתעורר");
-
 		this.set_clock();
+		this.$(".dwwc").css({"border":"5px solid","border-color":"#27ae60"});
 
 
 
