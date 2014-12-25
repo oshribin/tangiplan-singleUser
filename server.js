@@ -18,7 +18,7 @@ var fs = require("fs");
 mongoose.connect("mongodb://localhost:27017/test");
 
 app.use(bodyParser());
-app.use(session({secret: "keyboard cat"}));
+app.use(session({secret: "keyboard cat",  cookie:{maxAge:10*24*60*60*1000}}));
 app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session());
@@ -50,7 +50,7 @@ router.get("/download", function(req,res){
    					console.log("done");
   					res.download("log.csv");
 				});
-			csvStream.pipe(writableStream);
+			csvStream.pipe(writable	Stream);
 			logs.forEach(function(log){
 				csvStream.write(log.toObject());
 			});	
