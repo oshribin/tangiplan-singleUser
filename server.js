@@ -1,7 +1,7 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 var cookieParser = require("cookie-parser");
-var session = require("express-session");
+var session = require("express-session")	;
 var app = express();
 var mongoose = require("mongoose");
 var Task = require("./models/task"); 
@@ -18,13 +18,35 @@ var fs = require("fs");
 mongoose.connect("mongodb://localhost:27017/test");
 
 app.use(bodyParser());
-app.use(session({secret: "keyboard cat",  cookie:{maxAge:10*24*60*60*1000}}));
-app.use(cookieParser());
-app.use(passport.initialize());
-app.use(passport.session());
+
+
 
 
 var router = express.Router();
+
+router.route("/getDuration/:object_id")
+	
+	.get(function(req, res){
+		Task.findOne({objectId:req.params.object_id, set_id:req.params.set_id}, function(err, task){
+			if(err){
+				objectlogger("object number " + req.params.object_id + " asked for task and get error");
+				res.send(err);
+			}
+			if(task && task.givDuration){
+				res.send(task.objectId+":"+parsMill(task.givDuration));
+				objectlogger("object number " + req.params.object_id + " asked for task and got " + task.name);
+			}
+			else{
+				res.send("there is no task that match this id");
+				objectlogger("object number " + req.params.object_id + " asked for task but there is no task for this object");
+			}
+		});
+	});
+
+	app.use(session({secret: "keyboard cat",  cookie:{maxAge:10*24*60*60*1000}}));
+	app.use(cookieParser());
+	app.use(passport.initialize());
+	app.use(passport.session());
 
 
 router.get("/logfile", function(req, res){
@@ -50,7 +72,7 @@ router.get("/download", function(req,res){
    					console.log("done");
   					res.download("log.csv");
 				});
-			csvStream.pipe(writable	Stream);
+			csvStream.pipe(writableStream);
 			logs.forEach(function(log){
 				csvStream.write(log.toObject());
 			});	
@@ -128,10 +150,7 @@ passport.use(new LocalStrategy(function(username, password,done){
 router.use("/public", express.static("public"));
 
 router.get("/objectOn/:objectId/:timeStamp", function(req, res){
-	objectlogger("object number " + req.params.objectId + " woke up at " + new Date(req.params.timeStamp*1000));
-	console.log("object number " + req.params.objectId + " woke up at " + new Date(req.params.timeStamp*1000));
-	console.log(req.params.timeStamp);
-
+	objectlogger("object number " + req.params.objectId + " woke up at " + new Date(req.params.timeStamp*1000));	
 });
 
 router.route("/users")
@@ -244,24 +263,7 @@ router.route("/tasks")
 	});	
 
 
-router.route("/getDuration/:object_id")
-	
-	.get(function(req, res){
-		Task.findOne({objectId:req.params.object_id, set_id:req.params.set_id}, function(err, task){
-			if(err){
-				objectlogger("object number " + req.params.object_id + " asked for task and get error");
-				res.send(err);
-			}
-			if(task && task.givDuration){
-				res.send(task.objectId+":"+parsMill(task.givDuration));
-				objectlogger("object number " + req.params.object_id + " asked for task and got " + task.name);
-			}
-			else{
-				res.send("there is no task that match this id");
-				objectlogger("object number " + req.params.object_id + " asked for task but there is no task for this object");
-			}
-		});
-	});
+
 
 router.route("/setDuration/:object_id/:ex_duration/:flag")
 

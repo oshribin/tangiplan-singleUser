@@ -1,4 +1,5 @@
 var Router = Backbone.Router.extend({
+
 	routes: {
 		"":"signIn",
 		"Debug":"Debug",

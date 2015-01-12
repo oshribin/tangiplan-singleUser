@@ -23,7 +23,7 @@ var GoOut_page = Backbone.View.extend({
        if(app.user.parsMill(app.user.timeLeft()) > 0)
           app.router.navigate("choose_tasks", true);
         else
-          alert("הזנת שעת התעוררות ל-"+app.user.get("wakeUp")+" עליך להזין שעת יציאה מאוחרת משעה זו")
+          alert("You chose to wake up at-"+app.user.get("wakeUp")+" time of leaving must be later than this")
     }});
 
 
@@ -32,14 +32,14 @@ var GoOut_page = Backbone.View.extend({
 
 	initialize: function(){
     var comTitle = Handlebars.compile($("#titleBar").html());
-    var title = comTitle({title:"שעת יציאה"});
+    var title = comTitle({title:"Time of leaving"});
     var comNav = Handlebars.compile($("#bottom-nav").html());
     var nav = comNav();
 
     this.$el.html(title);
 		this.$el.append(this.template);
     this.$el.append(nav);
-    this.$("h1").html("? מתי אתם רוצים <span style = 'text-decoration: underline'>לצאת</span> מהבית");
+    this.$("h1").html("when you wish to <span style = 'text-decoration: underline'>leave</span> ?");
 
 		this.set_clock();
     this.$(".dwwc").css({"border":"5px solid","border-color":"#2980b9"});
@@ -49,8 +49,8 @@ var GoOut_page = Backbone.View.extend({
 	set_clock:function(){
       this.$('input').mobiscroll().time({
         display : "inline",
-        hourText : "שעות",
-        minuteText: "דקות",
+        hourText : "Houers",
+        minuteText: "Minutes",
         theme:"ios7",
         height:60,
         fixedWidth: 180,

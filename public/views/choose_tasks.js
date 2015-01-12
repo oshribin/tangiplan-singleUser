@@ -34,7 +34,7 @@ var ChooseTaskView_page = Backbone.View.extend({
 		}
 
 		else
-			alert("אתה חייב לבחור לפחות משימה אחת");
+			alert("You have to choose at least one task");
 
 	},
 
@@ -78,7 +78,7 @@ var ChooseTaskView_page = Backbone.View.extend({
 
 	initialize: function(){
 		var comTitle = Handlebars.compile($("#titleBar").html());
-		var title = comTitle({title:"בנק משימות"});
+		var title = comTitle({title:"Tasks Bank"});
 		var comNav = Handlebars.compile($("#bottom-nav").html());
 		var nav = comNav();
 
@@ -114,7 +114,7 @@ var ChooseTaskView_page = Backbone.View.extend({
 		this.unchecked = app.taskList.where({userid:app.user.get("_id"),checked:false});
 		if (this.checked.length == 6){
 			this.disable_unchecked();
-			this.$(".message").html("הגעת למקסימום משימות אפשריות")
+			this.$(".message").html("You have reached the maximum amount of tasks possible")
 		}
 		else{
 			this.realese();

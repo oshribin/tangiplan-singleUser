@@ -16,7 +16,6 @@ var taskSchema = new Schema({
 			userid:String,
 			exFreeTime:String,
 			givFreeTime:String,
-
 });
 
 module.exports = mongoose.model("task",taskSchema);
