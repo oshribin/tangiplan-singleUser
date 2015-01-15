@@ -39,7 +39,7 @@ var GoOut_page = Backbone.View.extend({
     this.$el.html(title);
 		this.$el.append(this.template);
     this.$el.append(nav);
-    this.$("h1").html("when you wish to <span style = 'text-decoration: underline'>leave</span> ?");
+    this.$("h1").html("when do you wish to <span style = 'text-decoration: underline'>leave</span> home?");
 
 		this.set_clock();
     this.$(".dwwc").css({"border":"5px solid","border-color":"#2980b9"});

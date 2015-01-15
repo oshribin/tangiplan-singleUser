@@ -24,7 +24,7 @@ body{
 }
 
 .delete{
-	float: left;
+	float: right;
 	margin-top: 3px;
 }
 
@@ -73,6 +73,7 @@ body{
 }
 
 .simpleList .task{
+	text-align: left;
 	padding: 5px 0 0 5px;
 }
 
@@ -86,6 +87,27 @@ body{
 
 }
 
+.object{
+	margin-left: 35px !important;
+}
+
+.name{
+	margin-left: 30px !important;
+}
+
+.current{
+	margin-left: 29px !important;
+}
+
+.time{
+	text-align: center !important;
+}
+
+.checkTask .thumb{
+	margin-right: 20px;
+	float: left !important;
+	margin-top: -5px !important;
+}
 
 .numbers{
 	list-style-type: none;
@@ -212,6 +234,10 @@ body{
 	height: 50px;
 	margin-top: -26px;
 
+}
+
+input{
+	text-align: left !important;
 }
 
 .givDuration .input-group{
@@ -411,6 +437,9 @@ background-color: #3d4fa6;
 
 .givDuration .block{
 
+}
+.panel-body{
+	text-align: left !important;
 }
 
 .header{
