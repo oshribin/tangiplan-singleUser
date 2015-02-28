@@ -18,13 +18,35 @@ var fs = require("fs");
 mongoose.connect("mongodb://localhost:27017/test");
 
 app.use(bodyParser());
+
+var router = express.Router();
+
+router.route("/getDuration/:object_id")
+	
+	.get(function(req, res){
+		req.session = null;
+		Task.findOne({objectId:req.params.object_id, set_id:req.params.set_id}, function(err, task){
+			if(err){
+				objectlogger("object number " + req.params.object_id + " asked for task and get error");
+				res.send(err);
+			}
+			if(task && task.givDuration){
+				res.send(task.objectId+":"+parsMill(task.givDuration));
+				console.log(res._header);
+				objectlogger("object number " + req.params.object_id + " asked for task and got " + task.name);
+			}
+			else{
+				res.send("there is no task that match this id");
+				objectlogger("object number " + req.params.object_id + " asked for task but there is no task for this object");
+			}
+		});
+	});
+
 app.use(session({secret: "keyboard cat",  cookie:{maxAge:10*24*60*60*1000}}));
 app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-var router = express.Router();
 
 
 router.get("/logfile", function(req, res){
@@ -50,7 +72,7 @@ router.get("/download", function(req,res){
    					console.log("done");
   					res.download("log.csv");
 				});
-			csvStream.pipe(writable	Stream);
+			csvStream.pipe(writableStream);
 			logs.forEach(function(log){
 				csvStream.write(log.toObject());
 			});	
@@ -243,25 +265,6 @@ router.route("/tasks")
 		});
 	});	
 
-
-router.route("/getDuration/:object_id")
-	
-	.get(function(req, res){
-		Task.findOne({objectId:req.params.object_id, set_id:req.params.set_id}, function(err, task){
-			if(err){
-				objectlogger("object number " + req.params.object_id + " asked for task and get error");
-				res.send(err);
-			}
-			if(task && task.givDuration){
-				res.send(task.objectId+":"+parsMill(task.givDuration));
-				objectlogger("object number " + req.params.object_id + " asked for task and got " + task.name);
-			}
-			else{
-				res.send("there is no task that match this id");
-				objectlogger("object number " + req.params.object_id + " asked for task but there is no task for this object");
-			}
-		});
-	});
 
 router.route("/setDuration/:object_id/:ex_duration/:flag")
 
