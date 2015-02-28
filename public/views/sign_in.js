@@ -1,4 +1,4 @@
-var SignIn_page = Backbone.View.extend({
+	var SignIn_page = Backbone.View.extend({
 	
 	template: Handlebars.compile($("#signIn").html()),
 

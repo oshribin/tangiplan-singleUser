@@ -28,7 +28,7 @@ var CheckList_page = Backbone.View.extend({
 
 	initialize: function(){
 		var compiled = Handlebars.compile($("#titleBar").html());
-		var title = compiled({title:"מעקב בוקר"});
+		var title = compiled({title:"Good Morning"});
 		this.$el.html(title);
 		this.$el.append(this.template);
 		this.build = _.bind(this.build,this);
@@ -55,7 +55,7 @@ var CheckList_page = Backbone.View.extend({
 			this.$(".checkList").append(oneView.render().el);
 			var exFreeTime = task.get("exFreeTime");
 			if(exFreeTime)
-				this.$(".checkList").append("<li class='row'><span class='label label-default col-xs-12'>זמן בין המשימות - "+ exFreeTime + "</spanv></li>");
+				this.$(".checkList").append("<li class='row'><span class='label label-default col-xs-12'>Time Between Tasks - "+ exFreeTime + "</spanv></li>");
 		});
 	}
 			

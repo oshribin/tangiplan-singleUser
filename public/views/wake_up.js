@@ -28,14 +28,14 @@ var WakeUp_page = Backbone.View.extend({
 
 	render: function(){
 		var comTitle = Handlebars.compile($("#titleBar").html());
-		var title = comTitle({title:"שעת השקמה"});
+		var title = comTitle({title:"Waking up "});
 		var comNav = Handlebars.compile($("#bottom-nav").html());
 		var nav = comNav();
 
 		this.$el.html(title);
 		this.$el.append(this.template);
 		this.$el.append(nav);
-		this.$("h1").html("? מתי אתם רוצים להתעורר");
+		this.$("h1").html("When do you want to wake up ?");
 		this.set_clock();
 		this.$(".dwwc").css({"border":"5px solid","border-color":"#27ae60"});
 
@@ -46,8 +46,8 @@ var WakeUp_page = Backbone.View.extend({
 	set_clock:function(){
 	    this.$('input').mobiscroll().time({
 	      display : "inline",
-	      hourText : "שעות",
-	      minuteText: "דקות",
+	      hourText : "Hours",
+	      minuteText: "Minutes",
 	      theme:"ios7",
 	      height:60,
 	      fixedWidth: 180,
