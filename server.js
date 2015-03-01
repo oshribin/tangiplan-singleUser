@@ -37,7 +37,7 @@ router.route("/getDuration/:object_id")
 				objectlogger("object number " + req.params.object_id + " asked for task and got " + task.name);
 			}
 			else{
-				res.send("noTask");
+				res.send(req.params.object_id + ":" + -1);
 				objectlogger("object number " + req.params.object_id + " asked for task but there is no task for this object");
 			}
 		});
