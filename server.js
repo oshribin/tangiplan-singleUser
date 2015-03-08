@@ -28,17 +28,38 @@ router.route("/getDuration/:object_id")
 		req.session = null;
 		Task.findOne({objectId:req.params.object_id, set_id:req.params.set_id}, function(err, task){
 			if(err){
-				objectlogger("object number " + req.params.object_id + " asked for task and get error");
+				//eror while looking for task
+				logger({entity:"object spark",
+						name:req.params.object_id,
+						date: new Date(Date.now()),
+						request: "/getDuration/"+req.params.object_id,
+						action: "getDuration",
+						result:"error"
+						});
 				res.send(err);
 			}
-			if(task && task.givDuration){
+
+			else if(task && task.givDuration){
 				res.send(task.objectId+":"+parsMill(task.givDuration));
-				console.log(res._header);
-				objectlogger("object number " + req.params.object_id + " asked for task and got " + task.name);
+				//succeed to send task
+				logger({entity:"object spark",
+						name:req.params.object_id,
+						date: new Date(Date.now()),
+						request: "/getDuration/"+req.params.object_id,
+						action: "getDuration",
+						result: task.objectId+":"+parsMill(task.givDuration),
+						});
 			}
 			else{
-				res.send(req.params.object_id + ":" + -1);
-				objectlogger("object number " + req.params.object_id + " asked for task but there is no task for this object");
+				res.send(req.params.object_id +":"+ -1);
+				//there is no task
+				logger({entity:"object spark",
+						name:req.params.object_id,
+						date: new Date(Date.now()),
+						request: "/getDuration/"+req.params.object_id,
+						action: "getDuration",
+						result: req.params.object_id +":"+ -1,
+						});
 			}
 		});
 	});
@@ -49,13 +70,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-router.get("/logfile", function(req, res){
-	res.sendfile("mainlog.log");
-});
-
 router.get("/objectslogfile", function(req, res){
 	res.sendfile("objectlog.log");
-})
+});
 
 
 
@@ -89,17 +106,9 @@ router.get("/", function(req, res) {
 app.get("/currentUser", function(req,res){
 	if(req.session.passport.user){
 		res.send(req.session.passport.user.name);
-		 logger(req.session.passport.user.name + " have been connected successfully ");
 	}
-
-
 });
 
-app.get("/logTomain/:message", function(req, res){
-	var username = req.session.passport.user.name;
-	var date = new Date(Date.now());
-	logger(username+ " " + message + " " + date);
-});
 
 app.post('/login',
   passport.authenticate('local', {
@@ -114,7 +123,13 @@ app.get('/loginFailure', function(req, res, next) {
  
 app.get('/loginSuccess', function(req, res, next) {
   res.send('Successfully authenticated');
-  logger(req.session.passport.user.name + " have been connected successfully ");
+  				logger({entity:"User",
+						name:req.session.passport.user.name,
+						date: new Date(Date.now()),
+						request: "/login",
+						action: "login",
+						result:"connected"
+						});
 });
 
 passport.serializeUser(function(user, done) {
@@ -150,8 +165,14 @@ passport.use(new LocalStrategy(function(username, password,done){
 router.use("/public", express.static("public"));
 
 router.get("/objectOn/:objectId/:timeStamp", function(req, res){
-	objectlogger("object number " + req.params.objectId + " woke up at " + new Date(req.params.timeStamp*1000));
-res.send("objecton");	
+	res.send("objecton");
+	logger({entity:"object spark",
+			name:req.params.objectId,
+			date: new Date(Date.now()),
+			request: "/objectOn/" + req.params.objectId + "/" + req.params.timeStamp,
+			action: "objectOn",
+			result: "object on",
+			});
 });
 
 router.route("/users")
@@ -270,7 +291,13 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 	.get(function(req, res){
 		Task.findOne({objectId:req.params.object_id, set_id:req.params.set_id}, function(err, task){
 			if(err){
-				objectlogger("object number " + req.params.object_id + "try to closed the task and got error");
+				logger({entity:"object spark",
+						name: req.params.object_id,
+						date: new Date(Date.now()),
+						request: "/setDuration/" + req.params.object_id + "/" + req.params.ex_duration + "/" + req.params.flag,
+						action: "setDuration",
+						result: "error",
+						});
 				res.send(err)
 			}
 			if(task){
@@ -281,66 +308,68 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 
 				task.exDuration = parseVal(req.params.ex_duration);
 				task.exception = parseVal(_millexception);
-				task.endedByUser = req.params.flag == true ? true : false;
 				task.overexcep = _millexception > (0.2*_parsDuration);
 				task.lastDate = lastDate;
 				task.lastObjectId = objectId;
 				task.objectId = null;
 				task.save(function(err, task){
-					
 					if(err){
-						objectlogger("object number " + req.params.object_id + "try to closed the task and got error");
-						res.send(err);
+						logger({entity:"object spark",
+								name: req.params.object_id,
+								date: new Date(Date.now()),
+								request: "/setDuration/" + req.params.object_id + "/" + req.params.ex_duration + "/" + req.params.flag,
+								action: "setDuration",
+								result: "error",
+								});
+						res.send(err)
 					}
-
 					else if(task){
-						var log = new Log({
-							name: task.name,
-							givDuration: task.givDuration,
-							exDuration: task.exDuration,
-							lastDate: task.lastDate,
-							exception: task.exception,
-							endedByUser: task.endedByUser,
-							overexcep: task.overexcep,
-							givFreeTime: task.givFreeTime,
-						});
 						
 						var prev = freeTime(task);
-							
-
+	
 						User.findOne({_id:task.userid}, function(err, user){
-							if(err)
+							if(err){
+								logger({entity:"object spark",
+										name: req.params.object_id,
+										date: new Date(Date.now()),
+										request:"/setDuration/" + req.params.object_id + "/" + req.params.ex_duration + "/" + req.params.flag,
+										action: "setDuration",
+										result: "error",
+										});
 								res.send(err)
+							}
+
 							else if(user != null){
-								log.objectId = objectId;
-								log.wakeUp = user.wakeUp;
-								log.goOut = user.goOut;
-								log.date = getYMD(task.lastDate);
-								log.endTime = getHMS(task.lastDate);
-								log.startTime = calcTime(task.lastDate, task.exDuration);
-								log.save(function(err,log){
-									if(err){
-										objectlogger("object number " + req.params.object_id + " try to closed the task and got error");
-										res.send(err);
-									}
-									else {
 									res.send("task end");
-									objectlogger("object number " + req.params.object_id + " closed the task " + task.name);
+									logger({entity:"object spark",
+											id: req.params.object_id,
+											date: new Date(Date.now()),
+											request: "/setDuration/" + req.params.object_id + "/" + req.params.ex_duration + "/" + req.params.flag,
+											action: "setDuration",
+											result:"task end",
+											taskName: task.name,
+											givDuration: task.givDuration,
+											exDuration: task.exDuration,
+											exception: task.exception,
+											endedByUser: req.params.flag,
+											overexcep: task.overexcep,
+											userId: user._id,
+											exFreeTime: task.exFreeTime,
+											givFreeTime: task.givFreeTime,
+											endTime: getHMS(task.lastDate),
+											startTime: calcTime(task.lastDate, task.exDuration),		
+											wakeUp: user.wakeUp, 
+											goOut: user.goOut,
+											taskDate: getYMD(task.lastDate),
+									});
 								}
 							});
-							}
-							else
-								res.send("task end no user detected");
-						});	
-					}	
-				});
-			}
-			else{
-				objectlogger("object number " + req.params.object_id + " try to closed the task but ther is no task ");
-				res.send("there is no task that match this id");	
-			}
+						}
+					});
+				}
+			});
 		});
-	});
+
 
 	
 
@@ -360,7 +389,7 @@ router.route("/tasks/:task_id")
 			if(err)
 				res.send(err)
 			else if(task){
-				logger(req.session.passport.user.name + " update the task: " + task.name + " to object number: " + req.body.objectId);	
+				
 				task.name = req.body.name;
 				task.givDuration = req.body.givDuration;
 				task.exDuration = req.body.exDuration;
@@ -385,7 +414,6 @@ router.route("/tasks/:task_id")
 				});
 		    }
 		});
-
 	})
 
 	.delete(function(req, res){
@@ -477,20 +505,20 @@ router.route("/tasks/:task_id")
 							}
 						});
 					});
-				}
+				}	
 			}
 		});
 	}
 
-	logger = function(string){
-		fs.appendFile('mainlog.log', string + " " +  new Date(Date.now()) + "\n"  , function(err){
-			if (err) 
-				console.log(err); 
+	logger = function(prop){
+		var log = new Log(prop);
+		log.save(function(err, log){
+			if(err){
+				console.log(prop);
+				console.log(err);
+			}
 		});
-	}
-
-	objectlogger = function(string){
-		fs.appendFile('objectlog.log', string + " " +  new Date(Date.now()) + "\n" , function(err){
+		fs.appendFile('objectlog.log ', + " " + prop.entity +" " + prop.name + " " + prop.date + " " + prop.action + " " + prop.result + "\n" , function(err){
 			if(err)
 				console.log(err);
 		});
@@ -500,5 +528,5 @@ router.route("/tasks/:task_id")
 
 
 app.use("/TangiPlan", router);
-app.listen("80");
+app.listen("8080");
 console.log("walla");
