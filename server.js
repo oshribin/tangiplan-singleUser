@@ -518,7 +518,7 @@ router.route("/tasks/:task_id")
 				console.log(err);
 			}
 		});
-		fs.appendFile('objectlog.log ', + " " + prop.entity +" " + prop.name + " " + prop.date + " " + prop.action + " " + prop.result + "\n" , function(err){
+		fs.appendFile('objectlog.log', + " " + prop.entity +" " + prop.name + " " + prop.date + " " + prop.action + " " + prop.result + "\n" , function(err){
 			if(err)
 				console.log(err);
 		});
@@ -528,5 +528,5 @@ router.route("/tasks/:task_id")
 
 
 app.use("/TangiPlan", router);
-app.listen("8080");
+app.listen("80");
 console.log("walla");
