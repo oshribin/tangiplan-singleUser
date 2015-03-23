@@ -335,3 +335,13 @@
 0object spark 4 Mon Mar 23 2015 09:12:56 GMT+0000 (UTC) getDuration 4:-1
 0object spark 5 Mon Mar 23 2015 09:13:40 GMT+0000 (UTC) objectOn object on
 0object spark 5 Mon Mar 23 2015 09:13:45 GMT+0000 (UTC) getDuration 5:-1
+0User oshribin Mon Mar 23 2015 22:04:50 GMT+0200 (IST) login connected
+0object spark 1 Mon Mar 23 2015 22:05:49 GMT+0200 (IST) setDuration task end
+0object spark 2 Tue Mar 24 2015 00:01:18 GMT+0200 (IST) getDuration 2:-1
+0object spark 3 Tue Mar 24 2015 00:01:22 GMT+0200 (IST) getDuration 3:-1
+0User oshribin Tue Mar 24 2015 00:12:08 GMT+0200 (IST) login connected
+0object spark 2 Tue Mar 24 2015 00:13:18 GMT+0200 (IST) getDuration 2:-1
+0object spark 3 Tue Mar 24 2015 00:13:52 GMT+0200 (IST) getDuration 3:-1
+0User oshribin Tue Mar 24 2015 00:14:09 GMT+0200 (IST) goOut go Out
+0object spark 2 Tue Mar 24 2015 00:15:15 GMT+0200 (IST) getDuration 2:120000
+0object spark 1 Tue Mar 24 2015 00:15:22 GMT+0200 (IST) setDuration task end
