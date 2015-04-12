@@ -1,0 +1,5 @@
+_id,entity,name,date,request,action,result,goOut,__v
+552a575b3366487114000005,User,oshribin,Sun Apr 12 2015 16:30:35 GMT+0300 (IDT),/User/54fc164e89853c6249000001,setGoOut,set go out,07:00,0
+552a57603366487114000006,User,oshribin,Sun Apr 12 2015 16:30:40 GMT+0300 (IDT),/User/54fc164e89853c6249000001,setGoOut,set go out,08:00,0
+552a5963336648711400000f,User,oshribin,Sun Apr 12 2015 16:39:15 GMT+0300 (IDT),/User/54fc164e89853c6249000001,setGoOut,set go out,09:00,0
+552a59e03366487114000017,User,oshribin,Sun Apr 12 2015 16:41:20 GMT+0300 (IDT),/User/54fc164e89853c6249000001,setGoOut,set go out,10:00,0

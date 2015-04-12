@@ -105,12 +105,11 @@ router.get("/objectslogfile", function(req, res){
 
 
 
-router.get("/download", function(req,res){
-	Log.find(function(err, logs){
+router.get("/download/:action", function(req,res){
+	Log.find({action:req.params.action}, function(err, logs){
 		if(err)
 			res.send(err);
 		else if(logs){	
-			console.log(logs[0]);
 			var csvStream = csv.format({headers: true, objectMode: true});
    			var writableStream = fs.createWriteStream("log.csv");
    				writableStream.on("finish", function(){
@@ -119,6 +118,8 @@ router.get("/download", function(req,res){
 				});
 			csvStream.pipe(writableStream);
 			logs.forEach(function(log){
+				log["date"] =  new Date(parseInt(log.date));
+				console.log(log);
 				csvStream.write(log.toObject());
 			});	
 			csvStream.end();
@@ -473,7 +474,7 @@ router.route("/tasks/:task_id")
 								givDuration: task.givDuration,
 								exDuration: task.exDuration,
 								exception: task.exception,
-								endedByUser: req.params.flag,
+								endedByUser: task.endedByUser,
 								overexcep: task.overexcep,
 								exFreeTime: task.exFreeTime,
 								givFreeTime: task.givFreeTime,
@@ -582,12 +583,14 @@ router.route("/tasks/:task_id")
 	}
 
 	logger = function(prop){
+		console.log(prop);
 		var log = new Log(prop);
 		log.save(function(err, log){
 			if(err){
 				console.log(prop);
 				console.log(err);
 			}
+			console.log(log);
 		});
 		fs.appendFile('objectlog.log', + " " + prop.entity +" " + prop.name + " " + prop.date + " " + prop.action + " " + prop.result + "\n" , function(err){
 			if(err)
@@ -621,5 +624,5 @@ router.route("/tasks/:task_id")
 
 
 app.use("/TangiPlan", router);
-app.listen("80");
+app.listen("8080");
 console.log("walla");

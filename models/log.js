@@ -8,7 +8,7 @@ var logSchema = new Schema({
 			request:Object,
 			action:String,
 			result:String,
-			takName: String,
+			taskName: String,
 			givDuration: String,
 			exDuration:String,
 			exception:String,
