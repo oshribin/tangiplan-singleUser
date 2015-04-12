@@ -35,6 +35,106 @@ var ChooseTaskView_single = Backbone.View.extend({
 
 });	
 
+	var MatcheObjectView_single = Backbone.View.extend({
+
+	template: Handlebars.compile($("#matchTask").html()),
+
+	tagName:"li",
+
+	events:{
+		"click .number" : "clickHandler",
+		"click .clear" : "unsetObject"
+	},
+
+	unsetObject: function(){
+		var curObjectId = this.model.get("objectId");
+		this.$(".thumb").remove();
+		this.$(".clear").remove();
+		$("[id ="+curObjectId+"]").removeClass("disabled");
+		this.model.save({"objectId":null});
+	},	
+
+
+	clickHandler: function(event){
+		var curObjectId = this.model.get("objectId");
+		if(curObjectId){
+			this.unsetObject();
+		}
+		var id = $(event.currentTarget).attr("id");
+		this.model.save({"objectId":id});
+		this.updateView(id);
+	},
+
+
+	updateView: function(curObjectId){
+		var str = "public/photos/num"+curObjectId+".png";
+		this.$(".panel-heading").append("<img class='thumb' src="+str+">");
+		this.$(".panel-heading").append("<a class ='clear'>'נקה בחירה'</a>");
+		$("[id ="+curObjectId+"]").addClass("disabled");
+
+	},
+
+
+
+	render:function(){
+		this.model.save({"objectId":null});
+		var html = this.template(this.model.attributes);
+		this.$el.html(html);
+		return this;
+	
+	}
+});	
+
+var MatcheObjectViewV2_single = Backbone.View.extend({
+
+	template: Handlebars.compile($("#matchTaskV2").html()),
+
+	events: {
+		"click .task" : "clickHandler",
+	},
+
+
+	update: function(){
+		var current = app.taskList.findWhere({"objectId" : this.attributes.number});
+		var title = current ? current.get("name") : "ללא משימה";
+			this.$(".taskTitle").html(title);
+
+	},
+	
+	initialize: function(){
+		this.listenTo(app.taskList, "change" , this.update)
+	},
+
+
+	clickHandler: function(event){
+		this.$(".collapse").collapse("hide");
+		var current = app.taskList.findWhere({"objectId":this.attributes.number});
+		if(current)
+			current.set({"objectId":null});
+		var taskName =  $(event.currentTarget).html();
+		var task = app.taskList.findWhere({name:taskName});
+		if(task)
+			task.set({"objectId":this.attributes.number});
+	},
+
+
+
+	render: function () {
+		var html = this.template({number:this.attributes.number});
+		this.$el.html(html);
+		this.checked = app.taskList.where({userid:app.user.get("_id"),checked:true});
+		var iterator = function(task){
+			var li = Handlebars.compile($("#tfoV2").html());
+			li = li(task.attributes);
+			this.$(".taskList").append(li);
+
+		};
+
+		iterator = _.bind(iterator, this);
+		_.chain(this.checked).each(iterator);
+		return this;
+	},
+});
 
 /*var SetDuration_single = Backbone.View.extend({
 	template: Handlebars.compile($("#setDuration").html()),
@@ -204,7 +304,7 @@ var SetDuration_single = Backbone.View.extend({
 		events:{
 		"click  .task":"clickHandler",
 		"click .addon" : "freeTimeTrigger",
-		},
+	},
 
 		clickHandler: function(event){
 			var objectId = this.attributes.objectId;
@@ -239,11 +339,11 @@ var SetDuration_single = Backbone.View.extend({
 
 		this.$('.input').mobiscroll().timespan({
 			display : "bubble",
-            hourText : "Hours",
-            minuteText : "Minutes",
-            cancelText: "cancel",
-            labelsShort: ["","","","Minutes","Seconds"],
-            setText: "set",
+            hourText : "דקות",
+            minuteText : "שניות",
+            cancelText: "ביטול",
+            labelsShort: ["","","","דקות","שניות"],
+            setText: "הגדר",
         	theme : "ios7",
         	timeWheels:"HHii",
         	timeFormat: "HH:ii",
@@ -285,12 +385,12 @@ var SetDuration_single = Backbone.View.extend({
 
 		this.$('.freeTimeInput').mobiscroll().timespan({
 			display : "bubble",
-            hourText : "Minutes",
-            minuteText : "Seconds",
-            cancelText: "cancel",
-            setText: "set",
+            hourText : "דקות",
+            minuteText : "שניות",
+            cancelText: "ביטול",
+            setText: "הגדר",
         	theme : "ios7",
-        	labelsShort: ["","","","Minutes","Seconds"],
+        	labelsShort: ["","","","דקות","שניות"],
         	timeWheels:"HHii",
         	timeFormat: "HH:ii",
         	steps:[1,30],
@@ -329,7 +429,7 @@ var SetDuration_single = Backbone.View.extend({
 				freeTimeflag = null;
 
 			var timeSpanref = {theme:"bootstrap",
-							labels:["Minutes", "Seconds"],
+							labels:["דקות", "שניות"],
 							maxTime:1800000,
 							steps:[1,10],
 							wheelOrder:"iiss",

@@ -38,7 +38,7 @@ var SetDuration_page = Backbone.View.extend({
 
 		var viewList = this.viewList;
 		if(!this.model.timeValidate())
-			alert("Ready for leaving time is later then the leaving time you define earlier, reschedule your times");
+			alert("שעת סיום התארגנות מאוחרת משעת היציאה שהגדרת באפשרותך לשנות שעת יציאה שעת התעוררות או את זמני המשימות והמעבר")
 
 		else if(this.validate()){
 			var nav = _.after(this.model.checked().length, function(){
@@ -58,7 +58,7 @@ var SetDuration_page = Backbone.View.extend({
 			});
 		}
 		else
-			alert("There is tasks that didnt assigned to object");
+			alert("יש משימות שלא משויכות לאוביקט")
 
 	},
 
@@ -86,12 +86,11 @@ var SetDuration_page = Backbone.View.extend({
 
 
 	initialize: function(){
-
-		var back = app.last === "signIn" ? "Home page" : "Task bank";
+		var back = app.last === "signIn" ? "לעמוד הבית" : "לתכנון משימות";
 		var comTitle = Handlebars.compile($("#titleBar").html());
-		var title = comTitle({title:" Define Organizing Time"});
+		var title = comTitle({title:"הגדר זמנים"});
 		var comNav = Handlebars.compile($("#bottom-nav").html());
-		var nav = comNav({end:"Update"});
+		var nav = comNav({end:"עדכן משימות"});
 
 
 		this.model.updateLeft();
@@ -101,10 +100,11 @@ var SetDuration_page = Backbone.View.extend({
 		this.$el.append(nav);
 		
 		this.build = _.bind(this.build, this);
+		app.taskList.fetch({success:this.build});
 		this.listenTo(this.model, "change", this.updateSpan);
 		this.set_wakeUpClock();
 		this.set_goOutClock();
-		this.build();
+
 		
 	},
 
@@ -120,10 +120,10 @@ var SetDuration_page = Backbone.View.extend({
 
 		this.$(".wakeUp").mobiscroll().time({
 			display : "bubble",
-       	    hourText : "Hours",
-		    minuteText: "Minutes",
-		    cancelText: "cancel",
-            setText: "set",
+       	    hourText : "שעות",
+		    minuteText: "דקות",
+		    cancelText: "ביטול",
+            setText: "הגדר",
 		    theme:"ios7",
 		    timeWheels:"HHii",
 		    timeFormat: "HH:ii",
@@ -148,10 +148,10 @@ var SetDuration_page = Backbone.View.extend({
 
 		this.$(".goOut").mobiscroll().time({
 			display : "bubble",
-       	    hourText : "Hours",
-		    minuteText: "Minutes",
-		    cancelText: "cancek",
-            setText: "set",
+       	    hourText : "שעות",
+		    minuteText: "דקות",
+		    cancelText: "ביטול",
+            setText: "הגדר",
 		    theme:"ios7",
 		    timeWheels:"HHii",
 		    timeFormat: "HH:ii",
@@ -176,7 +176,6 @@ var SetDuration_page = Backbone.View.extend({
 	},
 
 	build: function(){
-		var that = this;
 		var _iterator = function(task){
 			return Date.parse(task.get("lastDate"))
 		};
@@ -191,11 +190,8 @@ var SetDuration_page = Backbone.View.extend({
 				});
 			}
 		});
-
 		var viewList = [];
-
 		sortChecked.each(function(task){
-
 			if(task.get("lastObjectId")){
 				task.set({objectId:task.get("lastObjectId")});
 				var cur = task.get("lastObjectId");
@@ -206,7 +202,7 @@ var SetDuration_page = Backbone.View.extend({
 			}
 
 			var oneView = new SetDuration_single({model:task, attributes:{objectId:cur}});
-			that.$(".setList").append(oneView.render().el);
+			this.$(".setList").append(oneView.render().el);
 			viewList.push(oneView);
 		});
 		

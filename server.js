@@ -128,7 +128,7 @@ router.get("/download/:action", function(req,res){
 });
 
 router.get("/", function(req, res) {
-	res.sendfile("index2.html");
+	res.sendfile("index.html");
 	console.log(req.session.passport.user);
 });
 
