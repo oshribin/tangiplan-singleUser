@@ -177,7 +177,7 @@ var SetDuration_page = Backbone.View.extend({
 
 	build: function(){
 		var _iterator = function(task){
-			return Date.parse(task.get("lastDate"))
+			return task.get("lastObjectId");
 		};
 		var checked = this.model.checked();
 		var sortChecked = _.chain(checked).sortBy(_iterator);
@@ -191,6 +191,7 @@ var SetDuration_page = Backbone.View.extend({
 			}
 		});
 		var viewList = [];
+		console.log(sortChecked);
 		sortChecked.each(function(task){
 			if(task.get("lastObjectId")){
 				task.set({objectId:task.get("lastObjectId")});
