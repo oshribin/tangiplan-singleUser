@@ -13,9 +13,8 @@ var passport = require("passport");
 var LocalStrategy = require("passport-local").Strategy;
 var csv = require("fast-csv");
 var fs = require("fs");
-var timeOffset = 7200000;
-var restartTime = 10;
-
+var timeOffset = 10800000;
+var restartTime = 8;
 var date = new Date(Date.now());
 var hour = date.getHours();
 var minutes = date.getMinutes();
@@ -362,7 +361,7 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 					if(err){
 						logger({entity:"object spark",
 								name: req.params.object_id,
-								date: Date.now() + timeOffset,
+								date: lastDate,
 								request: "/setDuration/" + req.params.object_id + "/" + req.params.ex_duration + "/" + req.params.flag,
 								action: "setDuration",
 								result: "error",
@@ -371,13 +370,11 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 					}
 					else if(task){
 						
-						var prev = freeTime(task);
-	
 						User.findOne({_id:task.userid}, function(err, user){
 							if(err){
 								logger({entity:"object spark",
 										name: req.params.object_id,
-										date: Date.now() + timeOffset,
+										date: lastDate,
 										request:"/setDuration/" + req.params.object_id + "/" + req.params.ex_duration + "/" + req.params.flag,
 										action: "setDuration",
 										result: "error",
@@ -389,7 +386,7 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 									res.send("task end");
 									logger({entity:"object spark",
 											name: req.params.object_id,
-											date: Date.now() + timeOffset,
+											date: (lastDate-(lastDate%1000)),//ignoring milliseconds
 											request: "/setDuration/" + req.params.object_id + "/" + req.params.ex_duration + "/" + req.params.flag,
 											action: "setDuration",
 											result:"task end",
@@ -407,11 +404,12 @@ router.route("/setDuration/:object_id/:ex_duration/:flag")
 											wakeUp: user.wakeUp, 
 											goOut: user.goOut,
 											taskDate: getYMD(task.lastDate),
-									});
+									},true,task);
 								}
 							});
 						}
 					});
+
 				}
 			});
 		});
@@ -471,6 +469,7 @@ router.route("/tasks/:task_id")
 								action: "updateTask",
 								result: "updated",
 								taskName: task.name,
+								objectId: task.objectId,
 								givDuration: task.givDuration,
 								exDuration: task.exDuration,
 								exception: task.exception,
@@ -561,41 +560,51 @@ router.route("/tasks/:task_id")
 					tp = Date.parse(task.lastDate);
 					var freeTime = parseVal(tp - otp - parsMill(task.exDuration));
 					prev.exFreeTime = freeTime;
-					prev.save(function(err,task){
+					prev.save(function(err,prev){
 						if (err)
 							console.log(err);
-						Log.findOne({lastDate:prev.lastDate}, function(err, log){
-							console.log(log);
-							if(err)
-								console.log(err);
-							else if(log){
-								log.exFreeTime = freeTime;
-								log.save(function(err, log){
-									if(err)
-										console.log(err);
-								});	
-							}
-						});
+						else if(prev){
+							console.log(Date.parse(prev.lastDate) + "-prev lastDate");
+							Log.findOne({date:Date.parse(prev.lastDate)}, function(err, log){
+								if(err)
+									console.log(err);
+								else if(log){
+									console.log("hay");
+									log.exFreeTime = freeTime;
+									log.save(function(err, log){
+										if(err)
+											console.log(err);
+									});	
+								}
+							});
+						}
 					});
 				}	
 			}
 		});
+		console.log("2");
+		console.log(task);
 	}
 
-	logger = function(prop){
-		console.log(prop);
+	logger = function(prop, flag, task){
 		var log = new Log(prop);
 		log.save(function(err, log){
 			if(err){
 				console.log(prop);
 				console.log(err);
 			}
-			console.log(log);
+			else if (log&&flag){
+				freeTime(task);
+				console.log(log.date + "-log date");
+			}
+
 		});
 		fs.appendFile('objectlog.log', + " " + prop.entity +" " + prop.name + " " + prop.date + " " + prop.action + " " + prop.result + "\n" , function(err){
 			if(err)
 				console.log(err);
 		});
+		console.log("1");
+
 	}
 
 
