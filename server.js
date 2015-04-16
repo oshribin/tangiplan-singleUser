@@ -49,6 +49,10 @@ router.get("/object_filter/:action/:object_id/:from/:untill", function(req, res)
 			 });
 });
 
+router.get("/getDuration/:object_id/:set_id",function(req,res) {
+	console.log(req.params.object_id + req.params.set_id);
+});
+
 router.route("/getDuration/:object_id")
 	
 	.get(function(req, res){
