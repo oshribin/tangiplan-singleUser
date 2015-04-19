@@ -129,6 +129,7 @@ var App = Backbone.View.extend({
 
 var app = new App({el:(".container")});
 Backbone.history.start();
+Backbone.history.loadUrl();
 
 
 
