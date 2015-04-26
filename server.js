@@ -130,6 +130,28 @@ router.get("/download/:action", function(req,res){
 	});
 });
 
+router.get("/:action", function(req,res){
+	Log.find({action:req.params.action}, function(err, logs){
+		if(err)
+			res.send(err);
+		else if(logs){	
+			var csvStream = csv.format({headers: true, objectMode: true});
+   			var writableStream = fs.createWriteStream("log.csv");
+   				writableStream.on("finish", function(){
+   					console.log("done");
+  					res.sendfile("log.csv");
+				});
+			csvStream.pipe(writableStream);
+			logs.forEach(function(log){
+				log["date"] =  new Date(parseInt(log.date));
+				console.log(log);
+				csvStream.write(log.toObject());
+			});	
+			csvStream.end();
+		}
+	});
+});
+
 router.get("/", function(req, res) {
 	res.sendfile("index.html");
 	console.log(req.session.passport.user);
@@ -325,6 +347,7 @@ router.route("/tasks")
 	})
 
 	.get(function(req, res){
+		console.log(req);
 		var id = req.session.passport.user._id;
 		Task.find({userid:id},function(err, tasks){
 			if(err)
