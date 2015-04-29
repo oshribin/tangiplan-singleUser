@@ -130,16 +130,16 @@ router.get("/download/:action", function(req,res){
 	});
 });
 
-router.get("/:action", function(req,res){
+router.get("/print/:action", function(req,res){
 	Log.find({action:req.params.action}, function(err, logs){
 		if(err)
 			res.send(err);
 		else if(logs){	
 			var csvStream = csv.format({headers: true, objectMode: true});
-   			var writableStream = fs.createWriteStream("log.csv");
+   			var writableStream = fs.createWriteStream("log.log");
    				writableStream.on("finish", function(){
    					console.log("done");
-  					res.sendfile("log.csv");
+  					res.sendfile("log.log");
 				});
 			csvStream.pipe(writableStream);
 			logs.forEach(function(log){
@@ -219,6 +219,7 @@ passport.use(new LocalStrategy(function(username, password,done){
 router.use("/public", express.static("public"));
 
 router.get("/objectOn/:objectId/:timeStamp", function(req, res){
+	req.session = null;
 	res.send("objecton");
 	logger({entity:"object spark",
 			name:req.params.objectId,
@@ -361,6 +362,7 @@ router.route("/tasks")
 router.route("/setDuration/:object_id/:ex_duration/:flag")
 
 	.get(function(req, res){
+		req.session = null;
 		Task.findOne({objectId:req.params.object_id, set_id:req.params.set_id}, function(err, task){
 			if(err){
 				logger({entity:"object spark",
@@ -660,5 +662,5 @@ router.route("/tasks/:task_id")
 
 
 app.use("/TangiPlan", router);
-app.listen("8080");
+app.listen("80");
 console.log("walla");
