@@ -177,7 +177,7 @@ var SetDuration_page = Backbone.View.extend({
 
 	build: function(){
 		var _iterator = function(task){
-			return task.get("lastObjectId");
+			var id = task.get("lastObjectId") ? task.get("lastObjectId") : task.get("objectId");
 		};
 		var checked = this.model.checked();
 		var sortChecked = _.chain(checked).sortBy(_iterator);
