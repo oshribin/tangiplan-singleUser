@@ -977,3 +977,18 @@
 0object spark 1 1430308748000 setDuration task end
 0object spark 3 1430308801000 setDuration task end
 0object spark 3 1430308833157 getDuration 3:-1
+0User oshribin 1430575176045 login connected
+0user 54fc164e89853c6249000001 1430575715808 updateTask updated
+0user 54fc164e89853c6249000001 1430575715821 updateTask updated
+0user 54fc164e89853c6249000001 1430575715825 updateTask updated
+0user 54fc164e89853c6249000001 1430575715830 updateTask updated
+0user 54fc164e89853c6249000001 1430575715833 updateTask updated
+0User oshribin 1430575881732 login connected
+0User oshribin 1430576652284 login connected
+0User oshribin 1430577608720 login connected
+0user 54fc164e89853c6249000001 1430577623960 updateTask updated
+0user 54fc164e89853c6249000001 1430577623967 updateTask updated
+0user 54fc164e89853c6249000001 1430577623972 updateTask updated
+0user 54fc164e89853c6249000001 1430577623978 updateTask updated
+0user 54fc164e89853c6249000001 1430577623982 updateTask updated
+0object spark 1 1430577638000 setDuration task end

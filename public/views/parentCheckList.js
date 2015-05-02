@@ -13,17 +13,24 @@ var ParentCheckList_page = Backbone.View.extend({
 		var title = compiled({title:"TangiPlan"});
 		this.$el.html(title);
 		this.$el.append(this.template);
-		userList.fetch();
+		app.userList.fetch();
 	},
 
 	connect: function () {
 		var name = this.$(".username").val();
-		var user = userList.findWhere({name:name});
+		var user = app.userList.findWhere({name:name});
 
 		if(user){
 			app.user = user;
-			app.user.setTaskList();
-			app.taskList.fetch({success:this.build});
+			//var url = "/parentCheckList/:" + user.get("_id");
+			var userid = user.get("_id");
+			var that = this;
+			console.log(userid);
+			$.get("/TangiPlan/tasks", {userid:userid}, function(data){
+			 app.taskList =new Tasks(data);
+			 console.log(app.taskList);
+			 that.build();
+			});
 		}
 		else
 			this.$(".message").html("שם משתמש לא נכון נסה שוב");

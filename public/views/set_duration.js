@@ -178,10 +178,12 @@ var SetDuration_page = Backbone.View.extend({
 	build: function(){
 		var _iterator = function(task){
 			var id = task.get("lastObjectId") ? task.get("lastObjectId") : task.get("objectId");
+			return id;
 		};
 		var checked = this.model.checked();
 		var sortChecked = _.chain(checked).sortBy(_iterator);
 		var numbers = [6,5,4,3,2,1];
+
 
 		_.chain(sortChecked).each(function(task){
 			if(task.get("lastObjectId")){
@@ -201,7 +203,6 @@ var SetDuration_page = Backbone.View.extend({
 				var cur = numbers.pop();
 				task.set({objectId:cur});
 			}
-
 			var oneView = new SetDuration_single({model:task, attributes:{objectId:cur}});
 			this.$(".setList").append(oneView.render().el);
 			viewList.push(oneView);

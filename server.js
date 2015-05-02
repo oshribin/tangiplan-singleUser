@@ -349,7 +349,7 @@ router.route("/tasks")
 
 	.get(function(req, res){
 		console.log(req);
-		var id = req.session.passport.user._id;
+		var id = req.session.passport.user ? req.session.passport.user._id : req.query.userid;
 		Task.find({userid:id},function(err, tasks){
 			if(err)
 				res.send(err);
@@ -662,5 +662,5 @@ router.route("/tasks/:task_id")
 
 
 app.use("/TangiPlan", router);
-app.listen("80");
+app.listen("8080");
 console.log("walla");
