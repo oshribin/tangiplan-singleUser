@@ -21,6 +21,7 @@ var CheckList_page = Backbone.View.extend({
 	render: function(){
 		this.model.clUsageInc();
 		app.taskList.fetch({success:this.build});
+		this.$("svg").show();
 	},
 
 
@@ -31,6 +32,8 @@ var CheckList_page = Backbone.View.extend({
 		var title = compiled({title:"מעקב בוקר"});
 		this.$el.html(title);
 		this.$el.append(this.template);
+		var loader = Handlebars.compile($("#loader").html());
+		this.$el.append(loader);
 		this.build = _.bind(this.build,this);
 		app.taskList.fetch({success:this.build});
 	},
@@ -43,20 +46,27 @@ var CheckList_page = Backbone.View.extend({
 
 		var _iterator = function(task){
 			var x = task.get("lastDate") != null ? Date.parse(task.get("lastDate")) : 0;
-				return x;
+			if(!task.get("exDuration"))
+				x = Infinity;
+			return x;
 		};
+
 
 		var sortChecked = _.chain(this.checked).sortBy(_iterator);
 
 
 		sortChecked.each(function(task){
-			console.log(this.$(".checkList"));
+			console.log(sortChecked);
 			var oneView = new checkTask({model:task});
 			this.$(".checkList").append(oneView.render().el);
 			var exFreeTime = task.get("exFreeTime");
 			if(exFreeTime)
 				this.$(".checkList").append("<li class='row'><span class='label label-default col-xs-12'>זמן בין המשימות - "+ exFreeTime + "</spanv></li>");
 		});
+		setTimeout(function(){
+			this.$("svg").hide();
+		}, 3000);
+		
 	}
 			
 

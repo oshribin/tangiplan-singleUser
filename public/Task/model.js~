@@ -10,7 +10,7 @@ var Task = Backbone.Model.extend({
 			objectId:null,
 			lastObjectId:null,
 			lastDate:null,
-			checked:true,
+			checked:false,
 			disable:false,
 			exception:null,
 			endedByUser:null,

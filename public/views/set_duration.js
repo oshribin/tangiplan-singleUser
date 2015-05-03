@@ -54,6 +54,7 @@ var SetDuration_page = Backbone.View.extend({
 				task.set({overexcep:null});
 				task.set({exFreeTime:null});
 				task.save(task.attributes,{success:nav});
+				this.$("svg").hide();
 
 			});
 		}
@@ -91,6 +92,8 @@ var SetDuration_page = Backbone.View.extend({
 		var title = comTitle({title:"הגדר זמנים"});
 		var comNav = Handlebars.compile($("#bottom-nav").html());
 		var nav = comNav({end:"עדכן משימות"});
+		var loader = Handlebars.compile($("#loader").html());
+		this.$el.append(loader);
 
 
 		this.model.updateLeft();
