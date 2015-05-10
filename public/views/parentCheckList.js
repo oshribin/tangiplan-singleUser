@@ -4,6 +4,7 @@ var ParentCheckList_page = Backbone.View.extend({
 
 	events:{
 		"click .connect" : "connect",
+		"click .render" : "render"
 	},
 
 
@@ -13,6 +14,10 @@ var ParentCheckList_page = Backbone.View.extend({
 		var title = compiled({title:"TangiPlan"});
 		this.$el.html(title);
 		this.$el.append(this.template);
+		this.$("button").hide();
+		var loader = Handlebars.compile($("#loader").html());
+		this.$el.append(loader);
+		this.build = _.bind(this.build,this);
 		app.userList.fetch();
 	},
 
@@ -36,10 +41,16 @@ var ParentCheckList_page = Backbone.View.extend({
 			this.$(".message").html("שם משתמש לא נכון נסה שוב");
 	},
 
+	render: function(){
+		app.taskList.fetch({success:this.build});
+		this.$("svg").show();
+	},
+
 	build: function(){
-		
+		this.$(".checkList").html("");
 		this.$(".login").remove();
 		this.$(".message").remove();
+		this.$("button").show();
 
 		this.checked = _.chain(app.taskList
 			.where({userid:app.user.get("_id"),checked:true}));
@@ -59,6 +70,9 @@ var ParentCheckList_page = Backbone.View.extend({
 			if(exFreeTime)
 				this.$(".checkList").append("<li class='row'><span class='label label-default col-xs-12'>זמן בין המשימות - "+ exFreeTime + "</spanv></li>");
 		});
+		setTimeout(function(){
+			this.$("svg").hide();
+		}, 3000);
 
 
 	},
