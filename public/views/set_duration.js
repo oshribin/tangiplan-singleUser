@@ -41,6 +41,7 @@ var SetDuration_page = Backbone.View.extend({
 			alert("שעת סיום התארגנות מאוחרת משעת היציאה שהגדרת באפשרותך לשנות שעת יציאה שעת התעוררות או את זמני המשימות והמעבר")
 
 		else if(this.validate()){
+			console.log(this.$("svg"));
 			this.$("svg").show();
 			var nav = _.after(this.model.checked().length, function(){
 				_.chain(viewList).each(function(view){view.remove()});
@@ -55,9 +56,9 @@ var SetDuration_page = Backbone.View.extend({
 				task.set({overexcep:null});
 				task.set({exFreeTime:null});
 				task.save(task.attributes,{success:nav});
-				this.$("svg").hide();
 
 			});
+			
 		}
 		else
 			alert("יש משימות שלא משויכות לאוביקט")
@@ -94,14 +95,12 @@ var SetDuration_page = Backbone.View.extend({
 		var comNav = Handlebars.compile($("#bottom-nav").html());
 		var nav = comNav({end:"עדכן משימות"});
 		var loader = Handlebars.compile($("#loader").html());
-		this.$el.append(loader);
-
-
 		this.model.updateLeft();
 
 		this.$el.html(title);
 		this.$el.append(this.template(this.model.attributes));
 		this.$el.append(nav);
+		this.$el.append(loader);
 		
 		this.build = _.bind(this.build, this);
 		app.taskList.fetch({success:this.build});
