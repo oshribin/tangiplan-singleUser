@@ -33,6 +33,8 @@ app.use(bodyParser());
 
 var router = express.Router();
 
+
+
 router.get("/object_filter/:action/:object_id/:from/:untill", function(req, res){
 	console.log(req.params.from);
 	Log.find({name:req.params.object_id, action:req.params.action,
@@ -217,6 +219,20 @@ passport.use(new LocalStrategy(function(username, password,done){
 
 
 router.use("/public", express.static("public"));
+
+
+router.get("/objectOff/:objectId"), function(req, res){
+	req.session = null;
+	res.send("objecton");
+	logger({
+		entity:"object spark",
+		name:req.params.objectId,
+		date: Date.now() + timeOffset,
+		request: "/objectOff/" + req.params.objectId + "/", 
+		action: "objectOff",
+		result: "object off",
+	});
+});
 
 router.get("/objectOn/:objectId/:timeStamp", function(req, res){
 	req.session = null;
